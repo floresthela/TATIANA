@@ -9,7 +9,7 @@ reserved = {
     'print' : 'PRINT',
     'read' : 'READ',
     'program' : 'PROGRAM',
-    'var' : 'VAR',
+    'vars' : 'VARS',
     'int': 'INT',
     'float' : 'FLOAT',
     'char' : 'CHAR',
@@ -27,7 +27,7 @@ tokens = [
     'MULTIPLICATION', 'OPENBRACES', 'CLOSEBRACES',
     'ADDITION', 'SUBSTRACTION', 'DIVISION', 'CTEINT', 'CTEFLOAT',
     'CTECHAR', 'GREATER', 'LESS', 'NOTEQUAL', 'SEMICOLON',
-    'OPENBRACKET', 'CLOSEDBRACKET'
+    'OPENBRACKET', 'CLOSEBRACKET'
 ] + list(reserved.values())
 
 
@@ -49,7 +49,7 @@ t_LESS = r'/<'
 t_NOTEQUAL = r'/!='
 t_SEMICOLON = r'/;'
 t_OPENBRACKET = r'/['
-t_CLOSEDBRACKET = r'/]'
+t_CLOSEBRACKET = r'/]'
 
 t_ignore = r' '
 
