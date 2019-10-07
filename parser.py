@@ -10,13 +10,13 @@ def p_program(p):
 
 def p_program1(p):
     '''
-    program1 : VAR 
+    program1 : VAR
             | empty
     '''
 
 def p_program2(p):
     '''
-    program2 : function program2 
+    program2 : function program2
             | empty
     '''
 # STAR - flor
@@ -27,7 +27,7 @@ def p_star(p):
 
 def p_star1(p):
     '''
-    star1 : stmt star1 
+    star1 : stmt star1
         | empty
     '''
 
@@ -60,7 +60,7 @@ def p_vars(p):
 def p_vars1(p):
     '''
     vars1 : EQUALS expression vars2
-        | OPENBRACKET CTEINT CLOSEBRACKET vars3  
+        | OPENBRACKET CTEINT CLOSEBRACKET vars3
     '''
 
 def p_vars2(p):
@@ -78,7 +78,7 @@ def p_vars3(p):
 # TYPE - flor
 def p_type(p):
     '''
-    type : INT 
+    type : INT
         | FLOAT
         | CHAR
     '''
@@ -89,11 +89,26 @@ def p_print(p):
     print : PRINT OPENPAREN expression CLOSEPAREN SEMICOLON
     '''
 
-# READ
+
+# READ - LAURA
 def p_read(p):
     '''
+    read : READ OPENPAREN ID OPENBRACKET expression CLOSEDBRACKET OPENBRACKET expression CLOSEDBRACKET CLOSEPAREN SEMICOLON
+         | READ OPENPAREN ID CLOSEPAREN SEMICOLON
+         | READ OPENPAREN ID OPENBRACKET expression CLOSEDBRACKET CLOSEPAREN SEMICOLON
     '''
+
+def p_readPrime(p):
+    '''
+    '''
+
 # ASSIGNMENT
+def p_assignment(p):
+    '''
+    assignment : ID OPENBRACKET expression CLOSEDBRACKET OPENBRACKET expression CLOSEBRACES EQUALS expression SEMICOLON
+               | ID
+    '''
+
 
 # VAR_CTE - flor
 def p_vcte(p):
@@ -117,7 +132,7 @@ def p_vcte3(p):
     '''
     vcte3 : OPENBRACKET expression CLOSEBRACKET
         | empty
-    
+
     '''
 
 def p_vcte4(p):
@@ -138,14 +153,14 @@ def p_expression(p):
     expression : vcte
               | operation
     '''
-# RETURN 
-# COMPARE 
+# RETURN
+# COMPARE
 # L_OP
 
 
 # LOGICAL
 # CONDITION
-# HEAD  
+# HEAD
 # BODY
 # FOR
 # WHILE
@@ -181,8 +196,8 @@ def p_graphmove(p):
 def p_graphmove1(p):
     '''
     graphmove1 : HAND_DOWN
-              | HAND_UP 
-              | graphmove2 expression 
+              | HAND_UP
+              | graphmove2 expression
     '''
 def p_graphmove2(p):
     '''
@@ -200,7 +215,7 @@ def p_graphr(p):
     '''
 def p_graphr1(p):
     '''
-    graphr1 : graphstmt graphr1 
+    graphr1 : graphstmt graphr1
            | empty
     '''
 # GRAPH_VIEW - flor
