@@ -21,53 +21,54 @@ reserved = {
 
 # tokens list
 tokens = [
-    'id', 'dot', 'comma', 'equals',
-    'openParen', 'closedParen', 'twoDots',
-    'multiply', 'openBraces', 'closedBraces',
-    'plus', 'minus', 'division', 'cteint', 'ctefloat',
-    'ctechar', 'greater', 'less', 'notEqual'
+    'ID', 'DOT', 'COMMA', 'EQUALS',
+    'OPENPAREN', 'CLOSEPAREN', 'TWODOTS',
+    'MULTIPLICATION', 'OPENBRACES', 'CLOSEBRACES',
+    'ADDITION', 'SUBSTRACTION', 'DIVISION', 'CTEINT', 'CTEFLOAT',
+    'CTECHAR', 'GREATER', 'LESS', 'NOTEQUAL', 'SEMICOLON'
 ] + list(reserved.values())
 
 
 # tokens definition
-t_plus = r'\+'
-t_dot = r'\.'
-t_comma = r'\,'
-t_equals = r'\,'
-t_openParen = r'\('
-t_closedParen = r'\)'
-t_twoDots = r'\:'
-t_multiply = r'\*'
-t_openBraces = r'\{'
-t_closedBraces = r'\}'
-t_minus = r'\-'
-t_division = r'\/'
-t_greater = r'/>'
-t_less = r'/<'
-t_notEqual = r'/!='
+t_ADDITION = r'\+'
+t_DOT = r'\.'
+t_COMMA = r'\,'
+t_EQUALS = r'\,'
+t_OPENPAREN = r'\('
+t_CLOSEPAREN = r'\)'
+t_TWODOTS = r'\:'
+t_MULTIPLICATION = r'\*'
+t_OPENBRACES = r'\{'
+t_CLOSEBRACES = r'\}'
+t_SUBSTRACTION = r'\-'
+t_DIVISION = r'\/'
+t_GREATER = r'/>'
+t_LESS = r'/<'
+t_NOTEQUAL = r'/!='
+t_SEMICOLON = r'/;'
 
 t_ignore = r' '
 
-def t_cteint(t):
+def t_CTEINT(t):
     r'\d+'
     t.value = int(t.value)
     return t
 
 
-def t_ctefloat(t):
+def t_CTEFLOAT(t):
      r'\d+\.\d+'
      t.value = float(t.value)
      return t
 
 
-def t_ctechar(t):
+def t_CTECHAR(t):
     r'[a-zA-Z][a-zA-Z_0-9]'
     t.value = str(t.value)
     return t
 
-def t_id(t):
+def t_ID(t):
     r'[a-zA-Z][a-zA-Z_0-9]*'
-    t.type = reserved.get(t.value, 'id')
+    t.type = reserved.get(t.value, 'ID')
     return t
 
 def t_newline(t):

@@ -5,7 +5,7 @@ from lexer import tokens
 # PROGRAM - flor
 def p_program(p):
     '''
-
+    programa: PROGRAM ID 
     '''
 # STAR - flor
 def p_star(p):
@@ -15,11 +15,22 @@ def p_star(p):
 # LOOP - flor
 def p_loop(p):
     '''
+    loop: while
+        | for
     '''
 
 # STMT - flor
 def p_stmt(p):
     '''
+    stmt: assignment
+        | condition
+        | print
+        | loop
+        | read
+        | graph_stmt
+        | graph_repeat
+        | fun_call
+        | repeat
     '''
 # VARS - flor
 def p_vars(p):
@@ -33,6 +44,7 @@ def p_type(p):
 # PRINT - flor
 def p_print(p):
     '''
+    print: PRINT OPENPAREN expression CLOSEPAREN SEMICOLON
     '''
 # READ
 def p_read(p):
@@ -49,7 +61,7 @@ def p_read(p):
 
 # LOGICAL
 # CONDITION
-# HEAD - flor 
+# HEAD  
 # BODY
 # FOR
 # WHILE
