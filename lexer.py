@@ -1,6 +1,7 @@
 import sys
 import ply.lex as lex
 
+# list of reserved words
 reserved = {
     'if' : 'IF',
     'else' : 'ELSE',
@@ -9,7 +10,7 @@ reserved = {
     'program' : 'PROGRAM',
     'var' : 'VAR',
     'int': 'INT',
-    'float' : 'FLOAT'
+    'float' : 'FLOAT',
     'char' : 'CHAR',
     'fun' : 'FUN',
     'or' : 'OR',
@@ -18,7 +19,7 @@ reserved = {
     'while' : 'WHILE'
 }
 
-#tokens list
+# tokens list
 tokens = [
     'id', 'dot', 'comma', 'equals',
     'openParen', 'closedParen', 'twoDots',
@@ -28,7 +29,7 @@ tokens = [
 ] + list(reserved.values())
 
 
-#tokens definition
+# tokens definition
 t_plus = r'\+'
 t_dot = r'\.'
 t_comma = r'\,'
@@ -64,8 +65,17 @@ def t_ctechar(t):
     t.value = str(t.value)
     return t
 
-
 def t_id(t):
     r'[a-zA-Z][a-zA-Z_0-9]*'
     t.type = reserved.get(t.value, 'id')
     return t
+
+def t_newline(t):
+    r'\n+'
+    t.lexer.lineno += t.value.count("\n")
+
+def t_error(t):
+    print("Illegal character '%s'" % t.value[0])
+    t.lexer.skip(1)
+
+    lexer = lex.lex()
