@@ -17,7 +17,24 @@ reserved = {
     'or' : 'OR',
     'and' : 'AND',
     'read' : 'READ',
-    'while' : 'WHILE'
+    'while' : 'WHILE',
+    'circle': 'CIRCLE',
+    'square': 'SQUARE',
+    'triangle': 'TRIANGLE',
+    'rectangle': 'RECTANGLE',
+    'hand_down': 'HAND_DOWN',
+    'hand_up': 'HAND_UP',
+    'go': 'GO',
+    'left': 'LEFT',
+    'right': 'RIGHT',
+    'back': 'BACK',
+    'arc': 'ARC',
+    'repeat': 'REPEAT',
+    'hide_star': 'HIDE_STAR',
+    'show_star':'SHOW_STAR',
+    'setXY': 'SETXY',
+    'color_star': 'COLOR_STAR',
+    'size_star': 'SIZE_STAR'
 }
 
 # tokens list
@@ -35,7 +52,7 @@ tokens = [
 t_ADDITION = r'\+'
 t_DOT = r'\.'
 t_COMMA = r'\,'
-t_EQUALS = r'\,'
+t_EQUALS = r'\='
 t_OPENPAREN = r'\('
 t_CLOSEPAREN = r'\)'
 t_TWODOTS = r'\:'
