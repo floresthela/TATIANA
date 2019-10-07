@@ -5,43 +5,43 @@ from lexer import tokens
 # PROGRAM - flor
 def p_program(p):
     '''
-    programa: PROGRAM ID SEMICOLON program1 program2 star
+    program : PROGRAM ID SEMICOLON program1 program2 star
     '''
 
 def p_program1(p):
     '''
-    program1: VAR 
+    program1 : VAR 
             | empty
     '''
 
 def p_program2(p):
     '''
-    program2: function program2 
+    program2 : function program2 
             | empty
     '''
 # STAR - flor
 def p_star(p):
     '''
-    star: MULTIPLICATION OPENBRACES vars star1 CLOSEBRACES
+    star : MULTIPLICATION OPENBRACES vars star1 CLOSEBRACES
     '''
 
 def p_star1(p):
     '''
-    star1: stmt star1 
+    star1 : stmt star1 
         | empty
     '''
 
 # LOOP - flor
 def p_loop(p):
     '''
-    loop: while
+    loop : while
         | for
     '''
 
 # STMT - flor
 def p_stmt(p):
     '''
-    stmt: assignment
+    stmt : assignment
         | condition
         | print
         | loop
@@ -54,31 +54,31 @@ def p_stmt(p):
 # VARS - flor
 def p_vars(p):
     '''
-    vars: VARS type ID vars1 SEMICOLON
+    vars : VARS type ID vars1 SEMICOLON
     '''
 
 def p_vars1(p):
     '''
-    vars1: EQUALS expression vars2
+    vars1 : EQUALS expression vars2
         | OPENBRACKET CTEINT CLOSEBRACKET vars3  
     '''
 
 def p_vars2(p):
     '''
-    vars2: COMMA ID vars1 vars2
+    vars2 : COMMA ID vars1 vars2
         | empty
     '''
 
 def p_vars3(p):
     '''
-    vars3: OPENBRACKET CTEINT CLOSEBRACKET
+    vars3 : OPENBRACKET CTEINT CLOSEBRACKET
         | empty
     '''
 
 # TYPE - flor
 def p_type(p):
     '''
-    type: INT 
+    type : INT 
         | FLOAT
         | CHAR
     '''
@@ -86,7 +86,7 @@ def p_type(p):
 # PRINT - flor
 def p_print(p):
     '''
-    print: PRINT OPENPAREN expression CLOSEPAREN SEMICOLON
+    print : PRINT OPENPAREN expression CLOSEPAREN SEMICOLON
     '''
 
 # READ
@@ -98,44 +98,44 @@ def p_read(p):
 # VAR_CTE - flor
 def p_vcte(p):
     '''
-    vcte: cte
+    vcte : cte
         | ID vcte1 vcte2
     '''
 
 def p_vcte1(p):
     '''
-    vcte1: OPENBRACKET expression CLOSEBRACKET vcte3
+    vcte1 : OPENBRACKET expression CLOSEBRACKET vcte3
     '''
 
 def p_vcte2(p):
     '''
-    vcte2: OPENPAREN expression vcte4
+    vcte2 : OPENPAREN expression vcte4
         | empty
     '''
 
 def p_vcte3(p):
     '''
-    vcte3: OPENBRACKET expression CLOSEBRACKET
+    vcte3 : OPENBRACKET expression CLOSEBRACKET
         | empty
     
     '''
 
 def p_vcte4(p):
     '''
-    vcte4: COMMA expression vcte4
+    vcte4 : COMMA expression vcte4
         | empty
     '''
 # CTE - flor
 def p_cte(p):
     '''
-    cte: CTEINT
+    cte : CTEINT
         | CTEFLOAT
         | CTECHAR
     '''
 # EXPRESSION - flor
 def p_expression(p):
     '''
-    expression: vcte
+    expression : vcte
               | operation
     '''
 # RETURN 
@@ -154,19 +154,19 @@ def p_expression(p):
 # GRAPH_STMT - flor
 def graphstmt(p):
     '''
-    graphstmt: graphfig
+    graphstmt : graphfig
              | graphview
              | graphmove
     '''
 # GRAPH_FIGURE - flor
 def p_graphfig(p):
     '''
-    graphfig: graphfig1 expression SEMICOLON
+    graphfig : graphfig1 expression SEMICOLON
     '''
 
 def p_graphfig1(p):
     '''
-    graphfig1: CIRCLE
+    graphfig1 : CIRCLE
             | SQUARE
             | TRIANGLE expression
             | RECTANGLE expression
@@ -176,17 +176,17 @@ def p_graphfig1(p):
 
 def p_graphmove(p):
     '''
-    graphmove: graphmove1 SEMICOLON
+    graphmove : graphmove1 SEMICOLON
     '''
 def p_graphmove1(p):
     '''
-    graphmove1: HAND_DOWN
+    graphmove1 : HAND_DOWN
               | HAND_UP 
               | graphmove2 expression 
     '''
 def p_graphmove2(p):
     '''
-    graphmove2: GO
+    graphmove2 : GO
               | LEFT
               | RIGHT
               | BACK
@@ -196,30 +196,38 @@ def p_graphmove2(p):
 # GRAPH_REPEAT - flor
 def p_graphr(p):
     '''
-    graphr: REPEAT expression OPENBRACES graphstmt graphr1 CLOSEBRACES
+    graphr : REPEAT expression OPENBRACES graphstmt graphr1 CLOSEBRACES
     '''
 def p_graphr1(p):
     '''
-    graphr1: graphstmt graphr1 
+    graphr1 : graphstmt graphr1 
            | empty
     '''
 # GRAPH_VIEW - flor
 def p_graphview(p):
     '''
-    graphview: graphview1 SEMICOLON
+    graphview : graphview1 SEMICOLON
     '''
 def p_graphview1(p):
     '''
-    graphview1: HIDE_STAR
+    graphview1 : HIDE_STAR
               | SHOW_STAR
               | graphview2 expression
     '''
 def p_graphview2(p):
     '''
-    graphview2: SETXY expression
+    graphview2 : SETXY expression
               | COLOR_STAR
               | SIZE_STAR
     '''
 # OPERATION
 # FACTOR
 # TERM
+def p_empty(p):
+    '''empty :'''
+
+def p_error(p):
+    print("ERROR {}".format(p))
+
+
+yacc.yacc()

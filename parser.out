@@ -1,0 +1,199 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    ADDITION
+    AND
+    CLOSEDBRACKET
+    DIVISION
+    DOT
+    ELSE
+    ELSEIF
+    FUN
+    GREATER
+    IF
+    LESS
+    NOTEQUAL
+    OR
+    READ
+    SUBSTRACTION
+    TWODOTS
+    WHILE
+
+Grammar
+
+Rule 0     S' -> program
+Rule 1     program -> PROGRAM ID SEMICOLON program1 program2 star
+Rule 2     program1 -> VAR
+Rule 3     program1 -> empty
+Rule 4     program2 -> function program2
+Rule 5     program2 -> empty
+Rule 6     star -> MULTIPLICATION OPENBRACES vars star1 CLOSEBRACES
+Rule 7     star1 -> stmt star1
+Rule 8     star1 -> empty
+Rule 9     loop -> while
+Rule 10    loop -> for
+Rule 11    stmt -> assignment
+Rule 12    stmt -> condition
+Rule 13    stmt -> print
+Rule 14    stmt -> loop
+Rule 15    stmt -> read
+Rule 16    stmt -> graph_stmt
+Rule 17    stmt -> graph_repeat
+Rule 18    stmt -> fun_call
+Rule 19    stmt -> repeat
+Rule 20    vars -> VARS type ID vars1 SEMICOLON
+Rule 21    vars1 -> EQUALS expression vars2
+Rule 22    vars1 -> OPENBRACKET CTEINT CLOSEBRACKET vars3
+Rule 23    vars2 -> COMMA ID vars1 vars2
+Rule 24    vars2 -> empty
+Rule 25    vars3 -> OPENBRACKET CTEINT CLOSEBRACKET
+Rule 26    vars3 -> empty
+Rule 27    type -> INT
+Rule 28    type -> FLOAT
+Rule 29    type -> CHAR
+Rule 30    print -> PRINT OPENPAREN expression CLOSEPAREN SEMICOLON
+Rule 31    vcte -> cte
+Rule 32    vcte -> ID vcte1 vcte2
+Rule 33    vcte1 -> OPENBRACKET expression CLOSEBRACKET vcte3
+Rule 34    vcte2 -> OPENPAREN expression vcte4
+Rule 35    vcte2 -> empty
+Rule 36    vcte3 -> OPENBRACKET expression CLOSEBRACKET
+Rule 37    vcte3 -> empty
+Rule 38    vcte4 -> COMMA expression vcte4
+Rule 39    vcte4 -> empty
+Rule 40    cte -> CTEINT
+Rule 41    cte -> CTEFLOAT
+Rule 42    cte -> CTECHAR
+Rule 43    expression -> vcte
+Rule 44    expression -> operation
+Rule 45    graphfig -> graphfig1 expression SEMICOLON
+Rule 46    graphfig1 -> CIRCLE
+Rule 47    graphfig1 -> SQUARE
+Rule 48    graphfig1 -> TRIANGLE expression
+Rule 49    graphfig1 -> RECTANGLE expression
+Rule 50    graphmove -> graphmove1 SEMICOLON
+Rule 51    graphmove1 -> HAND_DOWN
+Rule 52    graphmove1 -> HAND_UP
+Rule 53    graphmove1 -> graphmove2 expression
+Rule 54    graphmove2 -> GO
+Rule 55    graphmove2 -> LEFT
+Rule 56    graphmove2 -> RIGHT
+Rule 57    graphmove2 -> BACK
+Rule 58    graphmove2 -> ARC expression
+Rule 59    graphr -> REPEAT expression OPENBRACES graphstmt graphr1 CLOSEBRACES
+Rule 60    graphr1 -> graphstmt graphr1
+Rule 61    graphr1 -> empty
+Rule 62    graphview -> graphview1 SEMICOLON
+Rule 63    graphview1 -> HIDE_STAR
+Rule 64    graphview1 -> SHOW_STAR
+Rule 65    graphview1 -> graphview2 expression
+Rule 66    graphview2 -> SETXY expression
+Rule 67    graphview2 -> COLOR_STAR
+Rule 68    graphview2 -> SIZE_STAR
+
+Terminals, with rules where they appear
+
+ADDITION             : 
+AND                  : 
+CHAR                 : 29
+CLOSEBRACES          : 6 59
+CLOSEDBRACKET        : 
+CLOSEPAREN           : 30
+COMMA                : 23 38
+CTECHAR              : 42
+CTEFLOAT             : 41
+CTEINT               : 22 25 40
+DIVISION             : 
+DOT                  : 
+ELSE                 : 
+ELSEIF               : 
+EQUALS               : 21
+FLOAT                : 28
+FUN                  : 
+GREATER              : 
+ID                   : 1 20 23 32
+IF                   : 
+INT                  : 27
+LESS                 : 
+MULTIPLICATION       : 6
+NOTEQUAL             : 
+OPENBRACES           : 6 59
+OPENBRACKET          : 22 25 33 36
+OPENPAREN            : 30 34
+OR                   : 
+PRINT                : 30
+PROGRAM              : 1
+READ                 : 
+SEMICOLON            : 1 20 30 45 50 62
+SUBSTRACTION         : 
+TWODOTS              : 
+VAR                  : 2
+WHILE                : 
+error                : 
+
+Nonterminals, with rules where they appear
+
+ARC                  : 58
+BACK                 : 57
+CIRCLE               : 46
+CLOSEBRACKET         : 22 25 33 36
+COLOR_STAR           : 67
+GO                   : 54
+HAND_DOWN            : 51
+HAND_UP              : 52
+HIDE_STAR            : 63
+LEFT                 : 55
+RECTANGLE            : 49
+REPEAT               : 59
+RIGHT                : 56
+SETXY                : 66
+SHOW_STAR            : 64
+SIZE_STAR            : 68
+SQUARE               : 47
+TRIANGLE             : 48
+VARS                 : 20
+assignment           : 11
+condition            : 12
+cte                  : 31
+empty                : 3 5 8 24 26 35 37 39 61
+expression           : 21 30 33 34 36 38 45 48 49 53 58 59 65 66
+for                  : 10
+fun_call             : 18
+function             : 4
+graph_repeat         : 17
+graph_stmt           : 16
+graphfig             : 
+graphfig1            : 45
+graphmove            : 
+graphmove1           : 50
+graphmove2           : 53
+graphr               : 
+graphr1              : 59 60
+graphstmt            : 59 60
+graphview            : 
+graphview1           : 62
+graphview2           : 65
+loop                 : 14
+operation            : 44
+print                : 13
+program              : 0
+program1             : 1
+program2             : 1 4
+read                 : 15
+repeat               : 19
+star                 : 1
+star1                : 6 7
+stmt                 : 7
+type                 : 20
+vars                 : 6
+vars1                : 20 23
+vars2                : 21 23
+vars3                : 22
+vcte                 : 43
+vcte1                : 32
+vcte2                : 32
+vcte3                : 33
+vcte4                : 34 38
+while                : 9
+
