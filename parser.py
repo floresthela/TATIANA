@@ -13,7 +13,7 @@ def p_program(p):
 
 def p_program1(p):
     '''
-    program1 : VAR
+    program1 : vars
             | empty
     '''
 
@@ -65,14 +65,14 @@ def p_stmt(p):
 # VARS - flor
 def p_vars(p):
     '''
-    vars : VAR type ID vars1 SEMICOLON
+    vars : VARS type ID vars1 SEMICOLON
     '''
-
-
+    
 def p_vars1(p):
     '''
     vars1 : EQUALS expression vars2
         | OPENBRACKET CTEINT CLOSEBRACKET vars3
+        | empty vars2
     '''
 
 
@@ -94,8 +94,8 @@ def p_vars3(p):
 def p_type(p):
     '''
     type : INT
-        | FLOAT
-        | CHAR
+         | FLOAT
+         | CHAR
     '''
 
 
@@ -244,7 +244,7 @@ def p_logical(p):
 def p_logical1(p):
     '''
     logical1 : OR
-                 | AND
+             | AND
     '''
 
 

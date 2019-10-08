@@ -7,9 +7,8 @@ reserved = {
     'else' : 'ELSE',
     'elseif' : 'ELSEIF',
     'print' : 'PRINT',
-    'read' : 'READ',
     'program' : 'PROGRAM',
-    'var' : 'VAR',
+    'vars' : 'VARS',
     'int': 'INT',
     'float' : 'FLOAT',
     'char' : 'CHAR',
@@ -42,7 +41,7 @@ reserved = {
 
 # tokens list
 tokens = [
-    'ID', 'DOT', 'COMMA', 'EQUALS',
+    'ID', 'COMMA', 'EQUALS',
     'OPENPAREN', 'CLOSEPAREN', 'TWODOTS',
     'MULTIPLICATION', 'OPENBRACES', 'CLOSEBRACES',
     'ADDITION', 'SUBSTRACTION', 'DIVISION', 'CTEINT', 'CTEFLOAT',
@@ -53,7 +52,6 @@ tokens = [
 
 # tokens definition
 t_ADDITION = r'\+'
-t_DOT = r'\.'
 t_COMMA = r'\,'
 t_EQUALS = r'\='
 t_OPENPAREN = r'\('
@@ -85,9 +83,8 @@ def t_CTEFLOAT(t):
      t.value = float(t.value)
      return t
 
-
 def t_CTECHAR(t):
-    r'[a-zA-Z][a-zA-Z_0-9]'
+    r'^\w{1}$'
     t.value = str(t.value)
     return t
 
