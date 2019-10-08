@@ -9,7 +9,7 @@ reserved = {
     'print' : 'PRINT',
     'read' : 'READ',
     'program' : 'PROGRAM',
-    'vars' : 'VARS',
+    'var' : 'VAR',
     'int': 'INT',
     'float' : 'FLOAT',
     'char' : 'CHAR',
@@ -34,7 +34,10 @@ reserved = {
     'show_star':'SHOW_STAR',
     'setXY': 'SETXY',
     'color_star': 'COLOR_STAR',
-    'size_star': 'SIZE_STAR'
+    'size_star': 'SIZE_STAR',
+    'return': 'RETURN',
+    'void': 'VOID',
+    'for': 'FOR'
 }
 
 # tokens list
@@ -44,7 +47,7 @@ tokens = [
     'MULTIPLICATION', 'OPENBRACES', 'CLOSEBRACES',
     'ADDITION', 'SUBSTRACTION', 'DIVISION', 'CTEINT', 'CTEFLOAT',
     'CTECHAR', 'GREATER', 'LESS', 'NOTEQUAL', 'SEMICOLON',
-    'OPENBRACKET', 'CLOSEBRACKET'
+    'OPENBRACKET', 'CLOSEBRACKET', 'ISEQUAL'
 ] + list(reserved.values())
 
 
@@ -61,12 +64,13 @@ t_OPENBRACES = r'\{'
 t_CLOSEBRACES = r'\}'
 t_SUBSTRACTION = r'\-'
 t_DIVISION = r'\/'
-t_GREATER = r'/>'
-t_LESS = r'/<'
-t_NOTEQUAL = r'/!='
-t_SEMICOLON = r'/;'
-t_OPENBRACKET = r'/['
-t_CLOSEBRACKET = r'/]'
+t_GREATER = r'\>'
+t_LESS = r'\<'
+t_NOTEQUAL = r'\!='
+t_SEMICOLON = r'\;'
+t_OPENBRACKET = r'\['
+t_CLOSEBRACKET = r'\]'
+t_ISEQUAL = r'\=='
 
 t_ignore = r' '
 
@@ -100,4 +104,5 @@ def t_error(t):
     print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 
-    lexer = lex.lex()
+
+lex.lex()
