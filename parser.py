@@ -1,15 +1,20 @@
+
+# TATIANA
+# Flor Esthela Barbosa & Laura Santacruz
+
+# PARSER
+
 import sys
 import ply.yacc as yacc
 from lexer import tokens
 
 
-# PROGRAM - flor
+# PROGRAM 
 def p_program(p):
     '''
     program : PROGRAM ID SEMICOLON program1 program2 star
     '''
     p[0] = "PROGRAM COMPILED"
-
 
 def p_program1(p):
     '''
@@ -17,15 +22,13 @@ def p_program1(p):
             | empty
     '''
 
-
 def p_program2(p):
     '''
     program2 : function program2
             | empty
     '''
 
-
-# STAR - flor
+# STAR 
 def p_star(p):
     '''
     star : MULTIPLICATION OPENBRACES vars star1 CLOSEBRACES
@@ -39,7 +42,7 @@ def p_star1(p):
     '''
 
 
-# LOOP - flor
+# LOOP 
 def p_loop(p):
     '''
     loop : while
@@ -47,7 +50,7 @@ def p_loop(p):
     '''
 
 
-# STMT - flor
+# STMT 
 def p_stmt(p):
     '''
     stmt : assignment
@@ -62,7 +65,7 @@ def p_stmt(p):
     '''
 
 
-# VARS - flor
+# VARS 
 def p_vars(p):
     '''
     vars : VARS type ID vars1 SEMICOLON
@@ -90,7 +93,7 @@ def p_vars3(p):
     '''
 
 
-# TYPE - flor
+# TYPE 
 def p_type(p):
     '''
     type : INT
@@ -99,14 +102,14 @@ def p_type(p):
     '''
 
 
-# PRINT - flor
+# PRINT 
 def p_print(p):
     '''
     print : PRINT OPENPAREN expression CLOSEPAREN SEMICOLON
     '''
 
 
-# READ - LAURA
+# READ 
 def p_read(p):
     '''
     read : READ OPENPAREN ID read1 CLOSEPAREN SEMICOLON
@@ -149,7 +152,7 @@ def p_assignment3(p):
     '''
 
 
-# VAR_CTE - flor
+# VAR_CTE 
 def p_vcte(p):
     '''
     vcte : cte
@@ -185,7 +188,7 @@ def p_vcte4(p):
     '''
 
 
-# CTE - flor
+# CTE 
 def p_cte(p):
     '''
     cte : CTEINT
@@ -194,7 +197,7 @@ def p_cte(p):
     '''
 
 
-# EXPRESSION - flor
+# EXPRESSION 
 def p_expression(p):
     '''
     expression : vcte
@@ -203,7 +206,7 @@ def p_expression(p):
     '''
 
 
-# RETURN - LAURA
+# RETURN 
 def p_return(p):
     '''
     return : RETURN return1 SEMICOLON
@@ -217,14 +220,14 @@ def p_return1(p):
     '''
 
 
-# COMPARE - LAURA
+# COMPARE 
 def p_compare(p):
     '''
     compare : expression loper expression
     '''
 
 
-# L_OP - LAURA
+# L_OP 
 def p_loper(p):
     '''
     loper : GREATER
@@ -234,7 +237,7 @@ def p_loper(p):
     '''
 
 
-# LOGICAL - LAURA
+# LOGICAL 
 def p_logical(p):
     '''
     logical : compare logical1 compare
@@ -248,7 +251,7 @@ def p_logical1(p):
     '''
 
 
-# CONDITION --LAURA
+# CONDITION 
 def p_condition(p):
     '''
     condition : IF head body condition1
@@ -262,8 +265,7 @@ def p_condition1(p):
                | empty
     '''
 
-
-# HEAD --laura
+# HEAD 
 def p_head(p):
     '''
     head : OPENPAREN head1 CLOSEPAREN
@@ -276,8 +278,7 @@ def p_head1(p):
               | logical
     '''
 
-
-# BODY --LAURA
+# BODY 
 def p_body(p):
     '''
     body : OPENBRACES body1 CLOSEBRACES
@@ -289,13 +290,11 @@ def p_body1(p):
           | empty
     '''
 
-
-# FOR -LAURA
+# FOR
 def p_for(p):
     '''
     for : FOR OPENPAREN ID TWODOTS expression CLOSEPAREN body
     '''
-
 
 # WHILE
 def p_while(p):
@@ -303,20 +302,17 @@ def p_while(p):
     while : WHILE  head body
     '''
 
-
-# FUN_CALL - LAURA
+# FUN_CALL 
 def p_funCall(p):
     '''
     funCall : ID OPENPAREN expression CLOSEPAREN SEMICOLON
     '''
 
-
-# FUNCTION - laura
+# FUNCTION 
 def p_function(p):
     '''
     function : FUN function1 ID function2 OPENBRACES vars function4 CLOSEBRACES
     '''
-
 
 def p_function1(p):
     '''
@@ -324,12 +320,10 @@ def p_function1(p):
               | VOID
     '''
 
-
 def p_function2(p):
     '''
     function2 : OPENPAREN function3 CLOSEPAREN
     '''
-
 
 def p_function3(p):
     '''
@@ -338,15 +332,13 @@ def p_function3(p):
               | empty
     '''
 
-
 def p_function4(p):
     '''
     function4 : stmt function4
               | empty
     '''
 
-
-# GRAPH_STMT - flor
+# GRAPH_STMT 
 def p_graphstmt(p):
     '''
     graphstmt : graphfig
@@ -354,13 +346,11 @@ def p_graphstmt(p):
              | graphmove
     '''
 
-
-# GRAPH_FIGURE - flor
+# GRAPH_FIGURE 
 def p_graphfig(p):
     '''
     graphfig : graphfig1 expression SEMICOLON
     '''
-
 
 def p_graphfig1(p):
     '''
@@ -370,14 +360,11 @@ def p_graphfig1(p):
             | RECTANGLE expression
     '''
 
-# GRAPH_MOVEMENT - flor
-
-
+# GRAPH_MOVEMENT 
 def p_graphmove(p):
     '''
     graphmove : graphmove1 SEMICOLON
     '''
-
 
 def p_graphmove1(p):
     '''
@@ -385,7 +372,6 @@ def p_graphmove1(p):
               | HAND_UP
               | graphmove2 expression
     '''
-
 
 def p_graphmove2(p):
     '''
@@ -396,14 +382,11 @@ def p_graphmove2(p):
               | ARC expression
     '''
 
-
-
-# GRAPH_REPEAT - flor
+# GRAPH_REPEAT 
 def p_graphr(p):
     '''
     graphr : REPEAT expression OPENBRACES graphstmt graphr1 CLOSEBRACES
     '''
-
 
 def p_graphr1(p):
     '''
@@ -411,13 +394,11 @@ def p_graphr1(p):
            | empty
     '''
 
-
-# GRAPH_VIEW - flor
+# GRAPH_VIEW 
 def p_graphview(p):
     '''
     graphview : graphview1 SEMICOLON
     '''
-
 
 def p_graphview1(p):
     '''
@@ -425,6 +406,7 @@ def p_graphview1(p):
               | SHOW_STAR
               | graphview2 expression
     '''
+
 def p_graphview2(p):
     '''
     graphview2 : SETXY expression
@@ -432,13 +414,11 @@ def p_graphview2(p):
               | SIZE_STAR
     '''
 
-
 # OPERATION
 def p_operation(p):
     '''
     operation : term operation1
     '''
-
 
 def p_operation1(p):
     '''
@@ -447,14 +427,12 @@ def p_operation1(p):
                | empty
     '''
 
-
 # FACTOR
 def p_factor(p):
     '''
     factor : vcte
            | factor1
     '''
-
 
 def p_factor1(p):
     '''
@@ -482,14 +460,11 @@ def p_term1(p):
           | empty
     '''
 
-
 def p_empty(p):
     '''empty :'''
 
-
 def p_error(p):
     print("ERROR {}".format(p))
-
 
 yacc.yacc()
 

@@ -1,3 +1,9 @@
+
+# TATIANA
+# Flor Esthela Barbosa & Laura Santacruz
+
+# LEXER
+
 import sys
 import ply.lex as lex
 
