@@ -7,9 +7,9 @@
 import pandas as pd
 
 
-class VarsTable:
+class Vars_table:
     '''
-    VarsTable contains all functions for creating and manipulating functions
+    Class for the variables table contains all functions for creating and manipulating functions
     and its variables inside the corresponding table
     and main directory (FunDirectory)
     '''
@@ -20,7 +20,7 @@ class VarsTable:
         self.current_scope = ''
         self.initialized = False
 
-    def initialize(self):
+    def FunDirectory(self):
         self.table = {
             'global': {
                 'type': 'void',
@@ -35,11 +35,11 @@ class VarsTable:
         self.initialized = True
 
 # agregar var - insert
-    def insertVar(self, variable):
+    def insert_var(self, variable):
         if variable not in self.data:
             self.data = variable
 
-# crear tabla
-    def createFunDir(self, type, scope):
-        self.columns = type
+# crear tabla para una funci'on
+    #def create_table(self,):
+
 # search
