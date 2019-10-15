@@ -4,9 +4,14 @@
 
 # VARS AND PROCEDURES TABLES
 
+import pandas as pd
+
+
 class VarsTable:
     '''
-    VarsTable contains all functions for creating and manipulating functions and its variables inside the corresponding table and main directory (FunDirectory)
+    VarsTable contains all functions for creating and manipulating functions
+    and its variables inside the corresponding table
+    and main directory (FunDirectory)
     '''
 
     def __init__(self):
@@ -14,10 +19,10 @@ class VarsTable:
         self.current_type = ''
         self.current_scope = ''
         self.initialized = False
-    
+
     def initialize(self):
         self.table = {
-            'global' : {
+            'global': {
                 'type': 'void',
                 'vars': {}
             }
@@ -30,5 +35,11 @@ class VarsTable:
         self.initialized = True
 
 # agregar var - insert
-# crear tabla 
-# search    
+    def insertVar(self, variable):
+        if variable not in self.data:
+            self.data = variable
+
+# crear tabla
+    def createFunDir(self, type, scope):
+        self.columns = type
+# search

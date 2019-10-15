@@ -1,0 +1,32 @@
+program prueba4;
+
+fun void fun1(){
+ circle(5);
+ rectangle(5 6);
+}
+
+fun void fun2(){
+ vars int a = 5;
+ go(a);
+ vars int a = 5;
+ left(a);
+ vars int b = 4;
+  go(b);
+  show_star;
+  size_star(5);
+}
+
+fun int fun3(){
+  vars a = 5;
+  vars b = 10;
+  return a * b;
+}
+
+*{
+ fun1();
+ fun2();
+ fun3();
+ vars int a = 1;
+ var float b = 5.5;
+ print(b);
+}
