@@ -1,0 +1,30 @@
+program prueba3;
+
+fun int fun1(){
+ vars int a = 10, b = 20;
+ vars resp;
+ resp = a + b;
+ return resp;
+}
+
+fun void fun2(int x, int y){
+ if(x > y){
+  print("x");
+ }
+ else{
+  print("y");
+ }
+
+ vars int i = 5;
+ while (i > 0){
+  print(i);
+  i = i - 1;
+ }
+
+}
+
+*{
+ vars int x = 3, y = 10
+ fun1();
+ fun2(x, y);
+}

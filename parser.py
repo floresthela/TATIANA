@@ -9,7 +9,7 @@ import ply.yacc as yacc
 from lexer import tokens
 
 
-# PROGRAM 
+# PROGRAM
 def p_program(p):
     '''
     program : PROGRAM ID SEMICOLON program1 program2 star
@@ -28,7 +28,7 @@ def p_program2(p):
             | empty
     '''
 
-# STAR 
+# STAR
 def p_star(p):
     '''
     star : MULTIPLICATION OPENBRACES vars star1 CLOSEBRACES
@@ -42,7 +42,7 @@ def p_star1(p):
     '''
 
 
-# LOOP 
+# LOOP
 def p_loop(p):
     '''
     loop : while
@@ -50,7 +50,7 @@ def p_loop(p):
     '''
 
 
-# STMT 
+# STMT
 def p_stmt(p):
     '''
     stmt : assignment
@@ -65,12 +65,12 @@ def p_stmt(p):
     '''
 
 
-# VARS 
+# VARS
 def p_vars(p):
     '''
     vars : VARS type ID vars1 SEMICOLON
     '''
-    
+
 def p_vars1(p):
     '''
     vars1 : EQUALS expression vars2
@@ -93,7 +93,7 @@ def p_vars3(p):
     '''
 
 
-# TYPE 
+# TYPE
 def p_type(p):
     '''
     type : INT
@@ -102,14 +102,14 @@ def p_type(p):
     '''
 
 
-# PRINT 
+# PRINT
 def p_print(p):
     '''
     print : PRINT OPENPAREN expression CLOSEPAREN SEMICOLON
     '''
 
 
-# READ 
+# READ
 def p_read(p):
     '''
     read : READ OPENPAREN ID read1 CLOSEPAREN SEMICOLON
@@ -152,7 +152,7 @@ def p_assignment3(p):
     '''
 
 
-# VAR_CTE 
+# VAR_CTE
 def p_vcte(p):
     '''
     vcte : cte
@@ -163,12 +163,13 @@ def p_vcte(p):
 def p_vcte1(p):
     '''
     vcte1 : OPENBRACKET expression CLOSEBRACKET vcte3
+          | empty
     '''
 
 
 def p_vcte2(p):
     '''
-    vcte2 : OPENPAREN expression vcte4
+    vcte2 : OPENPAREN expression CLOSEPAREN vcte4
         | empty
     '''
 
@@ -188,7 +189,7 @@ def p_vcte4(p):
     '''
 
 
-# CTE 
+# CTE
 def p_cte(p):
     '''
     cte : CTEINT
@@ -197,7 +198,7 @@ def p_cte(p):
     '''
 
 
-# EXPRESSION 
+# EXPRESSION
 def p_expression(p):
     '''
     expression : vcte
@@ -206,7 +207,7 @@ def p_expression(p):
     '''
 
 
-# RETURN 
+# RETURN
 def p_return(p):
     '''
     return : RETURN return1 SEMICOLON
@@ -220,14 +221,14 @@ def p_return1(p):
     '''
 
 
-# COMPARE 
+# COMPARE
 def p_compare(p):
     '''
     compare : expression loper expression
     '''
 
 
-# L_OP 
+# L_OP
 def p_loper(p):
     '''
     loper : GREATER
@@ -237,7 +238,7 @@ def p_loper(p):
     '''
 
 
-# LOGICAL 
+# LOGICAL
 def p_logical(p):
     '''
     logical : compare logical1 compare
@@ -251,7 +252,7 @@ def p_logical1(p):
     '''
 
 
-# CONDITION 
+# CONDITION
 def p_condition(p):
     '''
     condition : IF head body condition1
@@ -265,7 +266,7 @@ def p_condition1(p):
                | empty
     '''
 
-# HEAD 
+# HEAD
 def p_head(p):
     '''
     head : OPENPAREN head1 CLOSEPAREN
@@ -278,7 +279,7 @@ def p_head1(p):
               | logical
     '''
 
-# BODY 
+# BODY
 def p_body(p):
     '''
     body : OPENBRACES body1 CLOSEBRACES
@@ -302,13 +303,13 @@ def p_while(p):
     while : WHILE  head body
     '''
 
-# FUN_CALL 
+# FUN_CALL
 def p_funCall(p):
     '''
     funCall : ID OPENPAREN expression CLOSEPAREN SEMICOLON
     '''
 
-# FUNCTION 
+# FUNCTION
 def p_function(p):
     '''
     function : FUN function1 ID function2 OPENBRACES vars function4 CLOSEBRACES
@@ -338,7 +339,7 @@ def p_function4(p):
               | empty
     '''
 
-# GRAPH_STMT 
+# GRAPH_STMT
 def p_graphstmt(p):
     '''
     graphstmt : graphfig
@@ -346,7 +347,7 @@ def p_graphstmt(p):
              | graphmove
     '''
 
-# GRAPH_FIGURE 
+# GRAPH_FIGURE
 def p_graphfig(p):
     '''
     graphfig : graphfig1 expression SEMICOLON
@@ -360,7 +361,7 @@ def p_graphfig1(p):
             | RECTANGLE expression
     '''
 
-# GRAPH_MOVEMENT 
+# GRAPH_MOVEMENT
 def p_graphmove(p):
     '''
     graphmove : graphmove1 SEMICOLON
@@ -382,7 +383,7 @@ def p_graphmove2(p):
               | ARC expression
     '''
 
-# GRAPH_REPEAT 
+# GRAPH_REPEAT
 def p_graphr(p):
     '''
     graphr : REPEAT expression OPENBRACES graphstmt graphr1 CLOSEBRACES
@@ -394,7 +395,7 @@ def p_graphr1(p):
            | empty
     '''
 
-# GRAPH_VIEW 
+# GRAPH_VIEW
 def p_graphview(p):
     '''
     graphview : graphview1 SEMICOLON
@@ -471,7 +472,7 @@ yacc.yacc()
 
 if __name__ == '__main__':
     try:
-        nombreArchivo = 'prueba1.txt'
+        nombreArchivo = 'pruebas/prueba3.txt'
         arch = open(nombreArchivo, 'r')
         print("Archivo a leer: " + nombreArchivo)
         info = arch.read()

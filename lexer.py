@@ -36,7 +36,7 @@ reserved = {
     'arc': 'ARC',
     'repeat': 'REPEAT',
     'hide_star': 'HIDE_STAR',
-    'show_star':'SHOW_STAR',
+    'show_star': 'SHOW_STAR',
     'setXY': 'SETXY',
     'color_star': 'COLOR_STAR',
     'size_star': 'SIZE_STAR',
@@ -52,7 +52,7 @@ tokens = [
     'MULTIPLICATION', 'OPENBRACES', 'CLOSEBRACES',
     'ADDITION', 'SUBSTRACTION', 'DIVISION', 'CTEINT', 'CTEFLOAT',
     'CTECHAR', 'GREATER', 'LESS', 'NOTEQUAL', 'SEMICOLON',
-    'OPENBRACKET', 'CLOSEBRACKET', 'ISEQUAL'
+    'OPENBRACKET', 'CLOSEBRACKET', 'ISEQUAL', 'QUOTES', 'SIMPLEQUOTES'
 ] + list(reserved.values())
 
 
@@ -75,8 +75,11 @@ t_SEMICOLON = r'\;'
 t_OPENBRACKET = r'\['
 t_CLOSEBRACKET = r'\]'
 t_ISEQUAL = r'\=='
+t_QUOTES = r'\"'
+t_SIMPLEQUOTES = r'\''
 
 t_ignore = r' '
+
 
 def t_CTEINT(t):
     r'\d+'
