@@ -35,8 +35,8 @@ class VarsTable:
 
     def insert_var(self, var_id, var_type):
         # podríamos agregar un id único como los ejemplos, a través de un contador dependiendo del tipo de var
-        
-        if var_id no in self.current_scope['vars'] and var_id not in self.table['global']['vars']:
+
+        if var_id not in self.current_scope['vars'] and var_id not in self.table['global']['vars']:
             new_var = {
                 'id' : var_id,
                 'type' : var_type,
@@ -65,7 +65,7 @@ class VarsTable:
             self.current_scope = self.table[table_id]
         else:
             raise TypeError('Function has already been declared ', table_id)
-       
+
 
     def search_var(self, var_id):
         '''
