@@ -5,6 +5,7 @@
 
 from semantic_cube import Operators, SemanticCube
 
+
 class Quadruple:
     def __init__(self, left_op, right_op, operator, result):
         '''
@@ -15,7 +16,8 @@ class Quadruple:
         self.operator = operator
         self.result = result
 
-class Intermediate-CodeGeneration:
+
+class Intermediate_CodeGeneration:
     def __init__(self):
         self.POper = []
         self.PTypes = []
@@ -23,5 +25,4 @@ class Intermediate-CodeGeneration:
         self.PilaO = []
         self. PJumps = []
 
-    def genera_quad(self):
-        
+    #def genera_quad(self, left_op, right_op, operator):

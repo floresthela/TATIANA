@@ -2,31 +2,27 @@ program prueba4;
 
 fun void fun1(){
  circle(5);
- rectangle(5 6);
+ rectangle(4, 5);
 }
 
 fun void fun2(){
- vars int a = 5;
+ vars int a = 5, b = 5, c = 4;
  go(a);
- vars int a = 5;
- left(a);
- vars int b = 4;
-  go(b);
-  show_star;
-  size_star(5);
+ left(b);
+ go(c);
+ show_star;
+ size_star(5);
 }
 
 fun int fun3(){
-  vars a = 5;
-  vars b = 10;
+  vars int a = 5, b = 10;
   return a * b;
 }
 
 *{
+ vars int a = 1, float b = 5.3;
  fun1();
  fun2();
  fun3();
- vars int a = 1;
- var float b = 5.5;
  print(b);
 }
