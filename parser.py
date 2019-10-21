@@ -177,6 +177,8 @@ def p_vcte(p):
         | ID vcte1
         | funCall
     '''
+    p[0] = p[1]
+    print(p[0])
 
 
 def p_vcte1(p):
@@ -521,7 +523,7 @@ yacc.yacc()
 
 if __name__ == '__main__':
     try:
-        nombreArchivo = 'pruebas/prueba4.txt'
+        nombreArchivo = 'pruebas/prueba6.txt'
         arch = open(nombreArchivo, 'r')
         print("Archivo a leer: " + nombreArchivo)
         info = arch.read()
