@@ -174,7 +174,8 @@ def p_assignment3(p):
 def p_vcte(p):
     '''
     vcte : cte
-        | ID vcte1 vcte2
+        | ID vcte1
+        | funCall
     '''
 
 
@@ -184,28 +185,12 @@ def p_vcte1(p):
           | empty
     '''
 
-
-def p_vcte2(p):
-    '''
-    vcte2 : OPENPAREN exp CLOSEPAREN vcte4
-        | empty
-    '''
-
-
 def p_vcte3(p):
     '''
     vcte3 : OPENBRACKET exp CLOSEBRACKET
         | empty
 
     '''
-
-
-def p_vcte4(p):
-    '''
-    vcte4 : COMMA exp vcte4
-        | empty
-    '''
-
 
 # CTE
 def p_cte(p):
@@ -338,6 +323,7 @@ def p_funCall2(p):
 def p_funCall3(p):
     '''
     funCall3 : COMMA exp funCall2
+             | empty
     '''
 
 # FUNCTION
@@ -351,6 +337,9 @@ def p_function1(p):
     function1 : type
               | VOID
     '''
+
+# valor que regresa el llamado a una función
+# a = fun1(1,3)
 
 def p_function2(p):
     '''
