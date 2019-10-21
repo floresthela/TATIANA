@@ -15,9 +15,12 @@ class Operators(Enum):
     DIVISION = '/'
     GREATER = '>'
     LESS = '<'
+    NOT_EQUAL = '!='
     ISEQUAL = '=='
     AND = 'and'
     OR = 'or'
+    EQUAL = '='
+    # PRINT ????
 
 
 class SemanticCube:
@@ -186,8 +189,53 @@ class SemanticCube:
                     'char': 'err'
                     }
             },
+            Operators.NOT_EQUAL: {
+                'int': {
+                    'int': 'bool',
+                    'float': 'err',
+                    'char': 'err'
+                    },
+                'float': {
+                    'int': 'err',
+                    'float': 'bool',
+                    'char': 'err'
+                    },
+                'char': {
+                    'int': 'err',
+                    'float': 'err',
+                    'char': 'bool'
+                    }
+            },
+            Operators.EQUAL: {
+                'int': {
+                    'int': 'int',
+                    'float': 'int',
+                    'char': 'err'
+                    },
+                'float': {
+                    'int': 'float',
+                    'float': 'float',
+                    'char': 'err'
+                    },
+                'char': {
+                    'int': 'err',
+                    'float': 'err',
+                    'char': 'char'
+                    }
+            },
 
         }
+
+        def semantics(self, left_type, right_type, operator):
+            '''
+            Will determine if given two types of variables and an operator, the operation will be valid or not
+            :param left_type: type of left variable of operation
+            :param right_type: type of right variable of operation
+            :param operator: operator given for the operation
+            '''
+            if 'err' not in self.semantic_cube[left_type][right_type][operator]:
+                return self.semantic_cube[left_type][right_type][operator]
+            raise TypeError("Unable to apply operator {} to types {} and {}".format(operator, left_type, right_type))
 
 
 
