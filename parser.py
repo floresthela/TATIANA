@@ -146,6 +146,9 @@ def p_assignment(p):
     '''
     assignment : ID assignment1 EQUALS assignment3 SEMICOLON
     '''
+    p[0]
+    code_gen.POper.append('=')
+    print(p[4])
 
 
 
@@ -170,6 +173,8 @@ def p_assignment3(p):
     assignment3 : exp
                 | read
     '''
+    print(p[1])
+
 
 # VAR_CTE
 def p_vcte(p):
@@ -180,7 +185,7 @@ def p_vcte(p):
     '''
     p[0] = p[1]
     code_gen.PilaO.append(p[0])
-    print(p[0])
+    print(p[1])
 
 
 
@@ -204,6 +209,10 @@ def p_cte(p):
         | CTEFLOAT
         | CTECHAR
     '''
+    # print(p[1])
+    if p[1]:
+        code_gen.PilaO.append(p[1])
+        print(p[1])
 
 # RETURN
 def p_return(p):
@@ -486,7 +495,7 @@ def p_exp1(p):
     # oper = p[1]
     # p[0] = p[2]
     # print(p[0])
-    return p[0]
+    #return p[0]
 
 # FACTOR
 def p_factor(p):

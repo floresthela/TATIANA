@@ -1,7 +1,7 @@
 program prueba6;
 
 *{
- vars int a = 10, b = 2, c;
+ vars float a = 10, b = 2, c;
  c = a + b;
 
 }
