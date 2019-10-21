@@ -7,6 +7,9 @@
 import sys
 import ply.yacc as yacc
 from lexer import tokens
+from intermediate_code_generation import Intermediate_CodeGeneration
+
+code_gen = Intermediate_CodeGeneration()
 
 
 # PROGRAM
@@ -168,8 +171,6 @@ def p_assignment3(p):
                 | read
     '''
 
-
-
 # VAR_CTE
 def p_vcte(p):
     '''
@@ -178,7 +179,9 @@ def p_vcte(p):
         | funCall
     '''
     p[0] = p[1]
+    code_gen.PilaO.append(p[0])
     print(p[0])
+
 
 
 def p_vcte1(p):
@@ -470,13 +473,20 @@ def p_exp(p):
     '''
     exp : term exp1
     '''
+    p[0] = p[1]
 
 def p_exp1(p):
     '''
     exp1 : ADDITION exp
-               | SUBSTRACTION exp
-               | empty
+         | SUBSTRACTION exp
+         | empty
     '''
+    # if p[1] == '+'
+    #     p[0] = p[2]
+    # oper = p[1]
+    # p[0] = p[2]
+    # print(p[0])
+    return p[0]
 
 # FACTOR
 def p_factor(p):
