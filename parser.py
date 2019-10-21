@@ -31,7 +31,7 @@ def p_program2(p):
 # STAR
 def p_star(p):
     '''
-    star : MULTIPLICATION OPENBRACES vars star1 CLOSEBRACES
+    star : MULTIPLICATION OPENBRACES star2 star1 CLOSEBRACES
     '''
 
 
@@ -39,6 +39,12 @@ def p_star1(p):
     '''
     star1 : stmt star1
         | empty
+    '''
+
+def p_star2(p):
+    '''
+    star2 : vars
+          | empty
     '''
 
 
@@ -65,15 +71,16 @@ def p_stmt(p):
     '''
 
 
-# VARS
+#VARS
 def p_vars(p):
     '''
     vars : VARS type ID vars1 SEMICOLON
     '''
 
+
 def p_vars1(p):
     '''
-    vars1 : EQUALS expression vars2
+    vars1 : EQUALS exp vars2
         | OPENBRACKET CTEINT CLOSEBRACKET vars3
         | empty vars2
     '''
@@ -81,8 +88,9 @@ def p_vars1(p):
 
 def p_vars2(p):
     '''
-    vars2 : COMMA ID vars1 vars2
-        | empty
+    vars2 : COMMA ID vars1
+          | COMMA vars4
+          | empty
     '''
 
 
@@ -90,6 +98,13 @@ def p_vars3(p):
     '''
     vars3 : OPENBRACKET CTEINT CLOSEBRACKET
         | empty
+    '''
+
+
+def p_vars4(p):
+    '''
+    vars4 : type ID vars1
+          | empty
     '''
 
 
@@ -105,9 +120,8 @@ def p_type(p):
 # PRINT
 def p_print(p):
     '''
-    print : PRINT OPENPAREN expression CLOSEPAREN SEMICOLON
+    print : PRINT OPENPAREN exp CLOSEPAREN SEMICOLON
     '''
-
 
 # READ
 def p_read(p):
@@ -118,8 +132,8 @@ def p_read(p):
 
 def p_read1(p):
     '''
-    read1 : OPENBRACKET expression CLOSEBRACKET OPENBRACKET expression CLOSEBRACKET
-              | OPENBRACKET expression CLOSEBRACKET
+    read1 : OPENBRACKET exp CLOSEBRACKET OPENBRACKET exp CLOSEBRACKET
+              | OPENBRACKET exp CLOSEBRACKET
               | empty
     '''
 
@@ -131,6 +145,7 @@ def p_assignment(p):
     '''
 
 
+
 def p_assignment1(p):
     '''
     assignment1 : assignment2
@@ -139,17 +154,20 @@ def p_assignment1(p):
     '''
 
 
+
 def p_assignment2(p):
     '''
-    assignment2 : OPENBRACKET expression CLOSEBRACKET
+    assignment2 : OPENBRACKET exp CLOSEBRACKET
     '''
+
 
 
 def p_assignment3(p):
     '''
-    assignment3 : expression
+    assignment3 : exp
                 | read
     '''
+
 
 
 # VAR_CTE
@@ -162,21 +180,21 @@ def p_vcte(p):
 
 def p_vcte1(p):
     '''
-    vcte1 : OPENBRACKET expression CLOSEBRACKET vcte3
+    vcte1 : OPENBRACKET exp CLOSEBRACKET vcte3
           | empty
     '''
 
 
 def p_vcte2(p):
     '''
-    vcte2 : OPENPAREN expression CLOSEPAREN vcte4
+    vcte2 : OPENPAREN exp CLOSEPAREN vcte4
         | empty
     '''
 
 
 def p_vcte3(p):
     '''
-    vcte3 : OPENBRACKET expression CLOSEBRACKET
+    vcte3 : OPENBRACKET exp CLOSEBRACKET
         | empty
 
     '''
@@ -184,7 +202,7 @@ def p_vcte3(p):
 
 def p_vcte4(p):
     '''
-    vcte4 : COMMA expression vcte4
+    vcte4 : COMMA exp vcte4
         | empty
     '''
 
@@ -197,16 +215,6 @@ def p_cte(p):
         | CTECHAR
     '''
 
-
-# EXPRESSION
-def p_expression(p):
-    '''
-    expression : vcte
-              | operation
-              | empty
-    '''
-
-
 # RETURN
 def p_return(p):
     '''
@@ -217,14 +225,21 @@ def p_return(p):
 def p_return1(p):
     '''
     return1 : vcte
-            | operation
+            | exp
     '''
 
 
-# COMPARE
-def p_compare(p):
+# expression
+def p_expression(p):
     '''
-    compare : expression loper expression
+    expression : exp expression1
+    '''
+
+
+def p_expression1(p):
+    '''
+    expression1 : loper exp
+             | empty
     '''
 
 
@@ -241,7 +256,7 @@ def p_loper(p):
 # LOGICAL
 def p_logical(p):
     '''
-    logical : compare logical1 compare
+    logical : expression logical1 expression
     '''
 
 
@@ -266,6 +281,7 @@ def p_condition1(p):
                | empty
     '''
 
+
 # HEAD
 def p_head(p):
     '''
@@ -275,8 +291,8 @@ def p_head(p):
 
 def p_head1(p):
     '''
-    head1 : compare
-              | logical
+    head1 : expression
+          | logical
     '''
 
 # BODY
@@ -291,11 +307,13 @@ def p_body1(p):
           | empty
     '''
 
+
 # FOR
 def p_for(p):
     '''
-    for : FOR OPENPAREN ID TWODOTS expression CLOSEPAREN body
+    for : FOR OPENPAREN ID TWODOTS exp CLOSEPAREN body
     '''
+
 
 # WHILE
 def p_while(p):
@@ -303,16 +321,29 @@ def p_while(p):
     while : WHILE  head body
     '''
 
+
 # FUN_CALL
 def p_funCall(p):
     '''
-    funCall : ID OPENPAREN expression CLOSEPAREN SEMICOLON
+    funCall : ID OPENPAREN funCall2 CLOSEPAREN SEMICOLON
+    '''
+
+
+def p_funCall2(p):
+    '''
+    funCall2 : exp funCall3
+             | empty
+    '''
+
+def p_funCall3(p):
+    '''
+    funCall3 : COMMA exp funCall2
     '''
 
 # FUNCTION
 def p_function(p):
     '''
-    function : FUN function1 ID function2 OPENBRACES vars function4 CLOSEBRACES
+    function : FUN function1 ID function2 OPENBRACES function6 function4 CLOSEBRACES
     '''
 
 def p_function1(p):
@@ -328,8 +359,7 @@ def p_function2(p):
 
 def p_function3(p):
     '''
-    function3 : type ID
-              | function3 COMMA
+    function3 : type ID function5
               | empty
     '''
 
@@ -338,6 +368,29 @@ def p_function4(p):
     function4 : stmt function4
               | empty
     '''
+def p_function5(p):
+    '''
+    function5 : COMMA type ID function3
+    '''
+
+def p_function6(p):
+    '''
+    function6 : vars
+              | empty
+    '''
+
+
+def p_laRegla(p):
+    '''
+    laRegla : OPENPAREN exp COMMA exp CLOSEPAREN
+    '''
+
+
+def p_laRegla2(p):
+    '''
+    laRegla2 : OPENPAREN exp CLOSEPAREN
+    '''
+
 
 # GRAPH_STMT
 def p_graphstmt(p):
@@ -350,43 +403,43 @@ def p_graphstmt(p):
 # GRAPH_FIGURE
 def p_graphfig(p):
     '''
-    graphfig : graphfig1 expression SEMICOLON
+    graphfig : graphfig1 SEMICOLON
     '''
 
 def p_graphfig1(p):
     '''
-    graphfig1 : CIRCLE
-            | SQUARE
-            | TRIANGLE expression
-            | RECTANGLE expression
+    graphfig1 : CIRCLE laRegla2
+            | SQUARE laRegla2
+            | TRIANGLE laRegla
+            | RECTANGLE laRegla
     '''
 
 # GRAPH_MOVEMENT
 def p_graphmove(p):
     '''
-    graphmove : graphmove1 SEMICOLON
+    graphmove :  graphmove1  SEMICOLON
     '''
 
 def p_graphmove1(p):
     '''
     graphmove1 : HAND_DOWN
               | HAND_UP
-              | graphmove2 expression
+              | graphmove2
     '''
 
 def p_graphmove2(p):
     '''
-    graphmove2 : GO
-              | LEFT
-              | RIGHT
-              | BACK
-              | ARC expression
+    graphmove2 : GO laRegla2
+              | LEFT laRegla2
+              | RIGHT laRegla2
+              | BACK laRegla2
+              | ARC laRegla
     '''
 
 # GRAPH_REPEAT
 def p_graphr(p):
     '''
-    graphr : REPEAT expression OPENBRACES graphstmt graphr1 CLOSEBRACES
+    graphr : REPEAT exp OPENBRACES graphstmt graphr1 CLOSEBRACES
     '''
 
 def p_graphr1(p):
@@ -405,26 +458,32 @@ def p_graphview1(p):
     '''
     graphview1 : HIDE_STAR
               | SHOW_STAR
-              | graphview2 expression
+              | graphview2 exp
     '''
 
 def p_graphview2(p):
     '''
-    graphview2 : SETXY expression
+    graphview2 : SETXY graphview3
               | COLOR_STAR
               | SIZE_STAR
     '''
 
-# OPERATION
-def p_operation(p):
+def p_graphview3(p):
     '''
-    operation : term operation1
+    graphview3 : exp COMMA
+              | laRegla
     '''
 
-def p_operation1(p):
+# exp
+def p_exp(p):
     '''
-    operation1 : ADDITION
-               | SUBSTRACTION
+    exp : term exp1
+    '''
+
+def p_exp1(p):
+    '''
+    exp1 : ADDITION exp
+               | SUBSTRACTION exp
                | empty
     '''
 
@@ -438,7 +497,7 @@ def p_factor(p):
 def p_factor1(p):
     '''
     factor1 : factor2 vcte
-            | OPENPAREN compare CLOSEPAREN
+            | OPENPAREN expression CLOSEPAREN
     '''
 
 def p_factor2(p):
@@ -456,10 +515,11 @@ def p_term(p):
 
 def p_term1(p):
     '''
-    term1 : MULTIPLICATION
-          | DIVISION
+    term1 : MULTIPLICATION term
+          | DIVISION term
           | empty
     '''
+
 
 def p_empty(p):
     '''empty :'''
@@ -472,7 +532,7 @@ yacc.yacc()
 
 if __name__ == '__main__':
     try:
-        nombreArchivo = 'pruebas/prueba3.txt'
+        nombreArchivo = 'pruebas/prueba4.txt'
         arch = open(nombreArchivo, 'r')
         print("Archivo a leer: " + nombreArchivo)
         info = arch.read()
