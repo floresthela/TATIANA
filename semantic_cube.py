@@ -226,16 +226,16 @@ class SemanticCube:
 
         }
 
-        def semantics(self, left_type, right_type, operator):
-            '''
-            Will determine if given two types of variables and an operator, the operation will be valid or not
-            :param left_type: type of left variable of operation
-            :param right_type: type of right variable of operation
-            :param operator: operator given for the operation
-            '''
-            if 'err' not in self.semantic_cube[left_type][right_type][operator]:
-                return self.semantic_cube[left_type][right_type][operator]
-            raise TypeError("Unable to apply operator {} to types {} and {}".format(operator, left_type, right_type))
+    def semantics(self, left_type, right_type, operator):
+        '''
+        Will determine if given two types of variables and an operator, the operation will be valid or not
+        :param left_type: type of left variable of operation
+        :param right_type: type of right variable of operation
+        :param operator: operator given for the operation
+        '''
+        if 'err' not in self.semantic_cube[left_type][right_type][operator]:
+            return self.semantic_cube[left_type][right_type][operator]
+        raise TypeError("Unable to apply operator {} to types {} and {}".format(operator, left_type, right_type))
 
 
 

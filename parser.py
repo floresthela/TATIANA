@@ -81,6 +81,8 @@ def p_vars(p):
     '''
 
 
+
+
 def p_vars1(p):
     '''
     vars1 : EQUALS exp vars2
@@ -118,6 +120,8 @@ def p_type(p):
          | FLOAT
          | CHAR
     '''
+    p[0] = p[1]
+
 
 
 # PRINT
@@ -141,14 +145,16 @@ def p_read1(p):
     '''
 
 
-# ASSIGNMENT -LAURA
+# ASSIGNMENT
 def p_assignment(p):
     '''
     assignment : ID assignment1 EQUALS assignment3 SEMICOLON
     '''
-    p[0]
+    # c = a + b; -> mete c a pilao
+    code_gen.PilaO.append(p[1])
+
+    code_gen.PilaO.append(p[4])
     code_gen.POper.append('=')
-    print(p[4])
 
 
 
@@ -173,7 +179,7 @@ def p_assignment3(p):
     assignment3 : exp
                 | read
     '''
-    print(p[1])
+    p[0] = p[1]
 
 
 # VAR_CTE
@@ -184,8 +190,9 @@ def p_vcte(p):
         | funCall
     '''
     p[0] = p[1]
-    code_gen.PilaO.append(p[0])
-    print(p[1])
+    # 1. PilaO.Push(id.name)
+    # code_gen.PilaO.append(p[0])
+    # print("hola", p[1])
 
 
 
@@ -209,10 +216,7 @@ def p_cte(p):
         | CTEFLOAT
         | CTECHAR
     '''
-    # print(p[1])
-    if p[1]:
-        code_gen.PilaO.append(p[1])
-        print(p[1])
+    p[0] = p[1]
 
 # RETURN
 def p_return(p):
@@ -226,6 +230,7 @@ def p_return1(p):
     return1 : vcte
             | exp
     '''
+    p[0] = p[1]
 
 
 # expression
@@ -242,6 +247,7 @@ def p_expression1(p):
     '''
 
 
+
 # L_OP
 def p_loper(p):
     '''
@@ -250,7 +256,8 @@ def p_loper(p):
           | NOTEQUAL
           | ISEQUAL
     '''
-
+    # 8. POper.Push(rel.op)
+    code_gen.POper.append(p[1])
 
 # LOGICAL
 def p_logical(p):
@@ -490,12 +497,21 @@ def p_exp1(p):
          | SUBSTRACTION exp
          | empty
     '''
-    # if p[1] == '+'
-    #     p[0] = p[2]
-    # oper = p[1]
-    # p[0] = p[2]
-    # print(p[0])
-    #return p[0]
+    code_gen.POper.append(p[1])
+
+def p_openP(p):
+    '''
+    openP : OPENPAREN
+    '''
+    # 6. crea fondo falso
+    code_gen.POper.append(p[1])
+
+def p_closeP(p):
+    '''
+    closeP : CLOSEPAREN
+    '''
+    # 7. quita fondo falso
+    code_gen.POper.pop()
 
 # FACTOR
 def p_factor(p):
@@ -503,18 +519,25 @@ def p_factor(p):
     factor : vcte
            | factor1
     '''
+    p[0] = p[1]
 
 def p_factor1(p):
     '''
     factor1 : factor2 vcte
-            | OPENPAREN expression CLOSEPAREN
+            | openP expression closeP
     '''
+    
 
 def p_factor2(p):
     '''
     factor2 : ADDITION
             | SUBSTRACTION
     '''
+    p[0] = p[1]
+    code_gen.POper.append(p[0])
+    print(p[0])
+
+# al chile no se que estoy haciendo
 
 # TERM
 def p_term(p):
@@ -529,7 +552,9 @@ def p_term1(p):
           | DIVISION term
           | empty
     '''
-
+    p[0] = p[1]
+    if p[0] != 'empty':
+        code_gen.POper.append(p[0])
 
 def p_empty(p):
     '''empty :'''
@@ -548,6 +573,7 @@ if __name__ == '__main__':
         info = arch.read()
         print(info)
         arch.close()
+        code_gen.generate_quad()
         if(yacc.parse(info, tracking=True) == 'PROGRAM COMPILED'):
             print("SINTAXIS VALIDA :) ")
         else:
