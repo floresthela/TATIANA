@@ -7,7 +7,8 @@
 
 class VarsTable:
     '''
-    Class for the variables table which contains all functions for creating and manipulating functions
+    Class for the variables table which contains all functions for creating
+    and manipulating functions
     and its variables inside the corresponding table
     and main directory (FunDirectory)
     '''
@@ -20,7 +21,8 @@ class VarsTable:
 
     def FunDirectory(self):
         '''
-        Create main directory to store all functions created on a program, current scope is global
+        Create main directory to store all functions created on a program,
+        current scope is global
         '''
         self.table = {
             'global': {
@@ -32,11 +34,10 @@ class VarsTable:
         self.current_scope = self.table['global']
         self.initialized = True
 
-
     def insert_var(self, var_id, var_type):
         # podríamos agregar un id único como los ejemplos, a través de un contador dependiendo del tipo de var
-        
-        if var_id no in self.current_scope['vars'] and var_id not in self.table['global']['vars']:
+
+        if var_id not in self.current_scope['vars'] and var_id not in self.table['global']['vars']:
             new_var = {
                 'id' : var_id,
                 'type' : var_type,
@@ -65,7 +66,7 @@ class VarsTable:
             self.current_scope = self.table[table_id]
         else:
             raise TypeError('Function has already been declared ', table_id)
-       
+
 
     def search_var(self, var_id):
         '''

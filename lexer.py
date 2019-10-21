@@ -52,7 +52,7 @@ tokens = [
     'MULTIPLICATION', 'OPENBRACES', 'CLOSEBRACES',
     'ADDITION', 'SUBSTRACTION', 'DIVISION', 'CTEINT', 'CTEFLOAT',
     'CTECHAR', 'GREATER', 'LESS', 'NOTEQUAL', 'SEMICOLON',
-    'OPENBRACKET', 'CLOSEBRACKET', 'ISEQUAL', 'QUOTES', 'SIMPLEQUOTES'
+    'OPENBRACKET', 'CLOSEBRACKET', 'ISEQUAL', 'SIMPLEQUOTES'
 ] + list(reserved.values())
 
 
@@ -75,10 +75,15 @@ t_SEMICOLON = r'\;'
 t_OPENBRACKET = r'\['
 t_CLOSEBRACKET = r'\]'
 t_ISEQUAL = r'\=='
-t_QUOTES = r'\"'
 t_SIMPLEQUOTES = r'\''
 
 t_ignore = r' '
+
+
+def t_CTEFLOAT(t):
+    r'[+-]?[0-9]+\.[0-9]+'
+    t.value = float(t.value)
+    return t
 
 
 def t_CTEINT(t):
@@ -87,20 +92,17 @@ def t_CTEINT(t):
     return t
 
 
-def t_CTEFLOAT(t):
-     r'\d+\.\d+'
-     t.value = float(t.value)
-     return t
-
 def t_CTECHAR(t):
     r'^\w{1}$'
     t.value = str(t.value)
     return t
 
+
 def t_ID(t):
     r'[a-zA-Z][a-zA-Z_0-9]*'
     t.type = reserved.get(t.value, 'ID')
     return t
+
 
 def t_newline(t):
     r'\n+'
