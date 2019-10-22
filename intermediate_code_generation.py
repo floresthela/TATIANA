@@ -3,6 +3,7 @@
 
 # INTERMEDIATE-CODE GENERATION
 
+
 from semantic_cube import Operators, SemanticCube
 
 
@@ -37,8 +38,8 @@ class Intermediate_CodeGeneration:
 
         # left_op = self.PilaO.pop()
         # left_type = self.PTypes.pop()
-        
-        # right_op = self.PilaO.pop()
+
+        # right_op = self.PilaO.pop()object
         # right_type = self.PTypes.pop()
 
         # operator = self.POper.pop()

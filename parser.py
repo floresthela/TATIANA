@@ -8,9 +8,10 @@ import sys
 import ply.yacc as yacc
 from lexer import tokens
 from intermediate_code_generation import Intermediate_CodeGeneration
+from semantic_cube import SemanticCube
 
 code_gen = Intermediate_CodeGeneration()
-
+cube = SemanticCube()
 
 # PROGRAM
 def p_program(p):
@@ -152,9 +153,8 @@ def p_assignment(p):
     '''
     # c = a + b; -> mete c a pilao
     code_gen.PilaO.append(p[1])
-
-    code_gen.PilaO.append(p[4])
     code_gen.POper.append('=')
+    code_gen.PilaO.append(p[4])
 
 
 
@@ -189,9 +189,19 @@ def p_vcte(p):
         | ID vcte1
         | funCall
     '''
-    p[0] = p[1]
     # 1. PilaO.Push(id.name)
+    #tambien tenemos que meter el tipo de la variable a la pila pero
+    #de donde se saca el tipo???
     # code_gen.PilaO.append(p[0])
+    p[0] = p[1]
+    if len(p) == 2:
+        print(p[1])
+        code_gen.PilaO.append(p[1])
+    # if(len(p) == 3):
+    #     print(p[2])
+    # elif len(p) == 2:
+    #     print(p[1])
+    #     code_gen.PilaO.append(p[1])
     # print("hola", p[1])
 
 
@@ -490,6 +500,23 @@ def p_exp(p):
     exp : term exp1
     '''
     p[0] = p[1]
+    ###si pongo esto el parser no compila jajajaja sos
+    # if code_gen.POper[-1] == 'ADDITION' or code_gen.POper[-1] == 'SUBSTRACTION':
+    #     right_operand = code_gen.PilaO.pop()
+    #     right_type = code_gen.PTypes.pop()
+    #     left_operand = code_gen.PilaO.pop()
+    #     left_type = code_gen.PTypes.pop()
+    #     operator = code_gen.POper.pop()
+    #     #wtf con el cubo???
+    #     result_type = cube()
+    #     if result_type != 'err':
+    #         #wtf con el avail?
+    #         result = 1
+    #         quad = (operator, left_operand, right_operand, result)
+    #         code_gen.Quads.append(quad)
+    #         code_gen.PilaO.append(result)
+    #         code_gen.PTypes.append(result_type)
+
 
 def p_exp1(p):
     '''
@@ -497,7 +524,10 @@ def p_exp1(p):
          | SUBSTRACTION exp
          | empty
     '''
-    code_gen.POper.append(p[1])
+    #2. POper.push(+ or -)
+    if len(p) == 3:
+        print(p[1])
+        code_gen.POper.append(p[1])
 
 def p_openP(p):
     '''
@@ -526,13 +556,14 @@ def p_factor1(p):
     factor1 : factor2 vcte
             | openP expression closeP
     '''
-    
+
 
 def p_factor2(p):
     '''
     factor2 : ADDITION
             | SUBSTRACTION
     '''
+    #2.POper.push(+ or -)
     p[0] = p[1]
     code_gen.POper.append(p[0])
     print(p[0])
@@ -552,9 +583,11 @@ def p_term1(p):
           | DIVISION term
           | empty
     '''
+    #3. POper.push(* or /)
     p[0] = p[1]
-    if p[0] != 'empty':
-        code_gen.POper.append(p[0])
+    if len(p) == 3:
+        print(p[1])
+        code_gen.POper.append(p[1])
 
 def p_empty(p):
     '''empty :'''
