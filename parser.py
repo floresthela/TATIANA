@@ -7,18 +7,25 @@
 import sys
 import ply.yacc as yacc
 from lexer import tokens
+from vars_table import VarsTable
 from intermediate_code_generation import Intermediate_CodeGeneration
-from semantic_cube import SemanticCube
 
+vars_t = VarsTable()
 code_gen = Intermediate_CodeGeneration()
-cube = SemanticCube()
+
+# nota: si lo corres puedes ver el ultimo diccionario, las funciones están agarrando las variables de la función siguiente*** hay algo mal cuando haces el current scope o no se que pedo
 
 # PROGRAM
 def p_program(p):
     '''
     program : PROGRAM ID SEMICOLON program1 program2 star
     '''
+    vars_t.FunDirectory(p[2],'np')
+    #if vars_t.current_scope != ('global' or 'star'):
+        # del vars_t.table[vars_t.current_scope]['vars']
     p[0] = "PROGRAM COMPILED"
+
+    
 
 def p_program1(p):
     '''
@@ -37,6 +44,10 @@ def p_star(p):
     '''
     star : MULTIPLICATION OPENBRACES star2 star1 CLOSEBRACES
     '''
+    vars_t.FunDirectory('star','star')
+    vars_t.current_scope = 'star'
+    #if vars_t.current_scope != ('global' or 'star'):
+        #del vars_t.table[vars_t.current_scope]['vars']
 
 
 def p_star1(p):
@@ -80,7 +91,14 @@ def p_vars(p):
     '''
     vars : VARS type ID vars1 SEMICOLON
     '''
+    # if not vars_t.initialized:
+    #     vars_t.FunDirectory()
 
+    # vars_t.current_scope = 
+
+    # no le está asignando las variables a la función STAR... ????
+    print(vars_t.current_scope, p[3], p[2])
+    vars_t.insert_var(p[3],p[2])
 
 
 
@@ -90,6 +108,7 @@ def p_vars1(p):
         | OPENBRACKET CTEINT CLOSEBRACKET vars3
         | empty vars2
     '''
+    # empty vars2 ???
 
 
 def p_vars2(p):
@@ -98,6 +117,10 @@ def p_vars2(p):
           | COMMA vars4
           | empty
     '''
+    # como pongo que si es igual a 3 en longitud??
+    if len(p) == 1:
+        p[0] = p[2]
+
 
 
 def p_vars3(p):
@@ -112,6 +135,8 @@ def p_vars4(p):
     vars4 : type ID vars1
           | empty
     '''
+    if len(p) > 1:
+        p[0] = p[2]
 
 
 # TYPE
@@ -360,14 +385,33 @@ def p_funCall3(p):
 # FUNCTION
 def p_function(p):
     '''
-    function : FUN function1 ID function2 OPENBRACES function6 function4 CLOSEBRACES
+    function : FUN function1 ID function2 inicia_fun function6 function4 termina_fun
     '''
+    # if p[6] != empty:
+    vars_t.FunDirectory(p[3],p[2])
+    #     vars_t.current_scope = p[3]
+    # vars_t.create_table(p[3],p[2])
 
 def p_function1(p):
     '''
     function1 : type
               | VOID
     '''
+    p[0] = p[1]
+
+def p_inicia_fun(p):
+    '''
+    inicia_fun : OPENBRACES
+    '''
+
+def p_termina_fun(p):
+    '''
+    termina_fun : CLOSEBRACES
+    '''
+    #if vars_t.current_scope != 'global':
+     #   vars_t.remove_table(vars_t.current_scope)
+    #if vars_t.current_scope != ('global' or 'star'):
+        # del vars_t.table[vars_t.current_scope]['vars']
 
 # valor que regresa el llamado a una función
 # a = fun1(1,3)
@@ -382,6 +426,7 @@ def p_function3(p):
     function3 : type ID function5
               | empty
     '''
+
 
 def p_function4(p):
     '''
@@ -398,6 +443,9 @@ def p_function6(p):
     function6 : vars
               | empty
     '''
+    p[0] = p[1]
+    # if vars_t.current_scope != 'global' and p[0] == 'empty':
+    #     vars_t.remove_table(vars_t.current_scope)
 
 
 def p_laRegla(p):
@@ -526,7 +574,7 @@ def p_exp1(p):
     '''
     #2. POper.push(+ or -)
     if len(p) == 3:
-        print(p[1])
+        #print(p[1])
         code_gen.POper.append(p[1])
 
 def p_openP(p):
@@ -566,7 +614,7 @@ def p_factor2(p):
     #2.POper.push(+ or -)
     p[0] = p[1]
     code_gen.POper.append(p[0])
-    print(p[0])
+    #print(p[0])
 
 # al chile no se que estoy haciendo
 
@@ -586,11 +634,13 @@ def p_term1(p):
     #3. POper.push(* or /)
     p[0] = p[1]
     if len(p) == 3:
-        print(p[1])
+        #print(p[1])
         code_gen.POper.append(p[1])
 
 def p_empty(p):
     '''empty :'''
+    p[0] = None
+    pass
 
 def p_error(p):
     print("ERROR {}".format(p))
@@ -600,7 +650,7 @@ yacc.yacc()
 
 if __name__ == '__main__':
     try:
-        nombreArchivo = 'pruebas/prueba6.txt'
+        nombreArchivo = 'pruebas/prueba4.txt'
         arch = open(nombreArchivo, 'r')
         print("Archivo a leer: " + nombreArchivo)
         info = arch.read()
