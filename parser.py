@@ -13,11 +13,7 @@ from intermediate_code_generation import Intermediate_CodeGeneration
 vars_t = VarsTable()
 code_gen = Intermediate_CodeGeneration()
 
-# nota: si lo corres puedes ver el ultimo diccionario, las funciones están agarrando las variables de la función siguiente*** hay algo mal cuando haces el current scope o no se que pedo
-
 # PROGRAM
-
-
 def p_program(p):
     '''
     program : PROGRAM ID SEMICOLON program1 program2 star
@@ -173,13 +169,12 @@ def p_function6(p):
 
 
 # VARS
+# al final hay que actualizar diagramas
+
 def p_vars(p):
     '''
     vars : VARS type ID vars1 SEMICOLON
     '''
-    # no le está asignando las variables a la función STAR... ????
-    #print(vars_t.current_scope, p[3], p[2])
-    #vars_t.insert_var(p[3], p[2])
     p[0] = (p[3], p[2])
     if vars_t.current_scope == 'global':
         vars_t.insert_var(p[3],p[2])
@@ -191,7 +186,8 @@ def p_vars1(p):
         | OPENBRACKET CTEINT CLOSEBRACKET vars3
         | empty vars2
     '''
-    # empty vars2 ???
+    # @laura - por qué hay CTEINT ahi ???
+
 
 
 def p_vars2(p):
@@ -200,9 +196,10 @@ def p_vars2(p):
           | COMMA vars4
           | empty
     '''
-    # como pongo que si es igual a 3 en longitud??
-    if len(p) == 1:
-        p[0] = p[2]
+    # @laura - yo creo que podemos ir metiendo en una lista las vars que encuentre y llevarlas hasta p_vars donde ahi solo hacemos un for para meterlas, es lo que se me ocurre
+
+    # if len(p) > 1:
+
 
 
 def p_vars3(p):

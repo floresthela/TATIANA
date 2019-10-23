@@ -67,6 +67,7 @@ class VarsTable:
                 'id' : var_id,
                 'type' : var_type,
             }
+            # podríamos cambiar en lugar de var_id ponerle un id como fun1-vf1, fun1-vf2, fun2-vi1, etc idk
             self.table[scope]['vars'][var_id] = new_var
 
         else:
