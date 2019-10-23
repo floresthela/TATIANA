@@ -16,22 +16,26 @@ code_gen = Intermediate_CodeGeneration()
 # nota: si lo corres puedes ver el ultimo diccionario, las funciones están agarrando las variables de la función siguiente*** hay algo mal cuando haces el current scope o no se que pedo
 
 # PROGRAM
+
+
 def p_program(p):
     '''
     program : PROGRAM ID SEMICOLON program1 program2 star
     '''
-    vars_t.FunDirectory(p[2],'np')
-    #if vars_t.current_scope != ('global' or 'star'):
-        # del vars_t.table[vars_t.current_scope]['vars']
+    vars_t.FunDirectory(p[2], 'np')
+    #vars_t.insert_var(p[4][0],p[4][1])
+    # if vars_t.current_scope != ('global' or 'star'):
+    # del vars_t.table[vars_t.current_scope]['vars']
     p[0] = "PROGRAM COMPILED"
 
-    
 
 def p_program1(p):
     '''
     program1 : vars
             | empty
     '''
+    p[0] = p[1]
+
 
 def p_program2(p):
     '''
@@ -39,15 +43,18 @@ def p_program2(p):
             | empty
     '''
 
+
 # STAR
+
+
 def p_star(p):
     '''
     star : MULTIPLICATION OPENBRACES star2 star1 CLOSEBRACES
     '''
-    vars_t.FunDirectory('star','star')
-    vars_t.current_scope = 'star'
-    #if vars_t.current_scope != ('global' or 'star'):
-        #del vars_t.table[vars_t.current_scope]['vars']
+    vars_t.FunDirectory('star', 'star')
+    vars_t.insert_var(p[3][0],p[3][1])
+    # if vars_t.current_scope != ('global' or 'star'):
+    #del vars_t.table[vars_t.current_scope]['vars']
 
 
 def p_star1(p):
@@ -56,11 +63,13 @@ def p_star1(p):
         | empty
     '''
 
+
 def p_star2(p):
     '''
     star2 : vars
           | empty
     '''
+    p[0] = p[1]
 
 
 # LOOP
@@ -85,22 +94,96 @@ def p_stmt(p):
         | return
     '''
 
+# FUNCTION
+def p_function(p):
+    '''
+    function : FUN function1 ID function2 inicia_fun function6 function4 termina_fun
+    '''
+    # if p[6] != empty:
+    # vars_t.FunDirectory(p[3],p[2])
+    #     vars_t.current_scope = p[3]
+    # if scope not in vars_t.table
+    vars_t.FunDirectory(p[3], p[2])
+    if p[6] is not None:
+        vars_t.insert_var(p[6][0],p[6][1])
 
-#VARS
+
+def p_function1(p):
+    '''
+    function1 : type
+              | VOID
+    '''
+    p[0] = p[1]
+
+
+def p_inicia_fun(p):
+    '''
+    inicia_fun : OPENBRACES
+    '''
+
+
+def p_termina_fun(p):
+    '''
+    termina_fun : CLOSEBRACES
+    '''
+    # if vars_t.current_scope != 'global':
+    #   vars_t.remove_table(vars_t.current_scope)
+    # if vars_t.current_scope != ('global' or 'star'):
+    # del vars_t.table[vars_t.current_scope]['vars']
+
+# valor que regresa el llamado a una función
+# a = fun1(1,3)
+
+
+def p_function2(p):
+    '''
+    function2 : OPENPAREN function3 CLOSEPAREN
+    '''
+
+
+def p_function3(p):
+    '''
+    function3 : type ID function5
+              | empty
+    '''
+
+
+def p_function4(p):
+    '''
+    function4 : stmt function4
+              | empty
+    '''
+
+
+def p_function5(p):
+    '''
+    function5 : COMMA type ID function3
+    '''
+
+
+def p_function6(p):
+    '''
+    function6 : vars
+              | empty
+    '''
+    p[0] = p[1]
+    # print(p[0])
+    # if vars_t.current_scope != 'global' and p[0] == 'empty':
+    #     vars_t.remove_table(vars_t.current_scope)
+
+
+# VARS
 def p_vars(p):
     '''
     vars : VARS type ID vars1 SEMICOLON
     '''
-    # if not vars_t.initialized:
-    #     vars_t.FunDirectory()
-
-    # vars_t.current_scope = 
-
     # no le está asignando las variables a la función STAR... ????
-    print(vars_t.current_scope, p[3], p[2])
-    vars_t.insert_var(p[3],p[2])
-
-
+    #print(vars_t.current_scope, p[3], p[2])
+    #vars_t.insert_var(p[3], p[2])
+    p[0] = (p[3], p[2])
+    if vars_t.current_scope == 'global':
+        vars_t.insert_var(p[3],p[2])
+    #print('xx',vars_t.current_scope,p[0])
 
 def p_vars1(p):
     '''
@@ -120,7 +203,6 @@ def p_vars2(p):
     # como pongo que si es igual a 3 en longitud??
     if len(p) == 1:
         p[0] = p[2]
-
 
 
 def p_vars3(p):
@@ -149,7 +231,6 @@ def p_type(p):
     p[0] = p[1]
 
 
-
 # PRINT
 def p_print(p):
     '''
@@ -157,6 +238,8 @@ def p_print(p):
     '''
 
 # READ
+
+
 def p_read(p):
     '''
     read : READ OPENPAREN ID read1 CLOSEPAREN SEMICOLON
@@ -182,7 +265,6 @@ def p_assignment(p):
     code_gen.PilaO.append(p[4])
 
 
-
 def p_assignment1(p):
     '''
     assignment1 : assignment2
@@ -191,12 +273,10 @@ def p_assignment1(p):
     '''
 
 
-
 def p_assignment2(p):
     '''
     assignment2 : OPENBRACKET exp CLOSEBRACKET
     '''
-
 
 
 def p_assignment3(p):
@@ -215,12 +295,12 @@ def p_vcte(p):
         | funCall
     '''
     # 1. PilaO.Push(id.name)
-    #tambien tenemos que meter el tipo de la variable a la pila pero
-    #de donde se saca el tipo???
+    # tambien tenemos que meter el tipo de la variable a la pila pero
+    # de donde se saca el tipo???
     # code_gen.PilaO.append(p[0])
     p[0] = p[1]
     if len(p) == 2:
-        print(p[1])
+        # print(p[1])
         code_gen.PilaO.append(p[1])
     # if(len(p) == 3):
     #     print(p[2])
@@ -230,12 +310,12 @@ def p_vcte(p):
     # print("hola", p[1])
 
 
-
 def p_vcte1(p):
     '''
     vcte1 : OPENBRACKET exp CLOSEBRACKET vcte3
           | empty
     '''
+
 
 def p_vcte3(p):
     '''
@@ -245,6 +325,8 @@ def p_vcte3(p):
     '''
 
 # CTE
+
+
 def p_cte(p):
     '''
     cte : CTEINT
@@ -254,6 +336,8 @@ def p_cte(p):
     p[0] = p[1]
 
 # RETURN
+
+
 def p_return(p):
     '''
     return : RETURN return1 SEMICOLON
@@ -282,7 +366,6 @@ def p_expression1(p):
     '''
 
 
-
 # L_OP
 def p_loper(p):
     '''
@@ -295,6 +378,8 @@ def p_loper(p):
     code_gen.POper.append(p[1])
 
 # LOGICAL
+
+
 def p_logical(p):
     '''
     logical : expression logical1 expression
@@ -337,10 +422,13 @@ def p_head1(p):
     '''
 
 # BODY
+
+
 def p_body(p):
     '''
     body : OPENBRACES body1 CLOSEBRACES
     '''
+
 
 def p_body1(p):
     '''
@@ -376,76 +464,12 @@ def p_funCall2(p):
              | empty
     '''
 
+
 def p_funCall3(p):
     '''
     funCall3 : COMMA exp funCall2
              | empty
     '''
-
-# FUNCTION
-def p_function(p):
-    '''
-    function : FUN function1 ID function2 inicia_fun function6 function4 termina_fun
-    '''
-    # if p[6] != empty:
-    vars_t.FunDirectory(p[3],p[2])
-    #     vars_t.current_scope = p[3]
-    # vars_t.create_table(p[3],p[2])
-
-def p_function1(p):
-    '''
-    function1 : type
-              | VOID
-    '''
-    p[0] = p[1]
-
-def p_inicia_fun(p):
-    '''
-    inicia_fun : OPENBRACES
-    '''
-
-def p_termina_fun(p):
-    '''
-    termina_fun : CLOSEBRACES
-    '''
-    #if vars_t.current_scope != 'global':
-     #   vars_t.remove_table(vars_t.current_scope)
-    #if vars_t.current_scope != ('global' or 'star'):
-        # del vars_t.table[vars_t.current_scope]['vars']
-
-# valor que regresa el llamado a una función
-# a = fun1(1,3)
-
-def p_function2(p):
-    '''
-    function2 : OPENPAREN function3 CLOSEPAREN
-    '''
-
-def p_function3(p):
-    '''
-    function3 : type ID function5
-              | empty
-    '''
-
-
-def p_function4(p):
-    '''
-    function4 : stmt function4
-              | empty
-    '''
-def p_function5(p):
-    '''
-    function5 : COMMA type ID function3
-    '''
-
-def p_function6(p):
-    '''
-    function6 : vars
-              | empty
-    '''
-    p[0] = p[1]
-    # if vars_t.current_scope != 'global' and p[0] == 'empty':
-    #     vars_t.remove_table(vars_t.current_scope)
 
 
 def p_laRegla(p):
@@ -469,10 +493,13 @@ def p_graphstmt(p):
     '''
 
 # GRAPH_FIGURE
+
+
 def p_graphfig(p):
     '''
     graphfig : graphfig1 SEMICOLON
     '''
+
 
 def p_graphfig1(p):
     '''
@@ -483,10 +510,13 @@ def p_graphfig1(p):
     '''
 
 # GRAPH_MOVEMENT
+
+
 def p_graphmove(p):
     '''
     graphmove :  graphmove1  SEMICOLON
     '''
+
 
 def p_graphmove1(p):
     '''
@@ -494,6 +524,7 @@ def p_graphmove1(p):
               | HAND_UP
               | graphmove2
     '''
+
 
 def p_graphmove2(p):
     '''
@@ -505,10 +536,13 @@ def p_graphmove2(p):
     '''
 
 # GRAPH_REPEAT
+
+
 def p_graphr(p):
     '''
     graphr : REPEAT exp OPENBRACES graphstmt graphr1 CLOSEBRACES
     '''
+
 
 def p_graphr1(p):
     '''
@@ -517,10 +551,13 @@ def p_graphr1(p):
     '''
 
 # GRAPH_VIEW
+
+
 def p_graphview(p):
     '''
     graphview : graphview1 SEMICOLON
     '''
+
 
 def p_graphview1(p):
     '''
@@ -529,12 +566,14 @@ def p_graphview1(p):
               | graphview2 exp
     '''
 
+
 def p_graphview2(p):
     '''
     graphview2 : SETXY graphview3
               | COLOR_STAR
               | SIZE_STAR
     '''
+
 
 def p_graphview3(p):
     '''
@@ -543,12 +582,14 @@ def p_graphview3(p):
     '''
 
 # exp
+
+
 def p_exp(p):
     '''
     exp : term exp1
     '''
     p[0] = p[1]
-    ###si pongo esto el parser no compila jajajaja sos
+    # si pongo esto el parser no compila jajajaja sos
     # if code_gen.POper[-1] == 'ADDITION' or code_gen.POper[-1] == 'SUBSTRACTION':
     #     right_operand = code_gen.PilaO.pop()
     #     right_type = code_gen.PTypes.pop()
@@ -572,10 +613,11 @@ def p_exp1(p):
          | SUBSTRACTION exp
          | empty
     '''
-    #2. POper.push(+ or -)
+    # 2. POper.push(+ or -)
     if len(p) == 3:
-        #print(p[1])
+        # print(p[1])
         code_gen.POper.append(p[1])
+
 
 def p_openP(p):
     '''
@@ -583,6 +625,7 @@ def p_openP(p):
     '''
     # 6. crea fondo falso
     code_gen.POper.append(p[1])
+
 
 def p_closeP(p):
     '''
@@ -592,12 +635,15 @@ def p_closeP(p):
     code_gen.POper.pop()
 
 # FACTOR
+
+
 def p_factor(p):
     '''
     factor : vcte
            | factor1
     '''
     p[0] = p[1]
+
 
 def p_factor1(p):
     '''
@@ -611,14 +657,16 @@ def p_factor2(p):
     factor2 : ADDITION
             | SUBSTRACTION
     '''
-    #2.POper.push(+ or -)
+    # 2.POper.push(+ or -)
     p[0] = p[1]
     code_gen.POper.append(p[0])
-    #print(p[0])
+    # print(p[0])
 
 # al chile no se que estoy haciendo
 
 # TERM
+
+
 def p_term(p):
     '''
     term : factor term1
@@ -631,19 +679,22 @@ def p_term1(p):
           | DIVISION term
           | empty
     '''
-    #3. POper.push(* or /)
+    # 3. POper.push(* or /)
     p[0] = p[1]
     if len(p) == 3:
-        #print(p[1])
+        # print(p[1])
         code_gen.POper.append(p[1])
+
 
 def p_empty(p):
     '''empty :'''
     p[0] = None
     pass
 
+
 def p_error(p):
     print("ERROR {}".format(p))
+
 
 yacc.yacc()
 

@@ -14,8 +14,7 @@ class VarsTable:
         self.table = {
             'global': {
                 'program': '',
-                'vars': {
-                }
+                'vars': {}
             },
             'star': {
                 'type':'void',
@@ -32,25 +31,24 @@ class VarsTable:
         : param fun_id: Nombre del programa, función creada por usuario o star (main)
         : param type: Tipo de la función (programa = np, star = void)
         '''
-    
-        
+
+
         if type == 'np':
-            print('global')
             self.current_scope = 'global'
             self.current_type = ''
             self.table['global']['program'] = fun_id
-        
+
         elif type == 'star':
-            print('star')
             self.current_scope = 'star'
-            self.current_type =  type
-        
+            self.current_type = type
+
+
         elif fun_id not in self.table:
             vt_name = 'vars-' + fun_id
-            print(vt_name)
+            #print(vt_name)
             self.table[fun_id] = {
-                'type' : type,
-                'vars' : {},
+                'type': type,
+                'vars': {},
                 'params': {}
             }
             self.current_scope = fun_id
@@ -60,20 +58,21 @@ class VarsTable:
 
         self.initialized = True
         print(self.table)
-        
+
+
     def insert_var(self, var_id, var_type):
         scope = self.current_scope
         if var_id not in self.table[scope]['vars'] and var_id not in self.table['global']['vars']:
             new_var = {
                 'id' : var_id,
                 'type' : var_type,
-
             }
-            self.table[scope]['vars'] = new_var
+            self.table[scope]['vars'][var_id] = new_var
+
         else:
             raise TypeError(f'Variable {var_id} already declared')
 
-        print(self.table)
+        # print(self.table)
 
     # def create_table(self, table_id, fun_type):
     #     '''
