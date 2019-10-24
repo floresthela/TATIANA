@@ -43,6 +43,7 @@ class VarsTable:
             self.current_type = type
 
 
+
         elif fun_id not in self.table:
             vt_name = 'vars-' + fun_id
             #print(vt_name)
@@ -55,9 +56,9 @@ class VarsTable:
             self.current_type = type
         else:
             raise TypeError(f'Function {fun_id} already declared')
-
-        self.initialized = True
         print(self.table)
+        self.initialized = True
+
 
 
     def insert_var(self, var_id, var_type):

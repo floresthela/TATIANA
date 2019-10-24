@@ -1,5 +1,5 @@
 program prueba4;
-vars int hola = 1;
+vars int hola = 1, adios;
 
 fun void fun1(){
  circle(5);
@@ -7,7 +7,7 @@ fun void fun1(){
 }
 
 fun void fun2(){
- vars int a2 = 5, b = 5, c = 4;
+ vars int a2 = 5, b, c = 4;
  go(a);
  left(b);
  go(c);
