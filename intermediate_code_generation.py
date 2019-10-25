@@ -6,6 +6,10 @@
 
 from semantic_cube import Operators, SemanticCube
 
+# TODO: hay que hacer cuadruplos especiales para nuestros statements de graficar
+
+# DUDA cuándo checamos si las variables ya fueron declaradas cuando las estamos usando en algo ??¿?¿?¿?¿?¿??¿
+
 
 class Quadruple:
     def __init__(self, left_op, right_op, operator, result):
@@ -16,6 +20,8 @@ class Quadruple:
         self.right_op = right_op
         self.operator = operator
         self.result = result
+        self.count_quad = 0
+        self.count_temp = 0
 
 
 class Intermediate_CodeGeneration:
@@ -31,7 +37,6 @@ class Intermediate_CodeGeneration:
 # 2. = 2 b
 # 3. + a b t1
 # 4. = t1 c
-
     def generate_quad(self):
         for x in self.PilaO:
             print(x)
@@ -55,3 +60,7 @@ class Intermediate_CodeGeneration:
         #     print(result)
         #     self.POper.append(result)
         #     self.PTypes.append(result_type)
+    def graph_quad(self):
+
+        # para prints o así ?
+    def other_quad(self):

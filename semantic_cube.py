@@ -2,7 +2,7 @@
 # TATIANA
 # Flor Esthela Barbosa & Laura Santacruz
 
-# SEMANTIC CUBE
+# SEMANTIC CUBE of operations
 
 import sys
 from enum import Enum
@@ -20,7 +20,6 @@ class Operators(Enum):
     AND = 'and'
     OR = 'or'
     EQUAL = '='
-    # PRINT ????
 
 
 class SemanticCube:
@@ -35,51 +34,51 @@ class SemanticCube:
                     'int': 'int',
                     'float': 'float',
                     'char': 'err'
-                    },
+                },
                 'float': {
                     'int': 'float',
                     'float': 'float',
                     'char': 'err'
-                    },
+                },
                 'char': {
                     'int': 'err',
                     'float': 'err',
                     'char': 'err'
-                    }
+                }
             },
             Operators.SUBSTRACTION: {
                 'int': {
                     'int': 'int',
                     'float': 'float',
                     'char': 'err'
-                    },
+                },
                 'float': {
                     'int': 'float',
                     'float': 'float',
                     'char': 'err'
-                    },
+                },
                 'char': {
                     'int': 'err',
                     'float': 'err',
                     'char': 'err'
-                    }
+                }
             },
             Operators.MULTIPLICATION: {
                 'int': {
                     'int': 'int',
                     'float': 'float',
                     'char': 'err'
-                    },
+                },
                 'float': {
                     'int': 'float',
                     'float': 'float',
                     'char': 'err'
-                    },
+                },
                 'char': {
                     'int': 'err',
                     'float': 'err',
                     'char': 'err'
-                    }
+                }
             },
 
             Operators.DIVISION: {
@@ -87,35 +86,35 @@ class SemanticCube:
                     'int': 'int',
                     'float': 'float',
                     'char': 'err'
-                    },
+                },
                 'float': {
                     'int': 'float',
                     'float': 'float',
                     'char': 'err'
-                    },
+                },
                 'char': {
                     'int': 'err',
                     'float': 'err',
                     'char': 'err'
-                    }
+                }
             },
-# agregamos bool como tipo entonces ???? EVIDENTEMENTE lo necesitamos...
+            # agregamos bool como tipo entonces ???? EVIDENTEMENTE lo necesitamos...
             Operators.GREATER: {
                 'int': {
                     'int': 'bool',
                     'float': 'bool',
                     'char': 'err'
-                    },
+                },
                 'float': {
                     'int': 'bool',
                     'float': 'bool',
                     'char': 'err'
-                    },
+                },
                 'char': {
                     'int': 'err',
                     'float': 'err',
                     'char': 'err'
-                    }
+                }
             },
 
             Operators.LESS: {
@@ -123,17 +122,17 @@ class SemanticCube:
                     'int': 'bool',
                     'float': 'bool',
                     'char': 'err'
-                    },
+                },
                 'float': {
                     'int': 'bool',
                     'float': 'bool',
                     'char': 'err'
-                    },
+                },
                 'char': {
                     'int': 'err',
                     'float': 'err',
                     'char': 'err'
-                    }
+                }
             },
 
             Operators.ISEQUAL: {
@@ -141,17 +140,17 @@ class SemanticCube:
                     'int': 'bool',
                     'float': 'bool',
                     'char': 'err'
-                    },
+                },
                 'float': {
                     'int': 'bool',
                     'float': 'bool',
                     'char': 'err'
-                    },
+                },
                 'char': {
                     'int': 'err',
                     'float': 'err',
                     'char': 'err'
-                    }
+                }
             },
 
             Operators.AND: {
@@ -159,17 +158,17 @@ class SemanticCube:
                     'int': 'err',
                     'float': 'err',
                     'char': 'err'
-                    },
+                },
                 'float': {
                     'int': 'err',
                     'float': 'err',
                     'char': 'err'
-                    },
+                },
                 'char': {
                     'int': 'err',
                     'float': 'err',
                     'char': 'err'
-                    }
+                }
             },
 
             Operators.OR: {
@@ -177,51 +176,51 @@ class SemanticCube:
                     'int': 'err',
                     'float': 'err',
                     'char': 'err'
-                    },
+                },
                 'float': {
                     'int': 'err',
                     'float': 'err',
                     'char': 'err'
-                    },
+                },
                 'char': {
                     'int': 'err',
                     'float': 'err',
                     'char': 'err'
-                    }
+                }
             },
             Operators.NOT_EQUAL: {
                 'int': {
                     'int': 'bool',
                     'float': 'err',
                     'char': 'err'
-                    },
+                },
                 'float': {
                     'int': 'err',
                     'float': 'bool',
                     'char': 'err'
-                    },
+                },
                 'char': {
                     'int': 'err',
                     'float': 'err',
                     'char': 'bool'
-                    }
+                }
             },
             Operators.EQUAL: {
                 'int': {
                     'int': 'int',
                     'float': 'int',
                     'char': 'err'
-                    },
+                },
                 'float': {
                     'int': 'float',
                     'float': 'float',
                     'char': 'err'
-                    },
+                },
                 'char': {
                     'int': 'err',
                     'float': 'err',
                     'char': 'char'
-                    }
+                }
             },
 
         }
@@ -235,8 +234,8 @@ class SemanticCube:
         '''
         if 'err' not in self.semantic_cube[left_type][right_type][operator]:
             return self.semantic_cube[left_type][right_type][operator]
-        raise TypeError("Unable to apply operator {} to types {} and {}".format(operator, left_type, right_type))
-
+        raise TypeError("Unable to apply operator {} to types {} and {}".format(
+            operator, left_type, right_type))
 
 
 # https://docs.python.org/3/library/enum.html
