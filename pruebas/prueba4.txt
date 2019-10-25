@@ -1,5 +1,5 @@
 program prueba4;
-vars int hola = 1, adios;
+int hola = 1, adios=4,no,t,y,x,c;
 
 fun void fun1(){
  circle(5);
@@ -7,7 +7,9 @@ fun void fun1(){
 }
 
 fun void fun2(){
- vars int a2 = 5, b, c = 4;
+ int a2 = 5, b;
+ float f2, f3, f5 = 6;
+ char char1, char2;
  go(a);
  left(b);
  go(c);
@@ -16,12 +18,13 @@ fun void fun2(){
 }
 
 fun int fun3(){
-  vars int a3 = 5, b = 10;
+  int a3 = 5, b = 10;
   return a * b;
 }
 
 *{
- vars float s = 1, float b = 5.3;
+ float b = 5.3;
+ int star1;
  fun1();
  fun2();
  fun3();

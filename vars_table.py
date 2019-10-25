@@ -17,8 +17,8 @@ class VarsTable:
                 'vars': {}
             },
             'star': {
-                'type':'void',
-                'vars' : {}
+                'type': 'void',
+                'vars': {}
             }
         }
         self.current_type = ''
@@ -32,7 +32,6 @@ class VarsTable:
         : param type: Tipo de la función (programa = np, star = void)
         '''
 
-
         if type == 'np':
             self.current_scope = 'global'
             self.current_type = ''
@@ -42,11 +41,9 @@ class VarsTable:
             self.current_scope = 'star'
             self.current_type = type
 
-
-
         elif fun_id not in self.table:
             vt_name = 'vars-' + fun_id
-            #print(vt_name)
+            # print(vt_name)
             self.table[fun_id] = {
                 'type': type,
                 'vars': {},
@@ -59,14 +56,12 @@ class VarsTable:
         print(self.table)
         self.initialized = True
 
-
-
     def insert_var(self, var_id, var_type):
         scope = self.current_scope
         if var_id not in self.table[scope]['vars'] and var_id not in self.table['global']['vars']:
             new_var = {
-                'id' : var_id,
-                'type' : var_type,
+                'id': var_id,
+                'type': var_type,
             }
             # podríamos cambiar en lugar de var_id ponerle un id como fun1-vf1, fun1-vf2, fun2-vi1, etc idk
             self.table[scope]['vars'][var_id] = new_var
@@ -75,26 +70,6 @@ class VarsTable:
             raise TypeError(f'Variable {var_id} already declared')
 
         # print(self.table)
-
-    # def create_table(self, table_id, fun_type):
-    #     '''
-    #     Create a vars table for declared functions on program
-    #     : param table_id: Name assigned to the function
-    #     : param fun_type: Return value of the function
-    #     '''
-
-    #     if table_id not in self.table:
-    #         new_table = {
-    #                 'type' : fun_type,
-    #                 'vars' : {},
-    #                 'params' : {}
-    #         }
-
-    #         self.table[table_id] = new_table
-    #         self.current_scope = self.table[table_id]
-    #     else:
-    #         raise TypeError('Function has already been declared ', table_id)
-
 
     def search_var(self, var_id):
         '''

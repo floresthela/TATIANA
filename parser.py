@@ -7,27 +7,31 @@
 import sys
 import ply.yacc as yacc
 from lexer import tokens
+from functools import reduce
 from vars_table import VarsTable
 from intermediate_code_generation import Intermediate_CodeGeneration
 
 vars_t = VarsTable()
 code_gen = Intermediate_CodeGeneration()
 
+# TODO: usar función de eliminar tabla de vars_table cuando termina una función, así como cuando termina el programa
+
+
 # PROGRAM
 def p_program(p):
     '''
-    program : PROGRAM ID SEMICOLON program1 program2 star
+    program : PROGRAM ID SEMICOLON program_vars program2 star
     '''
     vars_t.FunDirectory(p[2], 'np')
-    #vars_t.insert_var(p[4][0],p[4][1])
-    # if vars_t.current_scope != ('global' or 'star'):
-    # del vars_t.table[vars_t.current_scope]['vars']
+
+    # != None & is not None no sirven pa nada
+
     p[0] = "PROGRAM COMPILED"
 
 
-def p_program1(p):
+def p_program_vars(p):
     '''
-    program1 : vars
+    program_vars : vars program_vars
             | empty
     '''
     p[0] = p[1]
@@ -45,12 +49,14 @@ def p_program2(p):
 
 def p_star(p):
     '''
-    star : MULTIPLICATION OPENBRACES star2 star1 CLOSEBRACES
+    star : MULTIPLICATION OPENBRACES star_vars star1 CLOSEBRACES
     '''
     vars_t.FunDirectory('star', 'star')
-    vars_t.insert_var(p[3][0],p[3][1])
-    # if vars_t.current_scope != ('global' or 'star'):
-    #del vars_t.table[vars_t.current_scope]['vars']
+
+    if len(p[3]) > 1:
+        type = p[3][0]
+        for v in p[3][1]:
+            vars_t.insert_var(v, type)
 
 
 def p_star1(p):
@@ -60,9 +66,9 @@ def p_star1(p):
     '''
 
 
-def p_star2(p):
+def p_star_vars(p):
     '''
-    star2 : vars
+    star_vars : vars star_vars
           | empty
     '''
     p[0] = p[1]
@@ -91,17 +97,26 @@ def p_stmt(p):
     '''
 
 # FUNCTION
+
+
 def p_function(p):
     '''
-    function : FUN function1 ID function2 inicia_fun function6 function4 termina_fun
+    function : FUN function1 ID function2 inicia_fun fun_vars function4 termina_fun
     '''
-    # if p[6] != empty:
-    # vars_t.FunDirectory(p[3],p[2])
-    #     vars_t.current_scope = p[3]
-    # if scope not in vars_t.table
     vars_t.FunDirectory(p[3], p[2])
-    if p[6] is not None:
-        vars_t.insert_var(p[6][0],p[6][1])
+    fun_vars = p[6]
+    # print(fun_vars)
+
+    if fun_vars is not None:
+        for x in range(len(fun_vars)):
+            # print('x', x)
+            type = fun_vars[x][0]
+            print(type)
+            ids = fun_vars[x][1]
+            print('ids', ids)
+            for y in ids:
+                vars_t.insert_var(y, type)
+    # que dios me perdone por este doble FOR
 
 
 def p_function1(p):
@@ -157,53 +172,81 @@ def p_function5(p):
     '''
 
 
-def p_function6(p):
+def p_fun_vars(p):
     '''
-    function6 : vars
+    fun_vars : vars fun_vars
               | empty
     '''
-    p[0] = p[1]
-    # print(p[0])
-    # if vars_t.current_scope != 'global' and p[0] == 'empty':
-    #     vars_t.remove_table(vars_t.current_scope)
-
+    # p[0] = []
+    if len(p) == 3:
+        p[0] = []
+        p[0].insert(0, p[1])
+        if p[2] is not None:
+            # print('2', p[2])
+            # print('21', p[1])
+            # p[2].insert(0, p[1])
+            p[0].insert(0, p[2])
+            p[0] = flatten(p[0])
+            # print('k', p[0])
+        else:
+            # solo tiene un tipo de vars declarada.. eso quE? jaja
+            p[0] = [p[1]]
 
 # VARS
 # al final hay que actualizar diagramas
 
+
+[
+    [
+        [('char', ['char1', 'char2'])], ('float', ['f2', 'f3', 'f5'])],
+    ('int', ['a2', 'b'])
+]
+
+
 def p_vars(p):
     '''
-    vars : VARS type ID vars1 SEMICOLON
+    vars : type ID vars1 SEMICOLON
     '''
-    p[0] = (p[3], p[2])
+    p[3].insert(0, p[2])
+    p[0] = (p[1], p[3])
     if vars_t.current_scope == 'global':
-        vars_t.insert_var(p[3],p[2])
+        type = p[0][0]
+        for v in p[0][1]:
+            vars_t.insert_var(v, type)
+
+
+# qué tan eficiente es esto??? es bueno???
+
+
+def flatten(li):
+    return sum(([x] if not isinstance(x, list) else flatten(x) for x in li), [])
 
 
 def p_vars1(p):
     '''
     vars1 : EQUALS exp vars2
         | OPENBRACKET CTEINT CLOSEBRACKET vars3
-        | empty vars2
+        | vars2
     '''
-    if len(p) == 3:
-        if p[3] != None:
-            p[0] = p[3]
-    elif len(p) == 2:
-        p[0] = p[2]
+    p[0] = []
+    if len(p) == 4 and p[3] != None:
+        p[0] = p[3]
+        p[0] = flatten(p[0])
+        # print("p0", p[0])
+    elif len(p) == 2 and p[1] != None:
+        # print(p[1])
+        p[0] = p[0] + p[1]
+        p[0] = flatten(p[0])
+        # print("p0", p[0])
+
 
 def p_vars2(p):
     '''
     vars2 : COMMA ID vars1
-          | COMMA vars4
           | empty
     '''
-    # @laura - yo creo que podemos ir metiendo en una lista las vars que encuentre y llevarlas hasta p_vars donde ahi solo hacemos un for para meterlas, es lo que se me ocurre
-
-    # otra variable del mismo tipo
-    if len(p) > 1:
-        p[0] = p[2]
-        print(p[0])
+    if len(p) == 4:
+        p[0] = p[2:]
 
 
 def p_vars3(p):
@@ -211,15 +254,6 @@ def p_vars3(p):
     vars3 : OPENBRACKET CTEINT CLOSEBRACKET
         | empty
     '''
-
-
-def p_vars4(p):
-    '''
-    vars4 : type ID vars1
-          | empty
-    '''
-    if len(p) > 1:
-        p[0] = p[2]
 
 
 # TYPE
@@ -303,12 +337,6 @@ def p_vcte(p):
     if len(p) == 2:
         # print(p[1])
         code_gen.PilaO.append(p[1])
-    # if(len(p) == 3):
-    #     print(p[2])
-    # elif len(p) == 2:
-    #     print(p[1])
-    #     code_gen.PilaO.append(p[1])
-    # print("hola", p[1])
 
 
 def p_vcte1(p):
