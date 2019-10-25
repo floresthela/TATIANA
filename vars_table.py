@@ -53,7 +53,7 @@ class VarsTable:
             self.current_type = type
         else:
             raise TypeError(f'Function {fun_id} already declared')
-        print(self.table)
+        # print(self.table)
         self.initialized = True
 
     def insert_var(self, var_id, var_type):
@@ -93,6 +93,7 @@ class VarsTable:
         : param table_id: Name assigned to the function
         '''
         if table_id in self.table:
+            print('borrando', table_id, self.table[table_id])
             del self.table[table_id]
         else:
             raise TypeError(f"Table of variables for {table_id} wasn't found")

@@ -28,6 +28,9 @@ def p_program(p):
 
     p[0] = "PROGRAM COMPILED"
 
+    # borrar el programa hasta el final... cómo se que lo estoy borrando hasta el final wtf?
+    vars_t.remove_table('global')
+
 
 def p_program_vars(p):
     '''
@@ -57,6 +60,8 @@ def p_star(p):
         type = p[3][0]
         for v in p[3][1]:
             vars_t.insert_var(v, type)
+
+    vars_t.remove_table('star')
 
 
 def p_star1(p):
@@ -111,12 +116,15 @@ def p_function(p):
         for x in range(len(fun_vars)):
             # print('x', x)
             type = fun_vars[x][0]
-            print(type)
+            # print(type)
             ids = fun_vars[x][1]
-            print('ids', ids)
+            # print('ids', ids)
             for y in ids:
                 vars_t.insert_var(y, type)
     # que dios me perdone por este doble FOR
+    if vars_t.current_scope != 'global':
+        # print('hay que borrar', vars_t.current_scope)
+        vars_t.remove_table(vars_t.current_scope)
 
 
 def p_function1(p):
@@ -137,7 +145,7 @@ def p_termina_fun(p):
     '''
     termina_fun : CLOSEBRACES
     '''
-    # if vars_t.current_scope != 'global':
+
     #   vars_t.remove_table(vars_t.current_scope)
     # if vars_t.current_scope != ('global' or 'star'):
     # del vars_t.table[vars_t.current_scope]['vars']
