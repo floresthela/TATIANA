@@ -37,6 +37,12 @@ class Intermediate_CodeGeneration:
 # 2. = 2 b
 # 3. + a b t1
 # 4. = t1 c
+        # 
+        # print("Pila")
+        # print(self.PilaO)
+        # for x in self.PilaO:
+        #     print(self.PilaO)
+
     def generate_quad(self):
         for x in self.PilaO:
             print(x)
@@ -60,7 +66,7 @@ class Intermediate_CodeGeneration:
         #     print(result)
         #     self.POper.append(result)
         #     self.PTypes.append(result_type)
-    def graph_quad(self):
+    #def graph_quad(self):
 
         # para prints o así ?
-    def other_quad(self):
+    #def other_quad(self):

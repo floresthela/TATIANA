@@ -56,7 +56,7 @@ def p_star(p):
     '''
     vars_t.FunDirectory('star', 'star')
 
-    if len(p[3]) > 1:
+    if p[3] is not None:
         type = p[3][0]
         for v in p[3][1]:
             vars_t.insert_var(v, type)
@@ -121,6 +121,9 @@ def p_function(p):
             # print('ids', ids)
             for y in ids:
                 vars_t.insert_var(y, type)
+                print(type)
+            # print("PRINTT")
+            # print(p[6])
     # que dios me perdone por este doble FOR
     if vars_t.current_scope != 'global':
         # print('hay que borrar', vars_t.current_scope)
@@ -185,6 +188,7 @@ def p_fun_vars(p):
     fun_vars : vars fun_vars
               | empty
     '''
+    # print(p[1])
     # p[0] = []
     if len(p) == 3:
         p[0] = []
@@ -217,10 +221,10 @@ def p_vars(p):
     '''
     p[3].insert(0, p[2])
     p[0] = (p[1], p[3])
-    if vars_t.current_scope == 'global':
-        type = p[0][0]
-        for v in p[0][1]:
-            vars_t.insert_var(v, type)
+    # if vars_t.current_scope == 'global':
+    #     type = p[0][0]
+    #     for v in p[0][1]:
+    #         vars_t.insert_var(v, type)
 
 
 # qué tan eficiente es esto??? es bueno???
@@ -306,6 +310,9 @@ def p_assignment(p):
     code_gen.PilaO.append(p[1])
     code_gen.POper.append('=')
     code_gen.PilaO.append(p[4])
+    print("PRINTING ASSIGNMENT")
+    print(p[1])
+    #AQUI EN ASSIGNMENT VA A IR LO DE DARLE APPEN A LA PILA DE OPERANDOS, DE QUE METER EL ID
 
 
 def p_assignment1(p):
@@ -340,11 +347,15 @@ def p_vcte(p):
     # 1. PilaO.Push(id.name)
     # tambien tenemos que meter el tipo de la variable a la pila pero
     # de donde se saca el tipo???
-    # code_gen.PilaO.append(p[0])
+    print("TABLA")
+    print(vars_t.table)
     p[0] = p[1]
-    if len(p) == 2:
-        # print(p[1])
+    if len(p) == 3:
+        print('printing vcte')
+        print(p[1])
         code_gen.PilaO.append(p[1])
+        print("Pilaaa")
+        print(code_gen.PilaO)
 
 
 def p_vcte1(p):
@@ -652,7 +663,8 @@ def p_exp1(p):
     '''
     # 2. POper.push(+ or -)
     if len(p) == 3:
-        # print(p[1])
+        print("printint P_EXP1")
+        print(p[1])
         code_gen.POper.append(p[1])
 
 
@@ -697,7 +709,8 @@ def p_factor2(p):
     # 2.POper.push(+ or -)
     p[0] = p[1]
     code_gen.POper.append(p[0])
-    # print(p[0])
+    #print("printing p_factor2..")
+    print(p[0])
 
 # al chile no se que estoy haciendo
 
@@ -719,7 +732,8 @@ def p_term1(p):
     # 3. POper.push(* or /)
     p[0] = p[1]
     if len(p) == 3:
-        # print(p[1])
+        print("PRINTING P_TERM1")
+        print(p[1])
         code_gen.POper.append(p[1])
 
 
@@ -738,7 +752,7 @@ yacc.yacc()
 
 if __name__ == '__main__':
     try:
-        nombreArchivo = 'pruebas/prueba4.txt'
+        nombreArchivo = 'pruebas/prueba7.txt'
         arch = open(nombreArchivo, 'r')
         print("Archivo a leer: " + nombreArchivo)
         info = arch.read()

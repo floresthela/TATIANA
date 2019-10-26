@@ -8,9 +8,10 @@ fun void fun1(){
 
 fun void fun2(){
  int a2 = 5, b;
- float f2, f3, f5 = 6;
- float f7;
+ float f2=1, f3, f5 = 6;
+ float f7=2, j=1;
  char char1, char2;
+  j = f2+f7;
  go(a);
  left(b);
  go(c);

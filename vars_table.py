@@ -51,6 +51,7 @@ class VarsTable:
             }
             self.current_scope = fun_id
             self.current_type = type
+            print(self.table)
         else:
             raise TypeError(f'Function {fun_id} already declared')
         # print(self.table)

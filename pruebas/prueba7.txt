@@ -1,0 +1,11 @@
+program prueba7;
+
+fun int function1(){
+ float x;
+ int a = 10, b = 9, resp, c=3;
+ resp = a+b;
+}
+
+*{
+ function1();
+}
