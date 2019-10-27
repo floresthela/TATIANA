@@ -1,14 +1,13 @@
 program prueba3;
 
 fun int fun1(){
- vars int a = 10, b = 20, resp,
- float hola;
- resp = a + b;
+int a = 10, b = 20, resp;
+resp = a + b;
  return resp;
 }
 
 fun void fun2(int x, int y){
- vars int i = 5;
+ int i = 5;
  if(x > y){
   print(x);
  }
@@ -24,7 +23,7 @@ fun void fun2(int x, int y){
 }
 
 *{
- vars int x = 3, y = 10;
+ int x = 3, y = 10;
  fun1();
  fun2(x, y);
 }
