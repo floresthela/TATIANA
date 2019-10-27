@@ -35,12 +35,7 @@ def p_program(p):
 
     p[0] = "PROGRAM COMPILED"
 
-    print(cg.PilaO)
-    print(cg.POper)
-    print(cg.PTypes)
-    # vars_t.remove_table('global')
-
-    print('jelou',p[5])
+    vars_t.remove_table('global')
 
 
 def p_program_vars(p):
@@ -66,14 +61,18 @@ def p_program2(p):
 # STAR
 def p_star(p):
     '''
-    star : MULTIPLICATION OPENBRACES declara_vars star1 CLOSEBRACES
+    star : starI declara_vars star1 CLOSEBRACES
+    '''
+
+    # insert_vars(p[3])
+    vars_t.remove_table('star')
+
+
+def p_starI(p):
+    '''
+    starI : MULTIPLICATION OPENBRACES
     '''
     vars_t.FunDirectory('star', 'star')
-    insert_vars(p[3])
-
-    print('w',vars_t.table)
-    # vars_t.remove_table('star')
-
 
 def p_star1(p):
     '''
@@ -90,8 +89,6 @@ def p_declara_vars(p):
     if len(p) == 3:
         p[0] = p[1:]
         p[0] = flatten(p[0])
-
-    print('vars',p[0])
 
 
 # LOOP
@@ -121,21 +118,27 @@ def p_stmt(p):
 # no sé si estoy haciendo esto bien, de llevar todo parriba ?¿?
 
 # FUNCTION
+
+def p_functionI(p):
+    '''
+    functionI : type ID
+              | VOID ID
+    '''
+    vars_t.FunDirectory(p[2],p[1])
+
 def p_function(p):
     '''
-    function : FUN function1 ID function2 inicia_fun declara_vars function4 termina_fun
+    function : FUN functionI function2 inicia_fun declara_vars function4 termina_fun
     '''
-    vars_t.FunDirectory(p[3], p[2])
-    insert_vars(p[6])
-
+    # vars_t.FunDirectory(p[3], p[2])
+    # insert_vars(p[6])
 
     if p[7] != None:
         vars = p[7]
         vars = vars[:-1]
         p[0] = vars
 
-
-
+    # vars_t.remove_table(p[3])
 def p_function1(p):
     '''
     function1 : type
@@ -207,15 +210,14 @@ def p_vars(p):
     '''
     p[0] = (p[1], p[2])
 
-    # la declaración de esta variable lleva un = entonces lo metemos a pila
     if p[3] is not None:
         cg.PilaO.append(p[2])
         cg.PTypes.append(p[1])
     if not vars_t.initialized:
         vars_t.FunDirectory('global', 'np')
         vars_t.insert_var(p[2],p[1])
-
-
+    else:
+        vars_t.insert_var(p[2],p[1])
 
 def p_vars1(p):
     '''
@@ -224,12 +226,7 @@ def p_vars1(p):
         | empty
     '''
     if len(p) == 3:
-
         p[0] = 1
-
-    # cg.PilaO.append(p[1])
-    # cg.POper.append('=')
-    # cg.PilaO.append(p[4])
 
 # def p_vars2(p):
 #     '''
@@ -263,12 +260,14 @@ def p_print(p):
     '''
     print : PRINT OPENPAREN exp CLOSEPAREN SEMICOLON
     '''
+    # cg.POper.append('print')
 
 # READ
 def p_read(p):
     '''
     read : READ OPENPAREN ID read1 CLOSEPAREN SEMICOLON
     '''
+    # cg.POper.append('read')
 
 
 # arreglo
@@ -287,15 +286,25 @@ def p_equals(p):
 
 # ASSIGNMENT
 
+def p_id(p):
+    '''
+    id : ID
+    '''
+    p[0] = p[1]
+    t = vars_t.search_var(p[1])
+    if t:
+        cg.PilaO.append(p[1])
+        cg.PTypes.append(t['type'])
 
+        print(cg.PilaO)
+        print(cg.PTypes)
+        print(cg.POper)
 def p_assignment(p):
     '''
-    assignment : ID assignment1 equals assignment3 SEMICOLON
+    assignment : id assignment1 equals assignment3 SEMICOLON
     '''
     # c = a + b; -> mete c a pilao
-    cg.PilaO.append(p[1])
-    cg.PilaO.append(p[4])
-    p[0] = p[1]
+
 
 
 def p_assignment1(p):
@@ -324,7 +333,7 @@ def p_assignment3(p):
 def p_vcte(p):
     '''
     vcte : cte
-        | ID vcte1
+        | id vcte1
         | funCall
     '''
     # 1. PilaO.Push(id.name)
@@ -481,6 +490,10 @@ def p_funCall(p):
     '''
     funCall : ID OPENPAREN funCall2 CLOSEPAREN SEMICOLON
     '''
+    if p[1] in vars_t.table:
+        print('todo bien')
+    else:
+         raise TypeError(f"Function '{p[1]}' not declared")
 
 
 def p_funCall2(p):
@@ -706,6 +719,7 @@ def p_term1(p):
     p[0] = p[1]
     if len(p) == 3:
         cg.POper.append(p[1])
+
 
 
 def p_empty(p):

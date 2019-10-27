@@ -58,7 +58,6 @@ class VarsTable:
 
     def insert_var(self, var_id, var_type):
         scope = self.current_scope
-
         if var_id not in self.table[scope]['vars'] and var_id not in self.table['global']['vars']:
             new_var = {
                 'id': var_id,
@@ -75,9 +74,8 @@ class VarsTable:
         :param var_id: Name of the variable to be searched
         '''
         scope = self.current_scope
-        print(scope)
-        if scope is None:
-            return 0
+        # if scope is None:
+        #     return 0
         if var_id in self.table[scope]['vars']:
             return self.table[scope]['vars'][var_id]
         elif var_id in self.table['global']['vars']:
