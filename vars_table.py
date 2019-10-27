@@ -51,15 +51,14 @@ class VarsTable:
             }
             self.current_scope = fun_id
             self.current_type = type
-            print(self.table)
         else:
             raise TypeError(f'Function {fun_id} already declared')
         self.initialized = True
-        print(self.table)
 
 
     def insert_var(self, var_id, var_type):
         scope = self.current_scope
+
         if var_id not in self.table[scope]['vars'] and var_id not in self.table['global']['vars']:
             new_var = {
                 'id': var_id,
@@ -70,19 +69,17 @@ class VarsTable:
         else:
             raise TypeError(f'Variable {var_id} already declared')
 
-        # print(self.table)
-
     def search_var(self, var_id):
         '''
         Search of variables function to detect multiple declaration of same id on a specific scope
         :param var_id: Name of the variable to be searched
         '''
         scope = self.current_scope
-
+        print(scope)
         if scope is None:
             return 0
-        if var_id in scope['vars']:
-            return scope['vars'][var_id]
+        if var_id in self.table[scope]['vars']:
+            return self.table[scope]['vars'][var_id]
         elif var_id in self.table['global']['vars']:
             return self.table['global']['vars'][var_id]
         else:

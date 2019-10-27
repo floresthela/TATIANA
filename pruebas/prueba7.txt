@@ -7,14 +7,22 @@ fun int function1(){
   float x;
   int a1 = 10;
   int b = 9;
-  int c = a1 + 9;
+  int c = puta + 9;
   int resp;
+  resp = 3 +4;
+  a1 = 5 *6;
+  gi1 = 6 * resp;
+}
+
+fun void fun1(){
+  int a1 = 3;
+  int b = 345;
+  b = 5 + 6;
 }
 
 *{
 char c1;
 int star1;
 int i3;
-i3 = (gi1 + gi2) * gi3;
 function1();
 }

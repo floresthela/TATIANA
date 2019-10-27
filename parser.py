@@ -27,16 +27,20 @@ def insert_vars(vars):
 # PROGRAM
 def p_program(p):
     '''
-    program : PROGRAM ID SEMICOLON program_vars program2 star
+    program : PROGRAM ID SEMICOLON declara_vars program2 star
     '''
     vars_t.FunDirectory(p[2], 'np')
     insert_vars(p[4])
+    # print('done',vars_t.table)
+
     p[0] = "PROGRAM COMPILED"
 
     print(cg.PilaO)
     print(cg.POper)
     print(cg.PTypes)
-    vars_t.remove_table('global')
+    # vars_t.remove_table('global')
+
+    print('jelou',p[5])
 
 
 def p_program_vars(p):
@@ -54,16 +58,21 @@ def p_program2(p):
     program2 : function program2
             | empty
     '''
-
+    if len(p) == 3:
+        print('w',p[2])
+        p[0] = p[1]
+        if p[2] != None:
+            
 
 # STAR
 def p_star(p):
     '''
-    star : MULTIPLICATION OPENBRACES star_vars star1 CLOSEBRACES
+    star : MULTIPLICATION OPENBRACES declara_vars star1 CLOSEBRACES
     '''
     vars_t.FunDirectory('star', 'star')
     insert_vars(p[3])
-    vars_t.remove_table('star')
+
+    # vars_t.remove_table('star')
 
 
 def p_star1(p):
@@ -73,14 +82,17 @@ def p_star1(p):
     '''
 
 
-def p_star_vars(p):
+def p_declara_vars(p):
     '''
-    star_vars : vars star_vars
+    declara_vars : vars declara_vars
           | empty
     '''
     if len(p) == 3:
         p[0] = p[1:]
         p[0] = flatten(p[0])
+
+    print('vars',p[0])
+
 
 # LOOP
 def p_loop(p):
@@ -104,15 +116,23 @@ def p_stmt(p):
         | return
     '''
 
+    p[0] = p[1]
+
+# no sé si estoy haciendo esto bien, de llevar todo parriba ?¿?
+
 # FUNCTION
 def p_function(p):
     '''
-    function : FUN function1 ID function2 inicia_fun fun_vars function4 termina_fun
+    function : FUN function1 ID function2 inicia_fun declara_vars function4 termina_fun
     '''
     vars_t.FunDirectory(p[3], p[2])
     insert_vars(p[6])
-    if vars_t.current_scope != 'global':
-        vars_t.remove_table(vars_t.current_scope)
+
+    if p[7] != None:
+        vars = p[7]
+        vars = vars[:-1]
+        p[0] = vars
+
 
 
 def p_function1(p):
@@ -152,6 +172,9 @@ def p_function4(p):
     function4 : stmt function4
               | empty
     '''
+    if p[1] is not None:
+        p[0] = p[1:]
+        p[0] = flatten(p[0])
 
 
 def p_function5(p):
@@ -185,7 +208,6 @@ def p_vars(p):
 
     # la declaración de esta variable lleva un = entonces lo metemos a pila
     if p[3] is not None:
-        cg.POper.append('=')
         cg.PilaO.append(p[2])
         cg.PTypes.append(p[1])
 
@@ -194,7 +216,7 @@ def p_vars(p):
 
 def p_vars1(p):
     '''
-    vars1 : EQUALS exp
+    vars1 : equals exp
         | OPENBRACKET CTEINT CLOSEBRACKET vars3
         | empty
     '''
@@ -254,20 +276,24 @@ def p_read1(p):
               | empty
     '''
 
+def p_equals(p):
+    '''
+    equals : EQUALS
+    '''
+    cg.POper.append(p[1])
 
 # ASSIGNMENT
+
+
 def p_assignment(p):
     '''
-    assignment : ID assignment1 EQUALS assignment3 SEMICOLON
+    assignment : ID assignment1 equals assignment3 SEMICOLON
     '''
     # c = a + b; -> mete c a pilao
     cg.PilaO.append(p[1])
-    cg.POper.append('=')
     cg.PilaO.append(p[4])
-    # type = vars_t.table[vars_t.current_scope][p[1]]['type']
-    # print('type',type)
-    #AQUI EN ASSIGNMENT VA A IR LO DE DARLE APPEN A LA PILA DE OPERANDOS, DE QUE METER EL ID
-    # gracias por este comentario <3
+    p[0] = p[1]
+
 
 def p_assignment1(p):
     '''
@@ -657,7 +683,6 @@ def p_factor2(p):
     p[0] = p[1]
     cg.POper.append(p[0])
     #print("printing p_factor2..")
-    print(p[0])
 
 # al chile no se que estoy haciendo
 
@@ -677,8 +702,6 @@ def p_term1(p):
     # 3. POper.push(* or /)
     p[0] = p[1]
     if len(p) == 3:
-        print("PRINTING P_TERM1")
-        print(p[1])
         cg.POper.append(p[1])
 
 
