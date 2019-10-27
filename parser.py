@@ -1,9 +1,7 @@
-
 # TATIANA
 # Flor Esthela Barbosa & Laura Santacruz
 
 # PARSER
-
 import sys
 import ply.yacc as yacc
 from lexer import tokens
@@ -12,10 +10,19 @@ from vars_table import VarsTable
 from intermediate_code_generation import Intermediate_CodeGeneration
 
 vars_t = VarsTable()
-code_gen = Intermediate_CodeGeneration()
+cg = Intermediate_CodeGeneration()
 
-# TODO: usar función de eliminar tabla de vars_table cuando termina una función, así como cuando termina el programa
+# CUÁNDO CHECAMOS QUE UNA VARIABLE QUE ESTAMOS USANDO FUE DECLARADA??¿?¿?¿?¿??
 
+def insert_vars(vars):
+    '''
+    Función para insertas las líneas de variables declaradas, se llama desde program, star y function
+    : param vars: Lista de tuplas con (type,id)
+    '''
+    if vars is not None:
+        for x in vars:
+            if x is not None:
+                vars_t.insert_var(x[1],x[0])
 
 # PROGRAM
 def p_program(p):
@@ -23,12 +30,12 @@ def p_program(p):
     program : PROGRAM ID SEMICOLON program_vars program2 star
     '''
     vars_t.FunDirectory(p[2], 'np')
-
-    # != None & is not None no sirven pa nada
-
+    insert_vars(p[4])
     p[0] = "PROGRAM COMPILED"
 
-    # borrar el programa hasta el final... cómo se que lo estoy borrando hasta el final wtf?
+    print(cg.PilaO)
+    print(cg.POper)
+    print(cg.PTypes)
     vars_t.remove_table('global')
 
 
@@ -37,7 +44,9 @@ def p_program_vars(p):
     program_vars : vars program_vars
             | empty
     '''
-    p[0] = p[1]
+    if len(p) == 3:
+        p[0] = p[1:]
+        p[0] = flatten(p[0])
 
 
 def p_program2(p):
@@ -48,19 +57,12 @@ def p_program2(p):
 
 
 # STAR
-
-
 def p_star(p):
     '''
     star : MULTIPLICATION OPENBRACES star_vars star1 CLOSEBRACES
     '''
     vars_t.FunDirectory('star', 'star')
-
-    if p[3] is not None:
-        type = p[3][0]
-        for v in p[3][1]:
-            vars_t.insert_var(v, type)
-
+    insert_vars(p[3])
     vars_t.remove_table('star')
 
 
@@ -76,8 +78,9 @@ def p_star_vars(p):
     star_vars : vars star_vars
           | empty
     '''
-    p[0] = p[1]
-
+    if len(p) == 3:
+        p[0] = p[1:]
+        p[0] = flatten(p[0])
 
 # LOOP
 def p_loop(p):
@@ -102,31 +105,13 @@ def p_stmt(p):
     '''
 
 # FUNCTION
-
-
 def p_function(p):
     '''
     function : FUN function1 ID function2 inicia_fun fun_vars function4 termina_fun
     '''
     vars_t.FunDirectory(p[3], p[2])
-    fun_vars = p[6]
-    # print(fun_vars)
-
-    if fun_vars is not None:
-        for x in range(len(fun_vars)):
-            # print('x', x)
-            type = fun_vars[x][0]
-            # print(type)
-            ids = fun_vars[x][1]
-            # print('ids', ids)
-            for y in ids:
-                vars_t.insert_var(y, type)
-                print(type)
-            # print("PRINTT")
-            # print(p[6])
-    # que dios me perdone por este doble FOR
+    insert_vars(p[6])
     if vars_t.current_scope != 'global':
-        # print('hay que borrar', vars_t.current_scope)
         vars_t.remove_table(vars_t.current_scope)
 
 
@@ -148,14 +133,6 @@ def p_termina_fun(p):
     '''
     termina_fun : CLOSEBRACES
     '''
-
-    #   vars_t.remove_table(vars_t.current_scope)
-    # if vars_t.current_scope != ('global' or 'star'):
-    # del vars_t.table[vars_t.current_scope]['vars']
-
-# valor que regresa el llamado a una función
-# a = fun1(1,3)
-
 
 def p_function2(p):
     '''
@@ -188,79 +165,57 @@ def p_fun_vars(p):
     fun_vars : vars fun_vars
               | empty
     '''
-    # print(p[1])
-    # p[0] = []
     if len(p) == 3:
-        p[0] = []
-        p[0].insert(0, p[1])
-        if p[2] is not None:
-            # print('2', p[2])
-            # print('21', p[1])
-            # p[2].insert(0, p[1])
-            p[0].insert(0, p[2])
-            p[0] = flatten(p[0])
-            # print('k', p[0])
-        else:
-            # solo tiene un tipo de vars declarada.. eso quE? jaja
-            p[0] = [p[1]]
+        p[0] = p[1:]
+        p[0] = flatten(p[0])
+
+        #list.pop(obj = list[-1])
 
 # VARS
 # al final hay que actualizar diagramas
 
-
-[
-    [
-        [('char', ['char1', 'char2'])], ('float', ['f2', 'f3', 'f5'])],
-    ('int', ['a2', 'b'])
-]
-
+def flatten(li):
+    return sum(([x] if not isinstance(x, list) else flatten(x) for x in li), [])
 
 def p_vars(p):
     '''
     vars : type ID vars1 SEMICOLON
     '''
-    p[3].insert(0, p[2])
-    p[0] = (p[1], p[3])
-    # if vars_t.current_scope == 'global':
-    #     type = p[0][0]
-    #     for v in p[0][1]:
-    #         vars_t.insert_var(v, type)
+    p[0] = (p[1], p[2])
+
+    # la declaración de esta variable lleva un = entonces lo metemos a pila
+    if p[3] is not None:
+        cg.POper.append('=')
+        cg.PilaO.append(p[2])
+        cg.PTypes.append(p[1])
 
 
-# qué tan eficiente es esto??? es bueno???
-
-
-def flatten(li):
-    return sum(([x] if not isinstance(x, list) else flatten(x) for x in li), [])
 
 
 def p_vars1(p):
     '''
-    vars1 : EQUALS exp vars2
+    vars1 : EQUALS exp
         | OPENBRACKET CTEINT CLOSEBRACKET vars3
-        | vars2
+        | empty
     '''
-    p[0] = []
-    if len(p) == 4 and p[3] != None:
-        p[0] = p[3]
-        p[0] = flatten(p[0])
-        # print("p0", p[0])
-    elif len(p) == 2 and p[1] != None:
-        # print(p[1])
-        p[0] = p[0] + p[1]
-        p[0] = flatten(p[0])
-        # print("p0", p[0])
+    if len(p) == 3:
+
+        p[0] = 1
+
+    # cg.PilaO.append(p[1])
+    # cg.POper.append('=')
+    # cg.PilaO.append(p[4])
+
+# def p_vars2(p):
+#     '''
+#     vars2 : COMMA ID vars1
+#           | empty
+#     '''
+#     if len(p) == 4:
+#         p[0] = p[2:]
 
 
-def p_vars2(p):
-    '''
-    vars2 : COMMA ID vars1
-          | empty
-    '''
-    if len(p) == 4:
-        p[0] = p[2:]
-
-
+# matrix
 def p_vars3(p):
     '''
     vars3 : OPENBRACKET CTEINT CLOSEBRACKET
@@ -285,14 +240,13 @@ def p_print(p):
     '''
 
 # READ
-
-
 def p_read(p):
     '''
     read : READ OPENPAREN ID read1 CLOSEPAREN SEMICOLON
     '''
 
 
+# arreglo
 def p_read1(p):
     '''
     read1 : OPENBRACKET exp CLOSEBRACKET OPENBRACKET exp CLOSEBRACKET
@@ -307,13 +261,13 @@ def p_assignment(p):
     assignment : ID assignment1 EQUALS assignment3 SEMICOLON
     '''
     # c = a + b; -> mete c a pilao
-    code_gen.PilaO.append(p[1])
-    code_gen.POper.append('=')
-    code_gen.PilaO.append(p[4])
-    print("PRINTING ASSIGNMENT")
-    print(p[1])
+    cg.PilaO.append(p[1])
+    cg.POper.append('=')
+    cg.PilaO.append(p[4])
+    # type = vars_t.table[vars_t.current_scope][p[1]]['type']
+    # print('type',type)
     #AQUI EN ASSIGNMENT VA A IR LO DE DARLE APPEN A LA PILA DE OPERANDOS, DE QUE METER EL ID
-
+    # gracias por este comentario <3
 
 def p_assignment1(p):
     '''
@@ -347,15 +301,9 @@ def p_vcte(p):
     # 1. PilaO.Push(id.name)
     # tambien tenemos que meter el tipo de la variable a la pila pero
     # de donde se saca el tipo???
-    print("TABLA")
-    print(vars_t.table)
     p[0] = p[1]
     if len(p) == 3:
-        print('printing vcte')
-        print(p[1])
-        code_gen.PilaO.append(p[1])
-        print("Pilaaa")
-        print(code_gen.PilaO)
+        cg.PilaO.append(p[1])
 
 
 def p_vcte1(p):
@@ -423,7 +371,7 @@ def p_loper(p):
           | ISEQUAL
     '''
     # 8. POper.Push(rel.op)
-    code_gen.POper.append(p[1])
+    cg.POper.append(p[1])
 
 # LOGICAL
 
@@ -638,21 +586,21 @@ def p_exp(p):
     '''
     p[0] = p[1]
     # si pongo esto el parser no compila jajajaja sos
-    # if code_gen.POper[-1] == 'ADDITION' or code_gen.POper[-1] == 'SUBSTRACTION':
-    #     right_operand = code_gen.PilaO.pop()
-    #     right_type = code_gen.PTypes.pop()
-    #     left_operand = code_gen.PilaO.pop()
-    #     left_type = code_gen.PTypes.pop()
-    #     operator = code_gen.POper.pop()
+    # if cg.POper[-1] == 'ADDITION' or cg.POper[-1] == 'SUBSTRACTION':
+    #     right_operand = cg.PilaO.pop()
+    #     right_type = cg.PTypes.pop()
+    #     left_operand = cg.PilaO.pop()
+    #     left_type = cg.PTypes.pop()
+    #     operator = cg.POper.pop()
     #     #wtf con el cubo???
     #     result_type = cube()
     #     if result_type != 'err':
     #         #wtf con el avail?
     #         result = 1
     #         quad = (operator, left_operand, right_operand, result)
-    #         code_gen.Quads.append(quad)
-    #         code_gen.PilaO.append(result)
-    #         code_gen.PTypes.append(result_type)
+    #         cg.Quads.append(quad)
+    #         cg.PilaO.append(result)
+    #         cg.PTypes.append(result_type)
 
 
 def p_exp1(p):
@@ -663,9 +611,7 @@ def p_exp1(p):
     '''
     # 2. POper.push(+ or -)
     if len(p) == 3:
-        print("printint P_EXP1")
-        print(p[1])
-        code_gen.POper.append(p[1])
+        cg.POper.append(p[1])
 
 
 def p_openP(p):
@@ -673,7 +619,7 @@ def p_openP(p):
     openP : OPENPAREN
     '''
     # 6. crea fondo falso
-    code_gen.POper.append(p[1])
+    cg.POper.append(p[1])
 
 
 def p_closeP(p):
@@ -681,7 +627,7 @@ def p_closeP(p):
     closeP : CLOSEPAREN
     '''
     # 7. quita fondo falso
-    code_gen.POper.pop()
+    cg.POper.pop()
 
 # FACTOR
 
@@ -691,6 +637,7 @@ def p_factor(p):
     factor : vcte
            | factor1
     '''
+
     p[0] = p[1]
 
 
@@ -708,15 +655,13 @@ def p_factor2(p):
     '''
     # 2.POper.push(+ or -)
     p[0] = p[1]
-    code_gen.POper.append(p[0])
+    cg.POper.append(p[0])
     #print("printing p_factor2..")
     print(p[0])
 
 # al chile no se que estoy haciendo
 
 # TERM
-
-
 def p_term(p):
     '''
     term : factor term1
@@ -734,7 +679,7 @@ def p_term1(p):
     if len(p) == 3:
         print("PRINTING P_TERM1")
         print(p[1])
-        code_gen.POper.append(p[1])
+        cg.POper.append(p[1])
 
 
 def p_empty(p):
@@ -758,7 +703,7 @@ if __name__ == '__main__':
         info = arch.read()
         print(info)
         arch.close()
-        code_gen.generate_quad()
+        cg.generate_quad()
         if(yacc.parse(info, tracking=True) == 'PROGRAM COMPILED'):
             print("SINTAXIS VALIDA :) ")
         else:

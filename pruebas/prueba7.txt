@@ -1,11 +1,20 @@
 program prueba7;
+int gi1 = 4;
+int gi2;
+int gi3 = 5;
 
 fun int function1(){
- float x;
- int a = 10, b = 9, resp, c=3;
- resp = a+b;
+  float x;
+  int a1 = 10;
+  int b = 9;
+  int c = a1 + 9;
+  int resp;
 }
 
 *{
- function1();
+char c1;
+int star1;
+int i3;
+i3 = (gi1 + gi2) * gi3;
+function1();
 }

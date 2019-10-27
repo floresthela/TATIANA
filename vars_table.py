@@ -54,8 +54,9 @@ class VarsTable:
             print(self.table)
         else:
             raise TypeError(f'Function {fun_id} already declared')
-        # print(self.table)
         self.initialized = True
+        print(self.table)
+
 
     def insert_var(self, var_id, var_type):
         scope = self.current_scope
@@ -64,7 +65,6 @@ class VarsTable:
                 'id': var_id,
                 'type': var_type,
             }
-            # podríamos cambiar en lugar de var_id ponerle un id como fun1-vf1, fun1-vf2, fun2-vi1, etc idk
             self.table[scope]['vars'][var_id] = new_var
 
         else:
@@ -94,7 +94,6 @@ class VarsTable:
         : param table_id: Name assigned to the function
         '''
         if table_id in self.table:
-            print('borrando', table_id, self.table[table_id])
             del self.table[table_id]
         else:
             raise TypeError(f"Table of variables for {table_id} wasn't found")

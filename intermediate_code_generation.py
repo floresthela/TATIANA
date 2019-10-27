@@ -2,7 +2,7 @@
 # Flor Esthela Barbosa & Laura Santacruz
 
 # INTERMEDIATE-CODE GENERATION
-
+# CUÁDRUPLOS
 
 from semantic_cube import Operators, SemanticCube
 
@@ -20,33 +20,21 @@ class Quadruple:
         self.right_op = right_op
         self.operator = operator
         self.result = result
-        self.count_quad = 0
-        self.count_temp = 0
-
 
 class Intermediate_CodeGeneration:
     def __init__(self):
+        # pending operators
         self.POper = []
+        # types
         self.PTypes = []
-        self.Quads = []
+        # pending operands
         self.PilaO = []
-        self. PJumps = []
+
         self.temps = 0
-
-# 1. = 10 a
-# 2. = 2 b
-# 3. + a b t1
-# 4. = t1 c
-        # 
-        # print("Pila")
-        # print(self.PilaO)
-        # for x in self.PilaO:
-        #     print(self.PilaO)
-
+        self. PJumps = []
+        self.Quads = []
     def generate_quad(self):
-        for x in self.PilaO:
-            print(x)
-
+        list = []
         # left_op = self.PilaO.pop()
         # left_type = self.PTypes.pop()
 
