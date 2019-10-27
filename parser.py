@@ -29,8 +29,8 @@ def p_program(p):
     '''
     program : PROGRAM ID SEMICOLON declara_vars program2 star
     '''
-    vars_t.FunDirectory(p[2], 'np')
-    insert_vars(p[4])
+    # vars_t.FunDirectory(p[2], 'np')
+    # insert_vars(p[4])
     # print('done',vars_t.table)
 
     p[0] = "PROGRAM COMPILED"
@@ -59,10 +59,9 @@ def p_program2(p):
             | empty
     '''
     if len(p) == 3:
-        print('w',p[2])
         p[0] = p[1]
-        if p[2] != None:
-            
+        # if p[2] != None:
+
 
 # STAR
 def p_star(p):
@@ -72,6 +71,7 @@ def p_star(p):
     vars_t.FunDirectory('star', 'star')
     insert_vars(p[3])
 
+    print('w',vars_t.table)
     # vars_t.remove_table('star')
 
 
@@ -127,6 +127,7 @@ def p_function(p):
     '''
     vars_t.FunDirectory(p[3], p[2])
     insert_vars(p[6])
+
 
     if p[7] != None:
         vars = p[7]
@@ -210,7 +211,9 @@ def p_vars(p):
     if p[3] is not None:
         cg.PilaO.append(p[2])
         cg.PTypes.append(p[1])
-
+    if not vars_t.initialized:
+        vars_t.FunDirectory('global', 'np')
+        vars_t.insert_var(p[2],p[1])
 
 
 
