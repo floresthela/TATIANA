@@ -1,0 +1,18 @@
+program prueba7;
+int gi1 = 4 + 5;
+int gi2;
+int gi3 = 5;
+
+fun int function1(){
+  float x;
+  int a1 = 10;
+  int b = 9;
+  gi1 = 6 * gi3;
+}
+
+* {
+  char c1;
+  int star1;
+  int i3;
+  i3 = function1() + 5;
+}

@@ -1,0 +1,34 @@
+program prueba4;
+int hola = 1, adios=4,no,t,y,x,c;
+
+fun void fun1(){
+ circle(5);
+ rectangle(4, 5);
+}
+
+fun void fun2(){
+ int a2 = 5, b;
+ float f2=1, f3, f5 = 6;
+ float f7=2, j=1;
+ char char1, char2;
+  j = f2+f7;
+ go(a);
+ left(b);
+ go(c);
+ show_star;
+ size_star(5);
+}
+
+fun int fun3(){
+  int a3 = 5, b = 10;
+  return a * b;
+}
+
+*{
+ float b = 5.3;
+ int star1;
+ fun1();
+ fun2();
+ fun3();
+ print(b);
+}

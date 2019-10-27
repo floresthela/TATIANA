@@ -1,0 +1,29 @@
+program prueba3;
+
+fun int fun1(){
+int a = 10, b = 20, resp;
+resp = a + b;
+ return resp;
+}
+
+fun void fun2(int x, int y){
+ int i = 5;
+ if(x > y){
+  print(x);
+ }
+ else{
+  print(y);
+ }
+
+ while (i > 0){
+  print(i);
+  i = i - 1;
+ }
+
+}
+
+*{
+ int x = 3, y = 10;
+ fun1();
+ fun2(x, y);
+}

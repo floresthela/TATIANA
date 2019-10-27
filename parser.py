@@ -37,7 +37,6 @@ def p_program(p):
 
     vars_t.remove_table('global')
 
-
 def p_program_vars(p):
     '''
     program_vars : vars program_vars
@@ -109,7 +108,7 @@ def p_stmt(p):
         | read
         | graphstmt
         | graphr
-        | funCall
+        | funCall SEMICOLON
         | return
     '''
 
@@ -206,27 +205,28 @@ def flatten(li):
 
 def p_vars(p):
     '''
-    vars : type ID vars1 SEMICOLON
+    vars : type ID vars1 equals exp SEMICOLON
+         | type ID vars1 SEMICOLON
     '''
     p[0] = (p[1], p[2])
 
-    if p[3] is not None:
+    if len(p) > 3:
         cg.PilaO.append(p[2])
         cg.PTypes.append(p[1])
+        if cg.POper and cg.POper[-1] in '=':
+            cg.generate_quad()
     if not vars_t.initialized:
         vars_t.FunDirectory('global', 'np')
         vars_t.insert_var(p[2],p[1])
     else:
         vars_t.insert_var(p[2],p[1])
 
+# TODO: una regla para arreglos y usarla siempre que necesitemos [] , [][]
 def p_vars1(p):
     '''
-    vars1 : equals exp
-        | OPENBRACKET CTEINT CLOSEBRACKET vars3
+    vars1 : OPENBRACKET CTEINT CLOSEBRACKET vars3
         | empty
     '''
-    if len(p) == 3:
-        p[0] = 1
 
 # def p_vars2(p):
 #     '''
@@ -258,17 +258,19 @@ def p_type(p):
 # PRINT
 def p_print(p):
     '''
-    print : PRINT OPENPAREN exp CLOSEPAREN SEMICOLON
+    print : PRINT OPENPAREN expression CLOSEPAREN SEMICOLON
     '''
-    # cg.POper.append('print')
+    cg.POper.append('print')
+    cg.generate_quad_print()
 
 # READ
+# qué pedo con el read?
 def p_read(p):
     '''
-    read : READ OPENPAREN ID read1 CLOSEPAREN SEMICOLON
+    read : READ OPENPAREN id read1 CLOSEPAREN SEMICOLON
     '''
-    # cg.POper.append('read')
-
+    cg.POper.append('read')
+    cg.generate_quad_read()
 
 # arreglo
 def p_read1(p):
@@ -284,6 +286,7 @@ def p_equals(p):
     '''
     cg.POper.append(p[1])
 
+
 # ASSIGNMENT
 
 def p_id(p):
@@ -296,9 +299,6 @@ def p_id(p):
         cg.PilaO.append(p[1])
         cg.PTypes.append(t['type'])
 
-        print(cg.PilaO)
-        print(cg.PTypes)
-        print(cg.POper)
 def p_assignment(p):
     '''
     assignment : id assignment1 equals assignment3 SEMICOLON
@@ -327,21 +327,26 @@ def p_assignment3(p):
                 | read
     '''
     p[0] = p[1]
-
+    if cg.POper[-1] == '=':
+        cg.generate_quad();
 
 # VAR_CTE
 def p_vcte(p):
     '''
-    vcte : cte
-        | id vcte1
-        | funCall
+    vcte : cte_int
+         | cte_float
+         | cte_char
+         | id vcte1
+         | funCall
     '''
     # 1. PilaO.Push(id.name)
     # tambien tenemos que meter el tipo de la variable a la pila pero
     # de donde se saca el tipo???
     p[0] = p[1]
-    if len(p) == 3:
-        cg.PilaO.append(p[1])
+    cg.PilaO.append(p[0])
+
+
+
 
 
 def p_vcte1(p):
@@ -361,13 +366,26 @@ def p_vcte3(p):
 # CTE
 
 
-def p_cte(p):
+def p_cte_int(p):
     '''
-    cte : CTEINT
-        | CTEFLOAT
-        | CTECHAR
+    cte_int : CTEINT
     '''
     p[0] = p[1]
+    cg.PTypes.append('int')
+
+def p_cte_float(p):
+    '''
+    cte_float : CTEFLOAT
+    '''
+    p[0] = p[1]
+    cg.PTypes.append('float')
+
+def p_cte_char(p):
+    '''
+    cte_char : CTECHAR
+    '''
+    p[0] = p[1]
+    cg.PTypes.append('char')
 
 # RETURN
 
@@ -488,10 +506,11 @@ def p_while(p):
 # FUN_CALL
 def p_funCall(p):
     '''
-    funCall : ID OPENPAREN funCall2 CLOSEPAREN SEMICOLON
+    funCall : ID OPENPAREN funCall2 CLOSEPAREN
     '''
     if p[1] in vars_t.table:
-        print('todo bien')
+        p[0] = p[1]
+
     else:
          raise TypeError(f"Function '{p[1]}' not declared")
 
@@ -627,23 +646,8 @@ def p_exp(p):
     exp : term exp1
     '''
     p[0] = p[1]
-    # si pongo esto el parser no compila jajajaja sos
-    # if cg.POper[-1] == 'ADDITION' or cg.POper[-1] == 'SUBSTRACTION':
-    #     right_operand = cg.PilaO.pop()
-    #     right_type = cg.PTypes.pop()
-    #     left_operand = cg.PilaO.pop()
-    #     left_type = cg.PTypes.pop()
-    #     operator = cg.POper.pop()
-    #     #wtf con el cubo???
-    #     result_type = cube()
-    #     if result_type != 'err':
-    #         #wtf con el avail?
-    #         result = 1
-    #         quad = (operator, left_operand, right_operand, result)
-    #         cg.Quads.append(quad)
-    #         cg.PilaO.append(result)
-    #         cg.PTypes.append(result_type)
-
+    if cg.POper and cg.POper[-1] in ['+','-']:
+        cg.generate_quad()
 
 def p_exp1(p):
     '''
@@ -654,6 +658,7 @@ def p_exp1(p):
     # 2. POper.push(+ or -)
     if len(p) == 3:
         cg.POper.append(p[1])
+
 
 
 def p_openP(p):
@@ -679,9 +684,7 @@ def p_factor(p):
     factor : vcte
            | factor1
     '''
-
     p[0] = p[1]
-
 
 def p_factor1(p):
     '''
@@ -698,7 +701,6 @@ def p_factor2(p):
     # 2.POper.push(+ or -)
     p[0] = p[1]
     cg.POper.append(p[0])
-    #print("printing p_factor2..")
 
 # al chile no se que estoy haciendo
 
@@ -707,6 +709,9 @@ def p_term(p):
     '''
     term : factor term1
     '''
+    p[0] = p[1]
+    if cg.POper and cg.POper[-1] in ['*','/']:
+        cg.generate_quad()
 
 
 def p_term1(p):
@@ -734,16 +739,16 @@ def p_error(p):
 
 yacc.yacc()
 
-
+# hay que ver CÓMO ponemos que hay errores en la sintaxis pero más específicos o algo asi
 if __name__ == '__main__':
     try:
-        nombreArchivo = 'pruebas/prueba7.txt'
+        nombreArchivo = 'pruebas/tati.tati'
+
         arch = open(nombreArchivo, 'r')
         print("Archivo a leer: " + nombreArchivo)
         info = arch.read()
         print(info)
         arch.close()
-        cg.generate_quad()
         if(yacc.parse(info, tracking=True) == 'PROGRAM COMPILED'):
             print("SINTAXIS VALIDA :) ")
         else:
