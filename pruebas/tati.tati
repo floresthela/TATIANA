@@ -1,10 +1,14 @@
 program tati;
+int glob1 = 10;
+float glob2 = 40.5;
 
 * {
   int a;
   int b = 10;
   int c = 12;
-  a = (7 * 4 + c) / b + 1 - 2 * c;
-  print(4);
+  a = (glob2 * 4 + c) / b + 1 - 2 * c;
+  if (a > b) {
+    print(glob1);
+  }
   read(c);
 }

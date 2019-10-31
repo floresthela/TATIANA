@@ -1,5 +1,0 @@
-program prueba1;
-vars int v , e = 4;
-* {
-    vars int var1;
-}

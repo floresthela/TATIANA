@@ -210,7 +210,7 @@ def p_vars(p):
     '''
     p[0] = (p[1], p[2])
 
-    if len(p) > 3:
+    if len(p) == 7:
         cg.PilaO.append(p[2])
         cg.PTypes.append(p[1])
         if cg.POper and cg.POper[-1] in '=':
@@ -227,15 +227,6 @@ def p_vars1(p):
     vars1 : OPENBRACKET CTEINT CLOSEBRACKET vars3
         | empty
     '''
-
-# def p_vars2(p):
-#     '''
-#     vars2 : COMMA ID vars1
-#           | empty
-#     '''
-#     if len(p) == 4:
-#         p[0] = p[2:]
-
 
 # matrix
 def p_vars3(p):
@@ -340,13 +331,8 @@ def p_vcte(p):
          | funCall
     '''
     # 1. PilaO.Push(id.name)
-    # tambien tenemos que meter el tipo de la variable a la pila pero
-    # de donde se saca el tipo???
-    p[0] = p[1]
-    cg.PilaO.append(p[0])
-
-
-
+    if len(p) == 2:
+        cg.PilaO.append(p[1])
 
 
 def p_vcte1(p):
@@ -410,15 +396,18 @@ def p_expression(p):
     expression : exp expression1
     '''
 
-
+# POR QUÉ TENEMOS QUE PUEDE SER EMPTY ?? JAJA VERGA
 def p_expression1(p):
     '''
     expression1 : loper exp
              | empty
     '''
+    if cg.POper and cg.POper[-1] in ['>','<','==','!=']:
+        cg.generate_quad()
 
 
-# L_OP
+
+# L_OP - LOGICAL OPERATOR
 def p_loper(p):
     '''
     loper : GREATER
@@ -430,8 +419,7 @@ def p_loper(p):
     cg.POper.append(p[1])
 
 # LOGICAL
-
-
+# CREO QUE DEBERÍAMOS QUITAR ESTO... NO?
 def p_logical(p):
     '''
     logical : expression logical1 expression
@@ -465,7 +453,6 @@ def p_head(p):
     '''
     head : OPENPAREN head1 CLOSEPAREN
     '''
-
 
 def p_head1(p):
     '''

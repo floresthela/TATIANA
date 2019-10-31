@@ -8,9 +8,6 @@ from semantic_cube import Operators, SemanticCube
 
 # TODO: hay que hacer cuadruplos especiales para nuestros statements de graficar
 
-# DUDA cuándo checamos si las variables ya fueron declaradas cuando las estamos usando en algo ??¿?¿?¿?¿?¿??¿
-
-
 class Quadruple:
     def __init__(self, left_op, right_op, operator, result):
         '''
@@ -33,9 +30,12 @@ class Intermediate_CodeGeneration:
         self.temps = 0
         self. PJumps = []
         self.Quads = []
+        self.contador = 1
         self.cubo = SemanticCube()
 
     def generate_quad(self):
+        print(self.POper)
+        print(self.PilaO)
         right_op = self.PilaO.pop()
         right_type = self.PTypes.pop()
 
@@ -53,15 +53,23 @@ class Intermediate_CodeGeneration:
                 self.temps += 1
                 result = temp_actual
                 quadruple = Quadruple(left_op,right_op, operator, result)
+                self.contador += 1
                 self.muestramelo(quadruple)
+                self.PilaO.append(result)
+                self.PTypes.append(result_type)
             else:
                 result = left_op
                 quadruple = Quadruple(right_op, None, operator, result)
+                self.contador += 1
                 self.muestramelo(quadruple)
 
+        print(self.POper)
+        print(self.PilaO)
+        print('\n')
+        # print('l-',left_op)
+        # print('r-',right_op)
         self.Quads.append(quadruple)
-        self.PilaO.append(result)
-        self.PTypes.append(result_type)
+
 
     def generate_quad_print(self):
         '''
@@ -72,6 +80,7 @@ class Intermediate_CodeGeneration:
         self.PTypes.pop()
         operator = self.POper.pop()
         quadruple = Quadruple(None,None,operator,result)
+        self.contador += 1
         self.muestramelo(quadruple)
 
 
@@ -84,6 +93,7 @@ class Intermediate_CodeGeneration:
         self.PTypes.pop()
         operator = self.POper.pop()
         quadruple = Quadruple(None,None,operator,result)
+        self.contador += 1
         self.muestramelo(quadruple)
 
     # def generate_quad_graph(self):
@@ -91,6 +101,8 @@ class Intermediate_CodeGeneration:
     def muestramelo(self, quad):
         print('quad',f'[{quad.operator},{quad.left_op},{quad.right_op},{quad.result}]')
 
-        #     print(result)
-        #     self.POper.append(result)
-        #     self.PTypes.append(result_type)
+
+    def generate_quad_graph(self):
+        '''
+        Generar cuádruplos con expresiones para graficar...
+        '''
