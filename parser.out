@@ -93,18 +93,18 @@ Rule 82    loper -> ISEQUAL
 Rule 83    logical -> expression logical1 expression
 Rule 84    logical1 -> OR
 Rule 85    logical1 -> AND
-Rule 86    condition -> IF head body_cond condition1
-Rule 87    condition1 -> elseif head body_cond condition1
+Rule 86    condition -> IF head_cond body condition1
+Rule 87    condition1 -> elseif head_cond body condition1
 Rule 88    condition1 -> else body
 Rule 89    condition1 -> empty
 Rule 90    elseif -> ELSEIF
 Rule 91    else -> ELSE
 Rule 92    head -> OPENPAREN head1 CLOSEPAREN
-Rule 93    head1 -> expression
-Rule 94    head1 -> logical
-Rule 95    body -> OPENBRACES body1 CLOSEBRACES
-Rule 96    body_cond -> OPENBRACES body1 close_condition
-Rule 97    close_condition -> CLOSEBRACES
+Rule 93    head_cond -> OPENPAREN head1 close_condition
+Rule 94    head1 -> expression
+Rule 95    head1 -> logical
+Rule 96    body -> OPENBRACES body1 CLOSEBRACES
+Rule 97    close_condition -> CLOSEPAREN
 Rule 98    body1 -> stmt body1
 Rule 99    body1 -> empty
 Rule 100   for -> FOR OPENPAREN ID TWODOTS exp CLOSEPAREN body
@@ -171,9 +171,9 @@ ARC                  : 125
 BACK                 : 124
 CHAR                 : 46
 CIRCLE               : 113
-CLOSEBRACES          : 6 29 95 97 126
+CLOSEBRACES          : 6 29 96 126
 CLOSEBRACKET         : 40 42 49 49 50 58 66 68
-CLOSEPAREN           : 30 47 48 92 100 102 107 108 143
+CLOSEPAREN           : 30 47 48 92 97 100 102 107 108 143
 COLOR_STAR           : 134
 COMMA                : 35 105 107 136
 CTECHAR              : 72
@@ -199,9 +199,9 @@ LEFT                 : 122
 LESS                 : 80
 MULTIPLICATION       : 7 151
 NOTEQUAL             : 81
-OPENBRACES           : 7 28 95 96 126
+OPENBRACES           : 7 28 96 126
 OPENBRACKET          : 40 42 49 49 50 58 66 68
-OPENPAREN            : 30 47 48 92 100 102 107 108 142
+OPENPAREN            : 30 47 48 92 93 100 102 107 108 142
 OR                   : 84
 PRINT                : 47
 PROGRAM              : 1
@@ -230,11 +230,10 @@ assignment           : 14
 assignment1          : 54 56
 assignment2          : 55 56
 assignment3          : 54
-body                 : 88 100 101
-body1                : 95 96 98
-body_cond            : 86 87
+body                 : 86 87 88 100 101
+body1                : 96 98
 closeP               : 147
-close_condition      : 96
+close_condition      : 93
 condition            : 15
 condition1           : 86 87
 cte_char             : 63
@@ -247,7 +246,7 @@ empty                : 3 5 9 11 32 34 37 41 43 51 57 67 69 78 89 99 104 106 128 
 equals               : 38 54
 exp                  : 38 49 49 50 58 59 66 68 75 76 77 100 103 105 107 107 108 126 132 136 139 140
 exp1                 : 138
-expression           : 47 83 83 93 147
+expression           : 47 83 83 94 147
 expression1          : 76
 factor               : 150
 factor1              : 145
@@ -276,13 +275,14 @@ graphview            : 110
 graphview1           : 129
 graphview2           : 132
 graphview3           : 133
-head                 : 86 87 101
-head1                : 92
+head                 : 101
+head1                : 92 93
+head_cond            : 86 87
 id                   : 48 54 64
 inicia_fun           : 25
 laRegla              : 115 116 125 137
 laRegla2             : 113 114 121 122 123 124
-logical              : 94
+logical              : 95
 logical1             : 83
 loop                 : 17
 loper                : 77
@@ -720,7 +720,7 @@ state 28
     (22) stmt -> . return
     (154) empty -> .
     (54) assignment -> . id assignment1 equals assignment3 SEMICOLON
-    (86) condition -> . IF head body_cond condition1
+    (86) condition -> . IF head_cond body condition1
     (47) print -> . PRINT OPENPAREN expression CLOSEPAREN SEMICOLON
     (12) loop -> . while
     (13) loop -> . for
@@ -1006,7 +1006,7 @@ state 39
     (22) stmt -> . return
     (154) empty -> .
     (54) assignment -> . id assignment1 equals assignment3 SEMICOLON
-    (86) condition -> . IF head body_cond condition1
+    (86) condition -> . IF head_cond body condition1
     (47) print -> . PRINT OPENPAREN expression CLOSEPAREN SEMICOLON
     (12) loop -> . while
     (13) loop -> . for
@@ -1372,12 +1372,12 @@ state 50
 
 state 51
 
-    (86) condition -> IF . head body_cond condition1
-    (92) head -> . OPENPAREN head1 CLOSEPAREN
+    (86) condition -> IF . head_cond body condition1
+    (93) head_cond -> . OPENPAREN head1 close_condition
 
     OPENPAREN       shift and go to state 118
 
-    head                           shift and go to state 117
+    head_cond                      shift and go to state 117
 
 state 52
 
@@ -1654,7 +1654,7 @@ state 62
     (101) while -> WHILE . head body
     (92) head -> . OPENPAREN head1 CLOSEPAREN
 
-    OPENPAREN       shift and go to state 118
+    OPENPAREN       shift and go to state 127
 
     head                           shift and go to state 126
 
@@ -1662,28 +1662,28 @@ state 63
 
     (100) for -> FOR . OPENPAREN ID TWODOTS exp CLOSEPAREN body
 
-    OPENPAREN       shift and go to state 127
+    OPENPAREN       shift and go to state 128
 
 
 state 64
 
     (112) graphfig -> graphfig1 . SEMICOLON
 
-    SEMICOLON       shift and go to state 128
+    SEMICOLON       shift and go to state 129
 
 
 state 65
 
     (129) graphview -> graphview1 . SEMICOLON
 
-    SEMICOLON       shift and go to state 129
+    SEMICOLON       shift and go to state 130
 
 
 state 66
 
     (117) graphmove -> graphmove1 . SEMICOLON
 
-    SEMICOLON       shift and go to state 130
+    SEMICOLON       shift and go to state 131
 
 
 state 67
@@ -1691,36 +1691,36 @@ state 67
     (113) graphfig1 -> CIRCLE . laRegla2
     (108) laRegla2 -> . OPENPAREN exp CLOSEPAREN
 
-    OPENPAREN       shift and go to state 132
+    OPENPAREN       shift and go to state 133
 
-    laRegla2                       shift and go to state 131
+    laRegla2                       shift and go to state 132
 
 state 68
 
     (114) graphfig1 -> SQUARE . laRegla2
     (108) laRegla2 -> . OPENPAREN exp CLOSEPAREN
 
-    OPENPAREN       shift and go to state 132
+    OPENPAREN       shift and go to state 133
 
-    laRegla2                       shift and go to state 133
+    laRegla2                       shift and go to state 134
 
 state 69
 
     (115) graphfig1 -> TRIANGLE . laRegla
     (107) laRegla -> . OPENPAREN exp COMMA exp CLOSEPAREN
 
-    OPENPAREN       shift and go to state 135
+    OPENPAREN       shift and go to state 136
 
-    laRegla                        shift and go to state 134
+    laRegla                        shift and go to state 135
 
 state 70
 
     (116) graphfig1 -> RECTANGLE . laRegla
     (107) laRegla -> . OPENPAREN exp COMMA exp CLOSEPAREN
 
-    OPENPAREN       shift and go to state 135
+    OPENPAREN       shift and go to state 136
 
-    laRegla                        shift and go to state 136
+    laRegla                        shift and go to state 137
 
 state 71
 
@@ -1767,7 +1767,7 @@ state 73
     SUBSTRACTION    shift and go to state 108
     OPENPAREN       shift and go to state 106
 
-    exp                            shift and go to state 137
+    exp                            shift and go to state 138
     term                           shift and go to state 92
     factor                         shift and go to state 93
     vcte                           shift and go to state 94
@@ -1827,7 +1827,7 @@ state 77
     (149) factor2 -> . SUBSTRACTION
     (142) openP -> . OPENPAREN
 
-    OPENPAREN       shift and go to state 141
+    OPENPAREN       shift and go to state 142
     CTEINT          shift and go to state 103
     CTEFLOAT        shift and go to state 104
     CTECHAR         shift and go to state 105
@@ -1835,9 +1835,9 @@ state 77
     ADDITION        shift and go to state 107
     SUBSTRACTION    shift and go to state 108
 
-    graphview3                     shift and go to state 138
-    exp                            shift and go to state 139
-    laRegla                        shift and go to state 140
+    graphview3                     shift and go to state 139
+    exp                            shift and go to state 140
+    laRegla                        shift and go to state 141
     term                           shift and go to state 92
     factor                         shift and go to state 93
     vcte                           shift and go to state 94
@@ -1881,45 +1881,45 @@ state 80
     (121) graphmove2 -> GO . laRegla2
     (108) laRegla2 -> . OPENPAREN exp CLOSEPAREN
 
-    OPENPAREN       shift and go to state 132
+    OPENPAREN       shift and go to state 133
 
-    laRegla2                       shift and go to state 142
+    laRegla2                       shift and go to state 143
 
 state 81
 
     (122) graphmove2 -> LEFT . laRegla2
     (108) laRegla2 -> . OPENPAREN exp CLOSEPAREN
 
-    OPENPAREN       shift and go to state 132
+    OPENPAREN       shift and go to state 133
 
-    laRegla2                       shift and go to state 143
+    laRegla2                       shift and go to state 144
 
 state 82
 
     (123) graphmove2 -> RIGHT . laRegla2
     (108) laRegla2 -> . OPENPAREN exp CLOSEPAREN
 
-    OPENPAREN       shift and go to state 132
+    OPENPAREN       shift and go to state 133
 
-    laRegla2                       shift and go to state 144
+    laRegla2                       shift and go to state 145
 
 state 83
 
     (124) graphmove2 -> BACK . laRegla2
     (108) laRegla2 -> . OPENPAREN exp CLOSEPAREN
 
-    OPENPAREN       shift and go to state 132
+    OPENPAREN       shift and go to state 133
 
-    laRegla2                       shift and go to state 145
+    laRegla2                       shift and go to state 146
 
 state 84
 
     (125) graphmove2 -> ARC . laRegla
     (107) laRegla -> . OPENPAREN exp COMMA exp CLOSEPAREN
 
-    OPENPAREN       shift and go to state 135
+    OPENPAREN       shift and go to state 136
 
-    laRegla                        shift and go to state 146
+    laRegla                        shift and go to state 147
 
 state 85
 
@@ -1962,7 +1962,7 @@ state 85
     FLOAT           shift and go to state 10
     CHAR            shift and go to state 11
 
-    declara_vars                   shift and go to state 147
+    declara_vars                   shift and go to state 148
     vars                           shift and go to state 6
     empty                          shift and go to state 7
     type                           shift and go to state 8
@@ -2005,14 +2005,14 @@ state 87
 
     (30) function2 -> OPENPAREN function3 . CLOSEPAREN
 
-    CLOSEPAREN      shift and go to state 148
+    CLOSEPAREN      shift and go to state 149
 
 
 state 88
 
     (31) function3 -> type . ID function5
 
-    ID              shift and go to state 149
+    ID              shift and go to state 150
 
 
 state 89
@@ -2057,7 +2057,7 @@ state 91
 
     (38) vars -> type ID vars1 equals exp . SEMICOLON
 
-    SEMICOLON       shift and go to state 150
+    SEMICOLON       shift and go to state 151
 
 
 state 92
@@ -2070,8 +2070,8 @@ state 92
 
   ! shift/reduce conflict for ADDITION resolved as shift
   ! shift/reduce conflict for SUBSTRACTION resolved as shift
-    ADDITION        shift and go to state 152
-    SUBSTRACTION    shift and go to state 153
+    ADDITION        shift and go to state 153
+    SUBSTRACTION    shift and go to state 154
     SEMICOLON       reduce using rule 154 (empty -> .)
     OPENBRACES      reduce using rule 154 (empty -> .)
     COMMA           reduce using rule 154 (empty -> .)
@@ -2092,8 +2092,8 @@ state 92
   ! ADDITION        [ reduce using rule 154 (empty -> .) ]
   ! SUBSTRACTION    [ reduce using rule 154 (empty -> .) ]
 
-    exp1                           shift and go to state 151
-    empty                          shift and go to state 154
+    exp1                           shift and go to state 152
+    empty                          shift and go to state 155
 
 state 93
 
@@ -2103,8 +2103,8 @@ state 93
     (153) term1 -> . empty
     (154) empty -> .
 
-    MULTIPLICATION  shift and go to state 156
-    DIVISION        shift and go to state 157
+    MULTIPLICATION  shift and go to state 157
+    DIVISION        shift and go to state 158
     ADDITION        reduce using rule 154 (empty -> .)
     SUBSTRACTION    reduce using rule 154 (empty -> .)
     SEMICOLON       reduce using rule 154 (empty -> .)
@@ -2124,8 +2124,8 @@ state 93
     ID              reduce using rule 154 (empty -> .)
     OPENPAREN       reduce using rule 154 (empty -> .)
 
-    term1                          shift and go to state 155
-    empty                          shift and go to state 158
+    term1                          shift and go to state 156
+    empty                          shift and go to state 159
 
 state 94
 
@@ -2264,7 +2264,7 @@ state 99
     (67) vcte1 -> . empty
     (154) empty -> .
 
-    OPENBRACKET     shift and go to state 160
+    OPENBRACKET     shift and go to state 161
     MULTIPLICATION  reduce using rule 154 (empty -> .)
     DIVISION        reduce using rule 154 (empty -> .)
     ADDITION        reduce using rule 154 (empty -> .)
@@ -2286,8 +2286,8 @@ state 99
     ID              reduce using rule 154 (empty -> .)
     OPENPAREN       reduce using rule 154 (empty -> .)
 
-    vcte1                          shift and go to state 159
-    empty                          shift and go to state 161
+    vcte1                          shift and go to state 160
+    empty                          shift and go to state 162
 
 state 100
 
@@ -2334,7 +2334,7 @@ state 101
     CTECHAR         shift and go to state 105
     ID              shift and go to state 90
 
-    vcte                           shift and go to state 162
+    vcte                           shift and go to state 163
     cte_int                        shift and go to state 96
     cte_float                      shift and go to state 97
     cte_char                       shift and go to state 98
@@ -2374,8 +2374,8 @@ state 102
     OPENPAREN       shift and go to state 106
 
     openP                          shift and go to state 102
-    expression                     shift and go to state 163
-    exp                            shift and go to state 164
+    expression                     shift and go to state 164
+    exp                            shift and go to state 165
     term                           shift and go to state 92
     factor                         shift and go to state 93
     vcte                           shift and go to state 94
@@ -2505,12 +2505,12 @@ state 109
     (43) vars3 -> . empty
     (154) empty -> .
 
-    OPENBRACKET     shift and go to state 165
+    OPENBRACKET     shift and go to state 166
     SEMICOLON       reduce using rule 154 (empty -> .)
     EQUALS          reduce using rule 154 (empty -> .)
 
-    vars3                          shift and go to state 166
-    empty                          shift and go to state 167
+    vars3                          shift and go to state 167
+    empty                          shift and go to state 168
 
 state 110
 
@@ -2564,7 +2564,7 @@ state 113
 
     EQUALS          shift and go to state 36
 
-    equals                         shift and go to state 168
+    equals                         shift and go to state 169
 
 state 114
 
@@ -2583,7 +2583,7 @@ state 114
   ! EQUALS          [ reduce using rule 154 (empty -> .) ]
 
     assignment2                    shift and go to state 114
-    assignment1                    shift and go to state 169
+    assignment1                    shift and go to state 170
     empty                          shift and go to state 115
 
 state 115
@@ -2624,7 +2624,7 @@ state 116
     SUBSTRACTION    shift and go to state 108
     OPENPAREN       shift and go to state 106
 
-    exp                            shift and go to state 170
+    exp                            shift and go to state 171
     term                           shift and go to state 92
     factor                         shift and go to state 93
     vcte                           shift and go to state 94
@@ -2639,18 +2639,18 @@ state 116
 
 state 117
 
-    (86) condition -> IF head . body_cond condition1
-    (96) body_cond -> . OPENBRACES body1 close_condition
+    (86) condition -> IF head_cond . body condition1
+    (96) body -> . OPENBRACES body1 CLOSEBRACES
 
-    OPENBRACES      shift and go to state 172
+    OPENBRACES      shift and go to state 173
 
-    body_cond                      shift and go to state 171
+    body                           shift and go to state 172
 
 state 118
 
-    (92) head -> OPENPAREN . head1 CLOSEPAREN
-    (93) head1 -> . expression
-    (94) head1 -> . logical
+    (93) head_cond -> OPENPAREN . head1 close_condition
+    (94) head1 -> . expression
+    (95) head1 -> . logical
     (76) expression -> . exp expression1
     (83) logical -> . expression logical1 expression
     (138) exp -> . term exp1
@@ -2681,10 +2681,10 @@ state 118
     SUBSTRACTION    shift and go to state 108
     OPENPAREN       shift and go to state 106
 
-    head1                          shift and go to state 173
-    expression                     shift and go to state 174
-    logical                        shift and go to state 175
-    exp                            shift and go to state 164
+    head1                          shift and go to state 174
+    expression                     shift and go to state 175
+    logical                        shift and go to state 176
+    exp                            shift and go to state 165
     term                           shift and go to state 92
     factor                         shift and go to state 93
     vcte                           shift and go to state 94
@@ -2729,8 +2729,8 @@ state 119
     SUBSTRACTION    shift and go to state 108
     OPENPAREN       shift and go to state 106
 
-    expression                     shift and go to state 176
-    exp                            shift and go to state 164
+    expression                     shift and go to state 177
+    exp                            shift and go to state 165
     term                           shift and go to state 92
     factor                         shift and go to state 93
     vcte                           shift and go to state 94
@@ -2748,15 +2748,15 @@ state 120
     (48) read -> READ OPENPAREN . id read1 CLOSEPAREN SEMICOLON
     (53) id -> . ID
 
-    ID              shift and go to state 178
+    ID              shift and go to state 179
 
-    id                             shift and go to state 177
+    id                             shift and go to state 178
 
 state 121
 
     (126) graphr -> REPEAT exp . OPENBRACES graphstmt graphr1 CLOSEBRACES
 
-    OPENBRACES      shift and go to state 179
+    OPENBRACES      shift and go to state 180
 
 
 state 122
@@ -2794,9 +2794,9 @@ state 122
     SUBSTRACTION    shift and go to state 108
     OPENPAREN       shift and go to state 106
 
-    funCall2                       shift and go to state 180
-    exp                            shift and go to state 181
-    empty                          shift and go to state 182
+    funCall2                       shift and go to state 181
+    exp                            shift and go to state 182
+    empty                          shift and go to state 183
     term                           shift and go to state 92
     factor                         shift and go to state 93
     vcte                           shift and go to state 94
@@ -2813,7 +2813,7 @@ state 123
 
     (73) return -> RETURN return1 . SEMICOLON
 
-    SEMICOLON       shift and go to state 183
+    SEMICOLON       shift and go to state 184
 
 
 state 124
@@ -2841,20 +2841,71 @@ state 125
 state 126
 
     (101) while -> WHILE head . body
-    (95) body -> . OPENBRACES body1 CLOSEBRACES
+    (96) body -> . OPENBRACES body1 CLOSEBRACES
 
-    OPENBRACES      shift and go to state 185
+    OPENBRACES      shift and go to state 173
 
-    body                           shift and go to state 184
+    body                           shift and go to state 185
 
 state 127
 
-    (100) for -> FOR OPENPAREN . ID TWODOTS exp CLOSEPAREN body
+    (92) head -> OPENPAREN . head1 CLOSEPAREN
+    (94) head1 -> . expression
+    (95) head1 -> . logical
+    (76) expression -> . exp expression1
+    (83) logical -> . expression logical1 expression
+    (138) exp -> . term exp1
+    (150) term -> . factor term1
+    (144) factor -> . vcte
+    (145) factor -> . factor1
+    (61) vcte -> . cte_int
+    (62) vcte -> . cte_float
+    (63) vcte -> . cte_char
+    (64) vcte -> . id vcte1
+    (65) vcte -> . funCall
+    (146) factor1 -> . factor2 vcte
+    (147) factor1 -> . openP expression closeP
+    (70) cte_int -> . CTEINT
+    (71) cte_float -> . CTEFLOAT
+    (72) cte_char -> . CTECHAR
+    (53) id -> . ID
+    (102) funCall -> . ID OPENPAREN funCall2 CLOSEPAREN
+    (148) factor2 -> . ADDITION
+    (149) factor2 -> . SUBSTRACTION
+    (142) openP -> . OPENPAREN
 
-    ID              shift and go to state 186
+    CTEINT          shift and go to state 103
+    CTEFLOAT        shift and go to state 104
+    CTECHAR         shift and go to state 105
+    ID              shift and go to state 90
+    ADDITION        shift and go to state 107
+    SUBSTRACTION    shift and go to state 108
+    OPENPAREN       shift and go to state 106
 
+    head1                          shift and go to state 186
+    expression                     shift and go to state 175
+    logical                        shift and go to state 176
+    exp                            shift and go to state 165
+    term                           shift and go to state 92
+    factor                         shift and go to state 93
+    vcte                           shift and go to state 94
+    factor1                        shift and go to state 95
+    cte_int                        shift and go to state 96
+    cte_float                      shift and go to state 97
+    cte_char                       shift and go to state 98
+    id                             shift and go to state 99
+    funCall                        shift and go to state 100
+    factor2                        shift and go to state 101
+    openP                          shift and go to state 102
 
 state 128
+
+    (100) for -> FOR OPENPAREN . ID TWODOTS exp CLOSEPAREN body
+
+    ID              shift and go to state 187
+
+
+state 129
 
     (112) graphfig -> graphfig1 SEMICOLON .
 
@@ -2885,7 +2936,7 @@ state 128
     CLOSEBRACES     reduce using rule 112 (graphfig -> graphfig1 SEMICOLON .)
 
 
-state 129
+state 130
 
     (129) graphview -> graphview1 SEMICOLON .
 
@@ -2916,7 +2967,7 @@ state 129
     CLOSEBRACES     reduce using rule 129 (graphview -> graphview1 SEMICOLON .)
 
 
-state 130
+state 131
 
     (117) graphmove -> graphmove1 SEMICOLON .
 
@@ -2947,74 +2998,16 @@ state 130
     CLOSEBRACES     reduce using rule 117 (graphmove -> graphmove1 SEMICOLON .)
 
 
-state 131
+state 132
 
     (113) graphfig1 -> CIRCLE laRegla2 .
 
     SEMICOLON       reduce using rule 113 (graphfig1 -> CIRCLE laRegla2 .)
 
 
-state 132
-
-    (108) laRegla2 -> OPENPAREN . exp CLOSEPAREN
-    (138) exp -> . term exp1
-    (150) term -> . factor term1
-    (144) factor -> . vcte
-    (145) factor -> . factor1
-    (61) vcte -> . cte_int
-    (62) vcte -> . cte_float
-    (63) vcte -> . cte_char
-    (64) vcte -> . id vcte1
-    (65) vcte -> . funCall
-    (146) factor1 -> . factor2 vcte
-    (147) factor1 -> . openP expression closeP
-    (70) cte_int -> . CTEINT
-    (71) cte_float -> . CTEFLOAT
-    (72) cte_char -> . CTECHAR
-    (53) id -> . ID
-    (102) funCall -> . ID OPENPAREN funCall2 CLOSEPAREN
-    (148) factor2 -> . ADDITION
-    (149) factor2 -> . SUBSTRACTION
-    (142) openP -> . OPENPAREN
-
-    CTEINT          shift and go to state 103
-    CTEFLOAT        shift and go to state 104
-    CTECHAR         shift and go to state 105
-    ID              shift and go to state 90
-    ADDITION        shift and go to state 107
-    SUBSTRACTION    shift and go to state 108
-    OPENPAREN       shift and go to state 106
-
-    exp                            shift and go to state 187
-    term                           shift and go to state 92
-    factor                         shift and go to state 93
-    vcte                           shift and go to state 94
-    factor1                        shift and go to state 95
-    cte_int                        shift and go to state 96
-    cte_float                      shift and go to state 97
-    cte_char                       shift and go to state 98
-    id                             shift and go to state 99
-    funCall                        shift and go to state 100
-    factor2                        shift and go to state 101
-    openP                          shift and go to state 102
-
 state 133
 
-    (114) graphfig1 -> SQUARE laRegla2 .
-
-    SEMICOLON       reduce using rule 114 (graphfig1 -> SQUARE laRegla2 .)
-
-
-state 134
-
-    (115) graphfig1 -> TRIANGLE laRegla .
-
-    SEMICOLON       reduce using rule 115 (graphfig1 -> TRIANGLE laRegla .)
-
-
-state 135
-
-    (107) laRegla -> OPENPAREN . exp COMMA exp CLOSEPAREN
+    (108) laRegla2 -> OPENPAREN . exp CLOSEPAREN
     (138) exp -> . term exp1
     (150) term -> . factor term1
     (144) factor -> . vcte
@@ -3056,21 +3049,79 @@ state 135
     factor2                        shift and go to state 101
     openP                          shift and go to state 102
 
+state 134
+
+    (114) graphfig1 -> SQUARE laRegla2 .
+
+    SEMICOLON       reduce using rule 114 (graphfig1 -> SQUARE laRegla2 .)
+
+
+state 135
+
+    (115) graphfig1 -> TRIANGLE laRegla .
+
+    SEMICOLON       reduce using rule 115 (graphfig1 -> TRIANGLE laRegla .)
+
+
 state 136
+
+    (107) laRegla -> OPENPAREN . exp COMMA exp CLOSEPAREN
+    (138) exp -> . term exp1
+    (150) term -> . factor term1
+    (144) factor -> . vcte
+    (145) factor -> . factor1
+    (61) vcte -> . cte_int
+    (62) vcte -> . cte_float
+    (63) vcte -> . cte_char
+    (64) vcte -> . id vcte1
+    (65) vcte -> . funCall
+    (146) factor1 -> . factor2 vcte
+    (147) factor1 -> . openP expression closeP
+    (70) cte_int -> . CTEINT
+    (71) cte_float -> . CTEFLOAT
+    (72) cte_char -> . CTECHAR
+    (53) id -> . ID
+    (102) funCall -> . ID OPENPAREN funCall2 CLOSEPAREN
+    (148) factor2 -> . ADDITION
+    (149) factor2 -> . SUBSTRACTION
+    (142) openP -> . OPENPAREN
+
+    CTEINT          shift and go to state 103
+    CTEFLOAT        shift and go to state 104
+    CTECHAR         shift and go to state 105
+    ID              shift and go to state 90
+    ADDITION        shift and go to state 107
+    SUBSTRACTION    shift and go to state 108
+    OPENPAREN       shift and go to state 106
+
+    exp                            shift and go to state 189
+    term                           shift and go to state 92
+    factor                         shift and go to state 93
+    vcte                           shift and go to state 94
+    factor1                        shift and go to state 95
+    cte_int                        shift and go to state 96
+    cte_float                      shift and go to state 97
+    cte_char                       shift and go to state 98
+    id                             shift and go to state 99
+    funCall                        shift and go to state 100
+    factor2                        shift and go to state 101
+    openP                          shift and go to state 102
+
+state 137
 
     (116) graphfig1 -> RECTANGLE laRegla .
 
     SEMICOLON       reduce using rule 116 (graphfig1 -> RECTANGLE laRegla .)
 
 
-state 137
+state 138
 
     (132) graphview1 -> graphview2 exp .
 
     SEMICOLON       reduce using rule 132 (graphview1 -> graphview2 exp .)
 
 
-state 138
+state 139
 
     (133) graphview2 -> SETXY graphview3 .
 
@@ -3083,14 +3134,14 @@ state 138
     OPENPAREN       reduce using rule 133 (graphview2 -> SETXY graphview3 .)
 
 
-state 139
+state 140
 
     (136) graphview3 -> exp . COMMA
 
-    COMMA           shift and go to state 189
+    COMMA           shift and go to state 190
 
 
-state 140
+state 141
 
     (137) graphview3 -> laRegla .
 
@@ -3103,7 +3154,7 @@ state 140
     OPENPAREN       reduce using rule 137 (graphview3 -> laRegla .)
 
 
-state 141
+state 142
 
     (107) laRegla -> OPENPAREN . exp COMMA exp CLOSEPAREN
     (142) openP -> OPENPAREN .
@@ -3150,7 +3201,7 @@ state 141
   ! SUBSTRACTION    [ reduce using rule 142 (openP -> OPENPAREN .) ]
   ! OPENPAREN       [ reduce using rule 142 (openP -> OPENPAREN .) ]
 
-    exp                            shift and go to state 188
+    exp                            shift and go to state 189
     term                           shift and go to state 92
     factor                         shift and go to state 93
     vcte                           shift and go to state 94
@@ -3163,42 +3214,42 @@ state 141
     factor2                        shift and go to state 101
     openP                          shift and go to state 102
 
-state 142
+state 143
 
     (121) graphmove2 -> GO laRegla2 .
 
     SEMICOLON       reduce using rule 121 (graphmove2 -> GO laRegla2 .)
 
 
-state 143
+state 144
 
     (122) graphmove2 -> LEFT laRegla2 .
 
     SEMICOLON       reduce using rule 122 (graphmove2 -> LEFT laRegla2 .)
 
 
-state 144
+state 145
 
     (123) graphmove2 -> RIGHT laRegla2 .
 
     SEMICOLON       reduce using rule 123 (graphmove2 -> RIGHT laRegla2 .)
 
 
-state 145
+state 146
 
     (124) graphmove2 -> BACK laRegla2 .
 
     SEMICOLON       reduce using rule 124 (graphmove2 -> BACK laRegla2 .)
 
 
-state 146
+state 147
 
     (125) graphmove2 -> ARC laRegla .
 
     SEMICOLON       reduce using rule 125 (graphmove2 -> ARC laRegla .)
 
 
-state 147
+state 148
 
     (25) function -> FUN functionI function2 inicia_fun declara_vars . function4 termina_fun
     (33) function4 -> . stmt function4
@@ -3214,7 +3265,7 @@ state 147
     (22) stmt -> . return
     (154) empty -> .
     (54) assignment -> . id assignment1 equals assignment3 SEMICOLON
-    (86) condition -> . IF head body_cond condition1
+    (86) condition -> . IF head_cond body condition1
     (47) print -> . PRINT OPENPAREN expression CLOSEPAREN SEMICOLON
     (12) loop -> . while
     (13) loop -> . for
@@ -3276,9 +3327,9 @@ state 147
     BACK            shift and go to state 83
     ARC             shift and go to state 84
 
-    function4                      shift and go to state 190
-    stmt                           shift and go to state 191
-    empty                          shift and go to state 192
+    function4                      shift and go to state 191
+    stmt                           shift and go to state 192
+    empty                          shift and go to state 193
     assignment                     shift and go to state 41
     condition                      shift and go to state 42
     print                          shift and go to state 43
@@ -3300,23 +3351,23 @@ state 147
     graphview2                     shift and go to state 73
     graphmove2                     shift and go to state 76
 
-state 148
+state 149
 
     (30) function2 -> OPENPAREN function3 CLOSEPAREN .
 
     OPENBRACES      reduce using rule 30 (function2 -> OPENPAREN function3 CLOSEPAREN .)
 
 
-state 149
+state 150
 
     (31) function3 -> type ID . function5
     (35) function5 -> . COMMA type ID function3
 
-    COMMA           shift and go to state 194
+    COMMA           shift and go to state 195
 
-    function5                      shift and go to state 193
+    function5                      shift and go to state 194
 
-state 150
+state 151
 
     (38) vars -> type ID vars1 equals exp SEMICOLON .
 
@@ -3352,7 +3403,7 @@ state 150
     CLOSEBRACES     reduce using rule 38 (vars -> type ID vars1 equals exp SEMICOLON .)
 
 
-state 151
+state 152
 
     (138) exp -> term exp1 .
 
@@ -3376,53 +3427,9 @@ state 151
     OPENPAREN       reduce using rule 138 (exp -> term exp1 .)
 
 
-state 152
-
-    (139) exp1 -> ADDITION . exp
-    (138) exp -> . term exp1
-    (150) term -> . factor term1
-    (144) factor -> . vcte
-    (145) factor -> . factor1
-    (61) vcte -> . cte_int
-    (62) vcte -> . cte_float
-    (63) vcte -> . cte_char
-    (64) vcte -> . id vcte1
-    (65) vcte -> . funCall
-    (146) factor1 -> . factor2 vcte
-    (147) factor1 -> . openP expression closeP
-    (70) cte_int -> . CTEINT
-    (71) cte_float -> . CTEFLOAT
-    (72) cte_char -> . CTECHAR
-    (53) id -> . ID
-    (102) funCall -> . ID OPENPAREN funCall2 CLOSEPAREN
-    (148) factor2 -> . ADDITION
-    (149) factor2 -> . SUBSTRACTION
-    (142) openP -> . OPENPAREN
-
-    CTEINT          shift and go to state 103
-    CTEFLOAT        shift and go to state 104
-    CTECHAR         shift and go to state 105
-    ID              shift and go to state 90
-    ADDITION        shift and go to state 107
-    SUBSTRACTION    shift and go to state 108
-    OPENPAREN       shift and go to state 106
-
-    exp                            shift and go to state 195
-    term                           shift and go to state 92
-    factor                         shift and go to state 93
-    vcte                           shift and go to state 94
-    factor1                        shift and go to state 95
-    cte_int                        shift and go to state 96
-    cte_float                      shift and go to state 97
-    cte_char                       shift and go to state 98
-    id                             shift and go to state 99
-    funCall                        shift and go to state 100
-    factor2                        shift and go to state 101
-    openP                          shift and go to state 102
-
 state 153
 
-    (140) exp1 -> SUBSTRACTION . exp
+    (139) exp1 -> ADDITION . exp
     (138) exp -> . term exp1
     (150) term -> . factor term1
     (144) factor -> . vcte
@@ -3466,55 +3473,8 @@ state 153
 
 state 154
 
-    (141) exp1 -> empty .
-
-    SEMICOLON       reduce using rule 141 (exp1 -> empty .)
-    OPENBRACES      reduce using rule 141 (exp1 -> empty .)
-    COMMA           reduce using rule 141 (exp1 -> empty .)
-    GREATER         reduce using rule 141 (exp1 -> empty .)
-    LESS            reduce using rule 141 (exp1 -> empty .)
-    NOTEQUAL        reduce using rule 141 (exp1 -> empty .)
-    ISEQUAL         reduce using rule 141 (exp1 -> empty .)
-    CLOSEPAREN      reduce using rule 141 (exp1 -> empty .)
-    CLOSEBRACKET    reduce using rule 141 (exp1 -> empty .)
-    OR              reduce using rule 141 (exp1 -> empty .)
-    AND             reduce using rule 141 (exp1 -> empty .)
-    CTEINT          reduce using rule 141 (exp1 -> empty .)
-    CTEFLOAT        reduce using rule 141 (exp1 -> empty .)
-    CTECHAR         reduce using rule 141 (exp1 -> empty .)
-    ID              reduce using rule 141 (exp1 -> empty .)
-    ADDITION        reduce using rule 141 (exp1 -> empty .)
-    SUBSTRACTION    reduce using rule 141 (exp1 -> empty .)
-    OPENPAREN       reduce using rule 141 (exp1 -> empty .)
-
-
-state 155
-
-    (150) term -> factor term1 .
-
-    ADDITION        reduce using rule 150 (term -> factor term1 .)
-    SUBSTRACTION    reduce using rule 150 (term -> factor term1 .)
-    SEMICOLON       reduce using rule 150 (term -> factor term1 .)
-    OPENBRACES      reduce using rule 150 (term -> factor term1 .)
-    COMMA           reduce using rule 150 (term -> factor term1 .)
-    GREATER         reduce using rule 150 (term -> factor term1 .)
-    LESS            reduce using rule 150 (term -> factor term1 .)
-    NOTEQUAL        reduce using rule 150 (term -> factor term1 .)
-    ISEQUAL         reduce using rule 150 (term -> factor term1 .)
-    CLOSEPAREN      reduce using rule 150 (term -> factor term1 .)
-    CLOSEBRACKET    reduce using rule 150 (term -> factor term1 .)
-    OR              reduce using rule 150 (term -> factor term1 .)
-    AND             reduce using rule 150 (term -> factor term1 .)
-    CTEINT          reduce using rule 150 (term -> factor term1 .)
-    CTEFLOAT        reduce using rule 150 (term -> factor term1 .)
-    CTECHAR         reduce using rule 150 (term -> factor term1 .)
-    ID              reduce using rule 150 (term -> factor term1 .)
-    OPENPAREN       reduce using rule 150 (term -> factor term1 .)
-
-
-state 156
-
-    (151) term1 -> MULTIPLICATION . term
+    (140) exp1 -> SUBSTRACTION . exp
+    (138) exp -> . term exp1
     (150) term -> . factor term1
     (144) factor -> . vcte
     (145) factor -> . factor1
@@ -3542,7 +3502,8 @@ state 156
     SUBSTRACTION    shift and go to state 108
     OPENPAREN       shift and go to state 106
 
-    term                           shift and go to state 197
+    exp                            shift and go to state 197
+    term                           shift and go to state 92
     factor                         shift and go to state 93
     vcte                           shift and go to state 94
     factor1                        shift and go to state 95
@@ -3554,9 +3515,57 @@ state 156
     factor2                        shift and go to state 101
     openP                          shift and go to state 102
 
+state 155
+
+    (141) exp1 -> empty .
+
+    SEMICOLON       reduce using rule 141 (exp1 -> empty .)
+    OPENBRACES      reduce using rule 141 (exp1 -> empty .)
+    COMMA           reduce using rule 141 (exp1 -> empty .)
+    GREATER         reduce using rule 141 (exp1 -> empty .)
+    LESS            reduce using rule 141 (exp1 -> empty .)
+    NOTEQUAL        reduce using rule 141 (exp1 -> empty .)
+    ISEQUAL         reduce using rule 141 (exp1 -> empty .)
+    CLOSEPAREN      reduce using rule 141 (exp1 -> empty .)
+    CLOSEBRACKET    reduce using rule 141 (exp1 -> empty .)
+    OR              reduce using rule 141 (exp1 -> empty .)
+    AND             reduce using rule 141 (exp1 -> empty .)
+    CTEINT          reduce using rule 141 (exp1 -> empty .)
+    CTEFLOAT        reduce using rule 141 (exp1 -> empty .)
+    CTECHAR         reduce using rule 141 (exp1 -> empty .)
+    ID              reduce using rule 141 (exp1 -> empty .)
+    ADDITION        reduce using rule 141 (exp1 -> empty .)
+    SUBSTRACTION    reduce using rule 141 (exp1 -> empty .)
+    OPENPAREN       reduce using rule 141 (exp1 -> empty .)
+
+
+state 156
+
+    (150) term -> factor term1 .
+
+    ADDITION        reduce using rule 150 (term -> factor term1 .)
+    SUBSTRACTION    reduce using rule 150 (term -> factor term1 .)
+    SEMICOLON       reduce using rule 150 (term -> factor term1 .)
+    OPENBRACES      reduce using rule 150 (term -> factor term1 .)
+    COMMA           reduce using rule 150 (term -> factor term1 .)
+    GREATER         reduce using rule 150 (term -> factor term1 .)
+    LESS            reduce using rule 150 (term -> factor term1 .)
+    NOTEQUAL        reduce using rule 150 (term -> factor term1 .)
+    ISEQUAL         reduce using rule 150 (term -> factor term1 .)
+    CLOSEPAREN      reduce using rule 150 (term -> factor term1 .)
+    CLOSEBRACKET    reduce using rule 150 (term -> factor term1 .)
+    OR              reduce using rule 150 (term -> factor term1 .)
+    AND             reduce using rule 150 (term -> factor term1 .)
+    CTEINT          reduce using rule 150 (term -> factor term1 .)
+    CTEFLOAT        reduce using rule 150 (term -> factor term1 .)
+    CTECHAR         reduce using rule 150 (term -> factor term1 .)
+    ID              reduce using rule 150 (term -> factor term1 .)
+    OPENPAREN       reduce using rule 150 (term -> factor term1 .)
+
+
 state 157
 
-    (152) term1 -> DIVISION . term
+    (151) term1 -> MULTIPLICATION . term
     (150) term -> . factor term1
     (144) factor -> . vcte
     (145) factor -> . factor1
@@ -3598,6 +3607,48 @@ state 157
 
 state 158
 
+    (152) term1 -> DIVISION . term
+    (150) term -> . factor term1
+    (144) factor -> . vcte
+    (145) factor -> . factor1
+    (61) vcte -> . cte_int
+    (62) vcte -> . cte_float
+    (63) vcte -> . cte_char
+    (64) vcte -> . id vcte1
+    (65) vcte -> . funCall
+    (146) factor1 -> . factor2 vcte
+    (147) factor1 -> . openP expression closeP
+    (70) cte_int -> . CTEINT
+    (71) cte_float -> . CTEFLOAT
+    (72) cte_char -> . CTECHAR
+    (53) id -> . ID
+    (102) funCall -> . ID OPENPAREN funCall2 CLOSEPAREN
+    (148) factor2 -> . ADDITION
+    (149) factor2 -> . SUBSTRACTION
+    (142) openP -> . OPENPAREN
+
+    CTEINT          shift and go to state 103
+    CTEFLOAT        shift and go to state 104
+    CTECHAR         shift and go to state 105
+    ID              shift and go to state 90
+    ADDITION        shift and go to state 107
+    SUBSTRACTION    shift and go to state 108
+    OPENPAREN       shift and go to state 106
+
+    term                           shift and go to state 199
+    factor                         shift and go to state 93
+    vcte                           shift and go to state 94
+    factor1                        shift and go to state 95
+    cte_int                        shift and go to state 96
+    cte_float                      shift and go to state 97
+    cte_char                       shift and go to state 98
+    id                             shift and go to state 99
+    funCall                        shift and go to state 100
+    factor2                        shift and go to state 101
+    openP                          shift and go to state 102
+
+state 159
+
     (153) term1 -> empty .
 
     ADDITION        reduce using rule 153 (term1 -> empty .)
@@ -3620,7 +3671,7 @@ state 158
     OPENPAREN       reduce using rule 153 (term1 -> empty .)
 
 
-state 159
+state 160
 
     (64) vcte -> id vcte1 .
 
@@ -3646,7 +3697,7 @@ state 159
     OPENPAREN       reduce using rule 64 (vcte -> id vcte1 .)
 
 
-state 160
+state 161
 
     (66) vcte1 -> OPENBRACKET . exp CLOSEBRACKET vcte3
     (138) exp -> . term exp1
@@ -3677,7 +3728,7 @@ state 160
     SUBSTRACTION    shift and go to state 108
     OPENPAREN       shift and go to state 106
 
-    exp                            shift and go to state 199
+    exp                            shift and go to state 200
     term                           shift and go to state 92
     factor                         shift and go to state 93
     vcte                           shift and go to state 94
@@ -3690,7 +3741,7 @@ state 160
     factor2                        shift and go to state 101
     openP                          shift and go to state 102
 
-state 161
+state 162
 
     (67) vcte1 -> empty .
 
@@ -3716,7 +3767,7 @@ state 161
     OPENPAREN       reduce using rule 67 (vcte1 -> empty .)
 
 
-state 162
+state 163
 
     (146) factor1 -> factor2 vcte .
 
@@ -3742,16 +3793,16 @@ state 162
     OPENPAREN       reduce using rule 146 (factor1 -> factor2 vcte .)
 
 
-state 163
+state 164
 
     (147) factor1 -> openP expression . closeP
     (143) closeP -> . CLOSEPAREN
 
-    CLOSEPAREN      shift and go to state 201
+    CLOSEPAREN      shift and go to state 202
 
-    closeP                         shift and go to state 200
+    closeP                         shift and go to state 201
 
-state 164
+state 165
 
     (76) expression -> exp . expression1
     (77) expression1 -> . loper exp
@@ -3762,26 +3813,26 @@ state 164
     (82) loper -> . ISEQUAL
     (154) empty -> .
 
-    GREATER         shift and go to state 205
-    LESS            shift and go to state 206
-    NOTEQUAL        shift and go to state 207
-    ISEQUAL         shift and go to state 208
+    GREATER         shift and go to state 206
+    LESS            shift and go to state 207
+    NOTEQUAL        shift and go to state 208
+    ISEQUAL         shift and go to state 209
     CLOSEPAREN      reduce using rule 154 (empty -> .)
     OR              reduce using rule 154 (empty -> .)
     AND             reduce using rule 154 (empty -> .)
 
-    expression1                    shift and go to state 202
-    loper                          shift and go to state 203
-    empty                          shift and go to state 204
+    expression1                    shift and go to state 203
+    loper                          shift and go to state 204
+    empty                          shift and go to state 205
 
-state 165
+state 166
 
     (42) vars3 -> OPENBRACKET . CTEINT CLOSEBRACKET
 
-    CTEINT          shift and go to state 209
+    CTEINT          shift and go to state 210
 
 
-state 166
+state 167
 
     (40) vars1 -> OPENBRACKET CTEINT CLOSEBRACKET vars3 .
 
@@ -3789,7 +3840,7 @@ state 166
     EQUALS          reduce using rule 40 (vars1 -> OPENBRACKET CTEINT CLOSEBRACKET vars3 .)
 
 
-state 167
+state 168
 
     (43) vars3 -> empty .
 
@@ -3797,7 +3848,7 @@ state 167
     EQUALS          reduce using rule 43 (vars3 -> empty .)
 
 
-state 168
+state 169
 
     (54) assignment -> id assignment1 equals . assignment3 SEMICOLON
     (59) assignment3 -> . exp
@@ -3833,9 +3884,9 @@ state 168
     OPENPAREN       shift and go to state 106
 
     id                             shift and go to state 99
-    assignment3                    shift and go to state 210
-    exp                            shift and go to state 211
-    read                           shift and go to state 212
+    assignment3                    shift and go to state 211
+    exp                            shift and go to state 212
+    read                           shift and go to state 213
     term                           shift and go to state 92
     factor                         shift and go to state 93
     vcte                           shift and go to state 94
@@ -3847,32 +3898,32 @@ state 168
     factor2                        shift and go to state 101
     openP                          shift and go to state 102
 
-state 169
+state 170
 
     (56) assignment1 -> assignment2 assignment1 .
 
     EQUALS          reduce using rule 56 (assignment1 -> assignment2 assignment1 .)
 
 
-state 170
+state 171
 
     (58) assignment2 -> OPENBRACKET exp . CLOSEBRACKET
 
-    CLOSEBRACKET    shift and go to state 213
+    CLOSEBRACKET    shift and go to state 214
 
 
-state 171
+state 172
 
-    (86) condition -> IF head body_cond . condition1
-    (87) condition1 -> . elseif head body_cond condition1
+    (86) condition -> IF head_cond body . condition1
+    (87) condition1 -> . elseif head_cond body condition1
     (88) condition1 -> . else body
     (89) condition1 -> . empty
     (90) elseif -> . ELSEIF
     (91) else -> . ELSE
     (154) empty -> .
 
-    ELSEIF          shift and go to state 218
-    ELSE            shift and go to state 219
+    ELSEIF          shift and go to state 219
+    ELSE            shift and go to state 220
     IF              reduce using rule 154 (empty -> .)
     PRINT           reduce using rule 154 (empty -> .)
     READ            reduce using rule 154 (empty -> .)
@@ -3899,14 +3950,14 @@ state 171
     ARC             reduce using rule 154 (empty -> .)
     CLOSEBRACES     reduce using rule 154 (empty -> .)
 
-    condition1                     shift and go to state 214
-    elseif                         shift and go to state 215
-    else                           shift and go to state 216
-    empty                          shift and go to state 217
+    condition1                     shift and go to state 215
+    elseif                         shift and go to state 216
+    else                           shift and go to state 217
+    empty                          shift and go to state 218
 
-state 172
+state 173
 
-    (96) body_cond -> OPENBRACES . body1 close_condition
+    (96) body -> OPENBRACES . body1 CLOSEBRACES
     (98) body1 -> . stmt body1
     (99) body1 -> . empty
     (14) stmt -> . assignment
@@ -3920,7 +3971,7 @@ state 172
     (22) stmt -> . return
     (154) empty -> .
     (54) assignment -> . id assignment1 equals assignment3 SEMICOLON
-    (86) condition -> . IF head body_cond condition1
+    (86) condition -> . IF head_cond body condition1
     (47) print -> . PRINT OPENPAREN expression CLOSEPAREN SEMICOLON
     (12) loop -> . while
     (13) loop -> . for
@@ -3982,9 +4033,9 @@ state 172
     BACK            shift and go to state 83
     ARC             shift and go to state 84
 
-    body1                          shift and go to state 220
-    stmt                           shift and go to state 221
-    empty                          shift and go to state 222
+    body1                          shift and go to state 221
+    stmt                           shift and go to state 222
+    empty                          shift and go to state 223
     assignment                     shift and go to state 41
     condition                      shift and go to state 42
     print                          shift and go to state 43
@@ -4006,41 +4057,43 @@ state 172
     graphview2                     shift and go to state 73
     graphmove2                     shift and go to state 76
 
-state 173
-
-    (92) head -> OPENPAREN head1 . CLOSEPAREN
-
-    CLOSEPAREN      shift and go to state 223
-
-
 state 174
 
-    (93) head1 -> expression .
+    (93) head_cond -> OPENPAREN head1 . close_condition
+    (97) close_condition -> . CLOSEPAREN
+
+    CLOSEPAREN      shift and go to state 225
+
+    close_condition                shift and go to state 224
+
+state 175
+
+    (94) head1 -> expression .
     (83) logical -> expression . logical1 expression
     (84) logical1 -> . OR
     (85) logical1 -> . AND
 
-    CLOSEPAREN      reduce using rule 93 (head1 -> expression .)
-    OR              shift and go to state 225
-    AND             shift and go to state 226
+    CLOSEPAREN      reduce using rule 94 (head1 -> expression .)
+    OR              shift and go to state 227
+    AND             shift and go to state 228
 
-    logical1                       shift and go to state 224
-
-state 175
-
-    (94) head1 -> logical .
-
-    CLOSEPAREN      reduce using rule 94 (head1 -> logical .)
-
+    logical1                       shift and go to state 226
 
 state 176
 
-    (47) print -> PRINT OPENPAREN expression . CLOSEPAREN SEMICOLON
+    (95) head1 -> logical .
 
-    CLOSEPAREN      shift and go to state 227
+    CLOSEPAREN      reduce using rule 95 (head1 -> logical .)
 
 
 state 177
+
+    (47) print -> PRINT OPENPAREN expression . CLOSEPAREN SEMICOLON
+
+    CLOSEPAREN      shift and go to state 229
+
+
+state 178
 
     (48) read -> READ OPENPAREN id . read1 CLOSEPAREN SEMICOLON
     (49) read1 -> . OPENBRACKET exp CLOSEBRACKET OPENBRACKET exp CLOSEBRACKET
@@ -4048,13 +4101,13 @@ state 177
     (51) read1 -> . empty
     (154) empty -> .
 
-    OPENBRACKET     shift and go to state 229
+    OPENBRACKET     shift and go to state 231
     CLOSEPAREN      reduce using rule 154 (empty -> .)
 
-    read1                          shift and go to state 228
-    empty                          shift and go to state 230
+    read1                          shift and go to state 230
+    empty                          shift and go to state 232
 
-state 178
+state 179
 
     (53) id -> ID .
 
@@ -4062,7 +4115,7 @@ state 178
     CLOSEPAREN      reduce using rule 53 (id -> ID .)
 
 
-state 179
+state 180
 
     (126) graphr -> REPEAT exp OPENBRACES . graphstmt graphr1 CLOSEBRACES
     (109) graphstmt -> . graphfig
@@ -4107,7 +4160,7 @@ state 179
     BACK            shift and go to state 83
     ARC             shift and go to state 84
 
-    graphstmt                      shift and go to state 231
+    graphstmt                      shift and go to state 233
     graphfig                       shift and go to state 56
     graphview                      shift and go to state 57
     graphmove                      shift and go to state 58
@@ -4117,34 +4170,34 @@ state 179
     graphview2                     shift and go to state 73
     graphmove2                     shift and go to state 76
 
-state 180
+state 181
 
     (102) funCall -> ID OPENPAREN funCall2 . CLOSEPAREN
 
-    CLOSEPAREN      shift and go to state 232
+    CLOSEPAREN      shift and go to state 234
 
 
-state 181
+state 182
 
     (103) funCall2 -> exp . funCall3
     (105) funCall3 -> . COMMA exp funCall2
     (106) funCall3 -> . empty
     (154) empty -> .
 
-    COMMA           shift and go to state 234
+    COMMA           shift and go to state 236
     CLOSEPAREN      reduce using rule 154 (empty -> .)
 
-    funCall3                       shift and go to state 233
-    empty                          shift and go to state 235
+    funCall3                       shift and go to state 235
+    empty                          shift and go to state 237
 
-state 182
+state 183
 
     (104) funCall2 -> empty .
 
     CLOSEPAREN      reduce using rule 104 (funCall2 -> empty .)
 
 
-state 183
+state 184
 
     (73) return -> RETURN return1 SEMICOLON .
 
@@ -4175,7 +4228,7 @@ state 183
     CLOSEBRACES     reduce using rule 73 (return -> RETURN return1 SEMICOLON .)
 
 
-state 184
+state 185
 
     (101) while -> WHILE head body .
 
@@ -4206,130 +4259,35 @@ state 184
     CLOSEBRACES     reduce using rule 101 (while -> WHILE head body .)
 
 
-state 185
-
-    (95) body -> OPENBRACES . body1 CLOSEBRACES
-    (98) body1 -> . stmt body1
-    (99) body1 -> . empty
-    (14) stmt -> . assignment
-    (15) stmt -> . condition
-    (16) stmt -> . print
-    (17) stmt -> . loop
-    (18) stmt -> . read
-    (19) stmt -> . graphstmt
-    (20) stmt -> . graphr
-    (21) stmt -> . funCall SEMICOLON
-    (22) stmt -> . return
-    (154) empty -> .
-    (54) assignment -> . id assignment1 equals assignment3 SEMICOLON
-    (86) condition -> . IF head body_cond condition1
-    (47) print -> . PRINT OPENPAREN expression CLOSEPAREN SEMICOLON
-    (12) loop -> . while
-    (13) loop -> . for
-    (48) read -> . READ OPENPAREN id read1 CLOSEPAREN SEMICOLON
-    (109) graphstmt -> . graphfig
-    (110) graphstmt -> . graphview
-    (111) graphstmt -> . graphmove
-    (126) graphr -> . REPEAT exp OPENBRACES graphstmt graphr1 CLOSEBRACES
-    (102) funCall -> . ID OPENPAREN funCall2 CLOSEPAREN
-    (73) return -> . RETURN return1 SEMICOLON
-    (53) id -> . ID
-    (101) while -> . WHILE head body
-    (100) for -> . FOR OPENPAREN ID TWODOTS exp CLOSEPAREN body
-    (112) graphfig -> . graphfig1 SEMICOLON
-    (129) graphview -> . graphview1 SEMICOLON
-    (117) graphmove -> . graphmove1 SEMICOLON
-    (113) graphfig1 -> . CIRCLE laRegla2
-    (114) graphfig1 -> . SQUARE laRegla2
-    (115) graphfig1 -> . TRIANGLE laRegla
-    (116) graphfig1 -> . RECTANGLE laRegla
-    (130) graphview1 -> . HIDE_STAR
-    (131) graphview1 -> . SHOW_STAR
-    (132) graphview1 -> . graphview2 exp
-    (118) graphmove1 -> . HAND_DOWN
-    (119) graphmove1 -> . HAND_UP
-    (120) graphmove1 -> . graphmove2
-    (133) graphview2 -> . SETXY graphview3
-    (134) graphview2 -> . COLOR_STAR
-    (135) graphview2 -> . SIZE_STAR
-    (121) graphmove2 -> . GO laRegla2
-    (122) graphmove2 -> . LEFT laRegla2
-    (123) graphmove2 -> . RIGHT laRegla2
-    (124) graphmove2 -> . BACK laRegla2
-    (125) graphmove2 -> . ARC laRegla
-
-    CLOSEBRACES     reduce using rule 154 (empty -> .)
-    IF              shift and go to state 51
-    PRINT           shift and go to state 52
-    READ            shift and go to state 55
-    REPEAT          shift and go to state 59
-    ID              shift and go to state 60
-    RETURN          shift and go to state 61
-    WHILE           shift and go to state 62
-    FOR             shift and go to state 63
-    CIRCLE          shift and go to state 67
-    SQUARE          shift and go to state 68
-    TRIANGLE        shift and go to state 69
-    RECTANGLE       shift and go to state 70
-    HIDE_STAR       shift and go to state 71
-    SHOW_STAR       shift and go to state 72
-    HAND_DOWN       shift and go to state 74
-    HAND_UP         shift and go to state 75
-    SETXY           shift and go to state 77
-    COLOR_STAR      shift and go to state 78
-    SIZE_STAR       shift and go to state 79
-    GO              shift and go to state 80
-    LEFT            shift and go to state 81
-    RIGHT           shift and go to state 82
-    BACK            shift and go to state 83
-    ARC             shift and go to state 84
-
-    body1                          shift and go to state 236
-    stmt                           shift and go to state 221
-    empty                          shift and go to state 222
-    assignment                     shift and go to state 41
-    condition                      shift and go to state 42
-    print                          shift and go to state 43
-    loop                           shift and go to state 44
-    read                           shift and go to state 45
-    graphstmt                      shift and go to state 46
-    graphr                         shift and go to state 47
-    funCall                        shift and go to state 48
-    return                         shift and go to state 49
-    id                             shift and go to state 50
-    while                          shift and go to state 53
-    for                            shift and go to state 54
-    graphfig                       shift and go to state 56
-    graphview                      shift and go to state 57
-    graphmove                      shift and go to state 58
-    graphfig1                      shift and go to state 64
-    graphview1                     shift and go to state 65
-    graphmove1                     shift and go to state 66
-    graphview2                     shift and go to state 73
-    graphmove2                     shift and go to state 76
-
 state 186
 
-    (100) for -> FOR OPENPAREN ID . TWODOTS exp CLOSEPAREN body
-
-    TWODOTS         shift and go to state 237
-
-
-state 187
-
-    (108) laRegla2 -> OPENPAREN exp . CLOSEPAREN
+    (92) head -> OPENPAREN head1 . CLOSEPAREN
 
     CLOSEPAREN      shift and go to state 238
 
 
+state 187
+
+    (100) for -> FOR OPENPAREN ID . TWODOTS exp CLOSEPAREN body
+
+    TWODOTS         shift and go to state 239
+
+
 state 188
 
-    (107) laRegla -> OPENPAREN exp . COMMA exp CLOSEPAREN
+    (108) laRegla2 -> OPENPAREN exp . CLOSEPAREN
 
-    COMMA           shift and go to state 239
+    CLOSEPAREN      shift and go to state 240
 
 
 state 189
+
+    (107) laRegla -> OPENPAREN exp . COMMA exp CLOSEPAREN
+
+    COMMA           shift and go to state 241
+
+
+state 190
 
     (136) graphview3 -> exp COMMA .
 
@@ -4342,16 +4300,16 @@ state 189
     OPENPAREN       reduce using rule 136 (graphview3 -> exp COMMA .)
 
 
-state 190
+state 191
 
     (25) function -> FUN functionI function2 inicia_fun declara_vars function4 . termina_fun
     (29) termina_fun -> . CLOSEBRACES
 
-    CLOSEBRACES     shift and go to state 241
+    CLOSEBRACES     shift and go to state 243
 
-    termina_fun                    shift and go to state 240
+    termina_fun                    shift and go to state 242
 
-state 191
+state 192
 
     (33) function4 -> stmt . function4
     (33) function4 -> . stmt function4
@@ -4367,7 +4325,7 @@ state 191
     (22) stmt -> . return
     (154) empty -> .
     (54) assignment -> . id assignment1 equals assignment3 SEMICOLON
-    (86) condition -> . IF head body_cond condition1
+    (86) condition -> . IF head_cond body condition1
     (47) print -> . PRINT OPENPAREN expression CLOSEPAREN SEMICOLON
     (12) loop -> . while
     (13) loop -> . for
@@ -4429,9 +4387,9 @@ state 191
     BACK            shift and go to state 83
     ARC             shift and go to state 84
 
-    stmt                           shift and go to state 191
-    function4                      shift and go to state 242
-    empty                          shift and go to state 192
+    stmt                           shift and go to state 192
+    function4                      shift and go to state 244
+    empty                          shift and go to state 193
     assignment                     shift and go to state 41
     condition                      shift and go to state 42
     print                          shift and go to state 43
@@ -4453,21 +4411,21 @@ state 191
     graphview2                     shift and go to state 73
     graphmove2                     shift and go to state 76
 
-state 192
+state 193
 
     (34) function4 -> empty .
 
     CLOSEBRACES     reduce using rule 34 (function4 -> empty .)
 
 
-state 193
+state 194
 
     (31) function3 -> type ID function5 .
 
     CLOSEPAREN      reduce using rule 31 (function3 -> type ID function5 .)
 
 
-state 194
+state 195
 
     (35) function5 -> COMMA . type ID function3
     (44) type -> . INT
@@ -4478,9 +4436,9 @@ state 194
     FLOAT           shift and go to state 10
     CHAR            shift and go to state 11
 
-    type                           shift and go to state 243
+    type                           shift and go to state 245
 
-state 195
+state 196
 
     (139) exp1 -> ADDITION exp .
 
@@ -4504,7 +4462,7 @@ state 195
     OPENPAREN       reduce using rule 139 (exp1 -> ADDITION exp .)
 
 
-state 196
+state 197
 
     (140) exp1 -> SUBSTRACTION exp .
 
@@ -4528,7 +4486,7 @@ state 196
     OPENPAREN       reduce using rule 140 (exp1 -> SUBSTRACTION exp .)
 
 
-state 197
+state 198
 
     (151) term1 -> MULTIPLICATION term .
 
@@ -4552,7 +4510,7 @@ state 197
     OPENPAREN       reduce using rule 151 (term1 -> MULTIPLICATION term .)
 
 
-state 198
+state 199
 
     (152) term1 -> DIVISION term .
 
@@ -4576,14 +4534,14 @@ state 198
     OPENPAREN       reduce using rule 152 (term1 -> DIVISION term .)
 
 
-state 199
+state 200
 
     (66) vcte1 -> OPENBRACKET exp . CLOSEBRACKET vcte3
 
-    CLOSEBRACKET    shift and go to state 244
+    CLOSEBRACKET    shift and go to state 246
 
 
-state 200
+state 201
 
     (147) factor1 -> openP expression closeP .
 
@@ -4609,7 +4567,7 @@ state 200
     OPENPAREN       reduce using rule 147 (factor1 -> openP expression closeP .)
 
 
-state 201
+state 202
 
     (143) closeP -> CLOSEPAREN .
 
@@ -4635,7 +4593,7 @@ state 201
     OPENPAREN       reduce using rule 143 (closeP -> CLOSEPAREN .)
 
 
-state 202
+state 203
 
     (76) expression -> exp expression1 .
 
@@ -4644,7 +4602,7 @@ state 202
     AND             reduce using rule 76 (expression -> exp expression1 .)
 
 
-state 203
+state 204
 
     (77) expression1 -> loper . exp
     (138) exp -> . term exp1
@@ -4675,7 +4633,7 @@ state 203
     SUBSTRACTION    shift and go to state 108
     OPENPAREN       shift and go to state 106
 
-    exp                            shift and go to state 245
+    exp                            shift and go to state 247
     term                           shift and go to state 92
     factor                         shift and go to state 93
     vcte                           shift and go to state 94
@@ -4688,7 +4646,7 @@ state 203
     factor2                        shift and go to state 101
     openP                          shift and go to state 102
 
-state 204
+state 205
 
     (78) expression1 -> empty .
 
@@ -4697,7 +4655,7 @@ state 204
     AND             reduce using rule 78 (expression1 -> empty .)
 
 
-state 205
+state 206
 
     (79) loper -> GREATER .
 
@@ -4710,7 +4668,7 @@ state 205
     OPENPAREN       reduce using rule 79 (loper -> GREATER .)
 
 
-state 206
+state 207
 
     (80) loper -> LESS .
 
@@ -4723,7 +4681,7 @@ state 206
     OPENPAREN       reduce using rule 80 (loper -> LESS .)
 
 
-state 207
+state 208
 
     (81) loper -> NOTEQUAL .
 
@@ -4736,7 +4694,7 @@ state 207
     OPENPAREN       reduce using rule 81 (loper -> NOTEQUAL .)
 
 
-state 208
+state 209
 
     (82) loper -> ISEQUAL .
 
@@ -4749,35 +4707,35 @@ state 208
     OPENPAREN       reduce using rule 82 (loper -> ISEQUAL .)
 
 
-state 209
+state 210
 
     (42) vars3 -> OPENBRACKET CTEINT . CLOSEBRACKET
 
-    CLOSEBRACKET    shift and go to state 246
-
-
-state 210
-
-    (54) assignment -> id assignment1 equals assignment3 . SEMICOLON
-
-    SEMICOLON       shift and go to state 247
+    CLOSEBRACKET    shift and go to state 248
 
 
 state 211
+
+    (54) assignment -> id assignment1 equals assignment3 . SEMICOLON
+
+    SEMICOLON       shift and go to state 249
+
+
+state 212
 
     (59) assignment3 -> exp .
 
     SEMICOLON       reduce using rule 59 (assignment3 -> exp .)
 
 
-state 212
+state 213
 
     (60) assignment3 -> read .
 
     SEMICOLON       reduce using rule 60 (assignment3 -> read .)
 
 
-state 213
+state 214
 
     (58) assignment2 -> OPENBRACKET exp CLOSEBRACKET .
 
@@ -4785,56 +4743,56 @@ state 213
     EQUALS          reduce using rule 58 (assignment2 -> OPENBRACKET exp CLOSEBRACKET .)
 
 
-state 214
-
-    (86) condition -> IF head body_cond condition1 .
-
-    IF              reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    PRINT           reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    READ            reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    REPEAT          reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    ID              reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    RETURN          reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    WHILE           reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    FOR             reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    CIRCLE          reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    SQUARE          reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    TRIANGLE        reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    RECTANGLE       reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    HIDE_STAR       reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    SHOW_STAR       reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    HAND_DOWN       reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    HAND_UP         reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    SETXY           reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    COLOR_STAR      reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    SIZE_STAR       reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    GO              reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    LEFT            reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    RIGHT           reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    BACK            reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    ARC             reduce using rule 86 (condition -> IF head body_cond condition1 .)
-    CLOSEBRACES     reduce using rule 86 (condition -> IF head body_cond condition1 .)
-
-
 state 215
 
-    (87) condition1 -> elseif . head body_cond condition1
-    (92) head -> . OPENPAREN head1 CLOSEPAREN
+    (86) condition -> IF head_cond body condition1 .
 
-    OPENPAREN       shift and go to state 118
+    IF              reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    PRINT           reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    READ            reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    REPEAT          reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    ID              reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    RETURN          reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    WHILE           reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    FOR             reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    CIRCLE          reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    SQUARE          reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    TRIANGLE        reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    RECTANGLE       reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    HIDE_STAR       reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    SHOW_STAR       reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    HAND_DOWN       reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    HAND_UP         reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    SETXY           reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    COLOR_STAR      reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    SIZE_STAR       reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    GO              reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    LEFT            reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    RIGHT           reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    BACK            reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    ARC             reduce using rule 86 (condition -> IF head_cond body condition1 .)
+    CLOSEBRACES     reduce using rule 86 (condition -> IF head_cond body condition1 .)
 
-    head                           shift and go to state 248
 
 state 216
 
-    (88) condition1 -> else . body
-    (95) body -> . OPENBRACES body1 CLOSEBRACES
+    (87) condition1 -> elseif . head_cond body condition1
+    (93) head_cond -> . OPENPAREN head1 close_condition
 
-    OPENBRACES      shift and go to state 185
+    OPENPAREN       shift and go to state 118
 
-    body                           shift and go to state 249
+    head_cond                      shift and go to state 250
 
 state 217
+
+    (88) condition1 -> else . body
+    (96) body -> . OPENBRACES body1 CLOSEBRACES
+
+    OPENBRACES      shift and go to state 173
+
+    body                           shift and go to state 251
+
+state 218
 
     (89) condition1 -> empty .
 
@@ -4865,30 +4823,28 @@ state 217
     CLOSEBRACES     reduce using rule 89 (condition1 -> empty .)
 
 
-state 218
+state 219
 
     (90) elseif -> ELSEIF .
 
     OPENPAREN       reduce using rule 90 (elseif -> ELSEIF .)
 
 
-state 219
+state 220
 
     (91) else -> ELSE .
 
     OPENBRACES      reduce using rule 91 (else -> ELSE .)
 
 
-state 220
-
-    (96) body_cond -> OPENBRACES body1 . close_condition
-    (97) close_condition -> . CLOSEBRACES
-
-    CLOSEBRACES     shift and go to state 251
-
-    close_condition                shift and go to state 250
-
 state 221
+
+    (96) body -> OPENBRACES body1 . CLOSEBRACES
+
+    CLOSEBRACES     shift and go to state 252
+
+
+state 222
 
     (98) body1 -> stmt . body1
     (98) body1 -> . stmt body1
@@ -4904,7 +4860,7 @@ state 221
     (22) stmt -> . return
     (154) empty -> .
     (54) assignment -> . id assignment1 equals assignment3 SEMICOLON
-    (86) condition -> . IF head body_cond condition1
+    (86) condition -> . IF head_cond body condition1
     (47) print -> . PRINT OPENPAREN expression CLOSEPAREN SEMICOLON
     (12) loop -> . while
     (13) loop -> . for
@@ -4966,9 +4922,9 @@ state 221
     BACK            shift and go to state 83
     ARC             shift and go to state 84
 
-    stmt                           shift and go to state 221
-    body1                          shift and go to state 252
-    empty                          shift and go to state 222
+    stmt                           shift and go to state 222
+    body1                          shift and go to state 253
+    empty                          shift and go to state 223
     assignment                     shift and go to state 41
     condition                      shift and go to state 42
     print                          shift and go to state 43
@@ -4990,21 +4946,28 @@ state 221
     graphview2                     shift and go to state 73
     graphmove2                     shift and go to state 76
 
-state 222
+state 223
 
     (99) body1 -> empty .
 
     CLOSEBRACES     reduce using rule 99 (body1 -> empty .)
 
 
-state 223
-
-    (92) head -> OPENPAREN head1 CLOSEPAREN .
-
-    OPENBRACES      reduce using rule 92 (head -> OPENPAREN head1 CLOSEPAREN .)
-
-
 state 224
+
+    (93) head_cond -> OPENPAREN head1 close_condition .
+
+    OPENBRACES      reduce using rule 93 (head_cond -> OPENPAREN head1 close_condition .)
+
+
+state 225
+
+    (97) close_condition -> CLOSEPAREN .
+
+    OPENBRACES      reduce using rule 97 (close_condition -> CLOSEPAREN .)
+
+
+state 226
 
     (83) logical -> expression logical1 . expression
     (76) expression -> . exp expression1
@@ -5036,8 +4999,8 @@ state 224
     SUBSTRACTION    shift and go to state 108
     OPENPAREN       shift and go to state 106
 
-    expression                     shift and go to state 253
-    exp                            shift and go to state 164
+    expression                     shift and go to state 254
+    exp                            shift and go to state 165
     term                           shift and go to state 92
     factor                         shift and go to state 93
     vcte                           shift and go to state 94
@@ -5050,7 +5013,7 @@ state 224
     factor2                        shift and go to state 101
     openP                          shift and go to state 102
 
-state 225
+state 227
 
     (84) logical1 -> OR .
 
@@ -5063,7 +5026,7 @@ state 225
     OPENPAREN       reduce using rule 84 (logical1 -> OR .)
 
 
-state 226
+state 228
 
     (85) logical1 -> AND .
 
@@ -5076,21 +5039,21 @@ state 226
     OPENPAREN       reduce using rule 85 (logical1 -> AND .)
 
 
-state 227
+state 229
 
     (47) print -> PRINT OPENPAREN expression CLOSEPAREN . SEMICOLON
 
-    SEMICOLON       shift and go to state 254
+    SEMICOLON       shift and go to state 255
 
 
-state 228
+state 230
 
     (48) read -> READ OPENPAREN id read1 . CLOSEPAREN SEMICOLON
 
-    CLOSEPAREN      shift and go to state 255
+    CLOSEPAREN      shift and go to state 256
 
 
-state 229
+state 231
 
     (49) read1 -> OPENBRACKET . exp CLOSEBRACKET OPENBRACKET exp CLOSEBRACKET
     (50) read1 -> OPENBRACKET . exp CLOSEBRACKET
@@ -5122,7 +5085,7 @@ state 229
     SUBSTRACTION    shift and go to state 108
     OPENPAREN       shift and go to state 106
 
-    exp                            shift and go to state 256
+    exp                            shift and go to state 257
     term                           shift and go to state 92
     factor                         shift and go to state 93
     vcte                           shift and go to state 94
@@ -5135,14 +5098,14 @@ state 229
     factor2                        shift and go to state 101
     openP                          shift and go to state 102
 
-state 230
+state 232
 
     (51) read1 -> empty .
 
     CLOSEPAREN      reduce using rule 51 (read1 -> empty .)
 
 
-state 231
+state 233
 
     (126) graphr -> REPEAT exp OPENBRACES graphstmt . graphr1 CLOSEBRACES
     (127) graphr1 -> . graphstmt graphr1
@@ -5191,9 +5154,9 @@ state 231
     BACK            shift and go to state 83
     ARC             shift and go to state 84
 
-    graphstmt                      shift and go to state 257
-    graphr1                        shift and go to state 258
-    empty                          shift and go to state 259
+    graphstmt                      shift and go to state 258
+    graphr1                        shift and go to state 259
+    empty                          shift and go to state 260
     graphfig                       shift and go to state 56
     graphview                      shift and go to state 57
     graphmove                      shift and go to state 58
@@ -5203,7 +5166,7 @@ state 231
     graphview2                     shift and go to state 73
     graphmove2                     shift and go to state 76
 
-state 232
+state 234
 
     (102) funCall -> ID OPENPAREN funCall2 CLOSEPAREN .
 
@@ -5229,14 +5192,14 @@ state 232
     OPENPAREN       reduce using rule 102 (funCall -> ID OPENPAREN funCall2 CLOSEPAREN .)
 
 
-state 233
+state 235
 
     (103) funCall2 -> exp funCall3 .
 
     CLOSEPAREN      reduce using rule 103 (funCall2 -> exp funCall3 .)
 
 
-state 234
+state 236
 
     (105) funCall3 -> COMMA . exp funCall2
     (138) exp -> . term exp1
@@ -5267,7 +5230,7 @@ state 234
     SUBSTRACTION    shift and go to state 108
     OPENPAREN       shift and go to state 106
 
-    exp                            shift and go to state 260
+    exp                            shift and go to state 261
     term                           shift and go to state 92
     factor                         shift and go to state 93
     vcte                           shift and go to state 94
@@ -5280,21 +5243,21 @@ state 234
     factor2                        shift and go to state 101
     openP                          shift and go to state 102
 
-state 235
+state 237
 
     (106) funCall3 -> empty .
 
     CLOSEPAREN      reduce using rule 106 (funCall3 -> empty .)
 
 
-state 236
+state 238
 
-    (95) body -> OPENBRACES body1 . CLOSEBRACES
+    (92) head -> OPENPAREN head1 CLOSEPAREN .
 
-    CLOSEBRACES     shift and go to state 261
+    OPENBRACES      reduce using rule 92 (head -> OPENPAREN head1 CLOSEPAREN .)
 
 
-state 237
+state 239
 
     (100) for -> FOR OPENPAREN ID TWODOTS . exp CLOSEPAREN body
     (138) exp -> . term exp1
@@ -5338,14 +5301,14 @@ state 237
     factor2                        shift and go to state 101
     openP                          shift and go to state 102
 
-state 238
+state 240
 
     (108) laRegla2 -> OPENPAREN exp CLOSEPAREN .
 
     SEMICOLON       reduce using rule 108 (laRegla2 -> OPENPAREN exp CLOSEPAREN .)
 
 
-state 239
+state 241
 
     (107) laRegla -> OPENPAREN exp COMMA . exp CLOSEPAREN
     (138) exp -> . term exp1
@@ -5389,7 +5352,7 @@ state 239
     factor2                        shift and go to state 101
     openP                          shift and go to state 102
 
-state 240
+state 242
 
     (25) function -> FUN functionI function2 inicia_fun declara_vars function4 termina_fun .
 
@@ -5397,7 +5360,7 @@ state 240
     MULTIPLICATION  reduce using rule 25 (function -> FUN functionI function2 inicia_fun declara_vars function4 termina_fun .)
 
 
-state 241
+state 243
 
     (29) termina_fun -> CLOSEBRACES .
 
@@ -5405,21 +5368,21 @@ state 241
     MULTIPLICATION  reduce using rule 29 (termina_fun -> CLOSEBRACES .)
 
 
-state 242
+state 244
 
     (33) function4 -> stmt function4 .
 
     CLOSEBRACES     reduce using rule 33 (function4 -> stmt function4 .)
 
 
-state 243
+state 245
 
     (35) function5 -> COMMA type . ID function3
 
     ID              shift and go to state 264
 
 
-state 244
+state 246
 
     (66) vcte1 -> OPENBRACKET exp CLOSEBRACKET . vcte3
     (68) vcte3 -> . OPENBRACKET exp CLOSEBRACKET
@@ -5451,7 +5414,7 @@ state 244
     vcte3                          shift and go to state 266
     empty                          shift and go to state 267
 
-state 245
+state 247
 
     (77) expression1 -> loper exp .
 
@@ -5460,7 +5423,7 @@ state 245
     AND             reduce using rule 77 (expression1 -> loper exp .)
 
 
-state 246
+state 248
 
     (42) vars3 -> OPENBRACKET CTEINT CLOSEBRACKET .
 
@@ -5468,7 +5431,7 @@ state 246
     EQUALS          reduce using rule 42 (vars3 -> OPENBRACKET CTEINT CLOSEBRACKET .)
 
 
-state 247
+state 249
 
     (54) assignment -> id assignment1 equals assignment3 SEMICOLON .
 
@@ -5499,16 +5462,16 @@ state 247
     CLOSEBRACES     reduce using rule 54 (assignment -> id assignment1 equals assignment3 SEMICOLON .)
 
 
-state 248
+state 250
 
-    (87) condition1 -> elseif head . body_cond condition1
-    (96) body_cond -> . OPENBRACES body1 close_condition
+    (87) condition1 -> elseif head_cond . body condition1
+    (96) body -> . OPENBRACES body1 CLOSEBRACES
 
-    OPENBRACES      shift and go to state 172
+    OPENBRACES      shift and go to state 173
 
-    body_cond                      shift and go to state 268
+    body                           shift and go to state 268
 
-state 249
+state 251
 
     (88) condition1 -> else body .
 
@@ -5539,87 +5502,54 @@ state 249
     CLOSEBRACES     reduce using rule 88 (condition1 -> else body .)
 
 
-state 250
-
-    (96) body_cond -> OPENBRACES body1 close_condition .
-
-    ELSEIF          reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    ELSE            reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    IF              reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    PRINT           reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    READ            reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    REPEAT          reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    ID              reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    RETURN          reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    WHILE           reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    FOR             reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    CIRCLE          reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    SQUARE          reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    TRIANGLE        reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    RECTANGLE       reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    HIDE_STAR       reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    SHOW_STAR       reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    HAND_DOWN       reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    HAND_UP         reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    SETXY           reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    COLOR_STAR      reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    SIZE_STAR       reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    GO              reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    LEFT            reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    RIGHT           reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    BACK            reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    ARC             reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-    CLOSEBRACES     reduce using rule 96 (body_cond -> OPENBRACES body1 close_condition .)
-
-
-state 251
-
-    (97) close_condition -> CLOSEBRACES .
-
-    ELSEIF          reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    ELSE            reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    IF              reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    PRINT           reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    READ            reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    REPEAT          reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    ID              reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    RETURN          reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    WHILE           reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    FOR             reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    CIRCLE          reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    SQUARE          reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    TRIANGLE        reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    RECTANGLE       reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    HIDE_STAR       reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    SHOW_STAR       reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    HAND_DOWN       reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    HAND_UP         reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    SETXY           reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    COLOR_STAR      reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    SIZE_STAR       reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    GO              reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    LEFT            reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    RIGHT           reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    BACK            reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    ARC             reduce using rule 97 (close_condition -> CLOSEBRACES .)
-    CLOSEBRACES     reduce using rule 97 (close_condition -> CLOSEBRACES .)
-
-
 state 252
+
+    (96) body -> OPENBRACES body1 CLOSEBRACES .
+
+    ELSEIF          reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    ELSE            reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    IF              reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    PRINT           reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    READ            reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    REPEAT          reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    ID              reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    RETURN          reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    WHILE           reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    FOR             reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    CIRCLE          reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    SQUARE          reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    TRIANGLE        reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    RECTANGLE       reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    HIDE_STAR       reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    SHOW_STAR       reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    HAND_DOWN       reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    HAND_UP         reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    SETXY           reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    COLOR_STAR      reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    SIZE_STAR       reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    GO              reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    LEFT            reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    RIGHT           reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    BACK            reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    ARC             reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+    CLOSEBRACES     reduce using rule 96 (body -> OPENBRACES body1 CLOSEBRACES .)
+
+
+state 253
 
     (98) body1 -> stmt body1 .
 
     CLOSEBRACES     reduce using rule 98 (body1 -> stmt body1 .)
 
 
-state 253
+state 254
 
     (83) logical -> expression logical1 expression .
 
     CLOSEPAREN      reduce using rule 83 (logical -> expression logical1 expression .)
 
 
-state 254
+state 255
 
     (47) print -> PRINT OPENPAREN expression CLOSEPAREN SEMICOLON .
 
@@ -5650,14 +5580,14 @@ state 254
     CLOSEBRACES     reduce using rule 47 (print -> PRINT OPENPAREN expression CLOSEPAREN SEMICOLON .)
 
 
-state 255
+state 256
 
     (48) read -> READ OPENPAREN id read1 CLOSEPAREN . SEMICOLON
 
     SEMICOLON       shift and go to state 269
 
 
-state 256
+state 257
 
     (49) read1 -> OPENBRACKET exp . CLOSEBRACKET OPENBRACKET exp CLOSEBRACKET
     (50) read1 -> OPENBRACKET exp . CLOSEBRACKET
@@ -5665,7 +5595,7 @@ state 256
     CLOSEBRACKET    shift and go to state 270
 
 
-state 257
+state 258
 
     (127) graphr1 -> graphstmt . graphr1
     (127) graphr1 -> . graphstmt graphr1
@@ -5714,9 +5644,9 @@ state 257
     BACK            shift and go to state 83
     ARC             shift and go to state 84
 
-    graphstmt                      shift and go to state 257
+    graphstmt                      shift and go to state 258
     graphr1                        shift and go to state 271
-    empty                          shift and go to state 259
+    empty                          shift and go to state 260
     graphfig                       shift and go to state 56
     graphview                      shift and go to state 57
     graphmove                      shift and go to state 58
@@ -5726,21 +5656,21 @@ state 257
     graphview2                     shift and go to state 73
     graphmove2                     shift and go to state 76
 
-state 258
+state 259
 
     (126) graphr -> REPEAT exp OPENBRACES graphstmt graphr1 . CLOSEBRACES
 
     CLOSEBRACES     shift and go to state 272
 
 
-state 259
+state 260
 
     (128) graphr1 -> empty .
 
     CLOSEBRACES     reduce using rule 128 (graphr1 -> empty .)
 
 
-state 260
+state 261
 
     (105) funCall3 -> COMMA exp . funCall2
     (103) funCall2 -> . exp funCall3
@@ -5775,9 +5705,9 @@ state 260
     SUBSTRACTION    shift and go to state 108
     OPENPAREN       shift and go to state 106
 
-    exp                            shift and go to state 181
+    exp                            shift and go to state 182
     funCall2                       shift and go to state 273
-    empty                          shift and go to state 182
+    empty                          shift and go to state 183
     term                           shift and go to state 92
     factor                         shift and go to state 93
     vcte                           shift and go to state 94
@@ -5789,37 +5719,6 @@ state 260
     funCall                        shift and go to state 100
     factor2                        shift and go to state 101
     openP                          shift and go to state 102
-
-state 261
-
-    (95) body -> OPENBRACES body1 CLOSEBRACES .
-
-    IF              reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    PRINT           reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    READ            reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    REPEAT          reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    ID              reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    RETURN          reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    WHILE           reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    FOR             reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    CIRCLE          reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    SQUARE          reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    TRIANGLE        reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    RECTANGLE       reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    HIDE_STAR       reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    SHOW_STAR       reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    HAND_DOWN       reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    HAND_UP         reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    SETXY           reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    COLOR_STAR      reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    SIZE_STAR       reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    GO              reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    LEFT            reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    RIGHT           reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    BACK            reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    ARC             reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-    CLOSEBRACES     reduce using rule 95 (body -> OPENBRACES body1 CLOSEBRACES .)
-
 
 state 262
 
@@ -5952,16 +5851,16 @@ state 267
 
 state 268
 
-    (87) condition1 -> elseif head body_cond . condition1
-    (87) condition1 -> . elseif head body_cond condition1
+    (87) condition1 -> elseif head_cond body . condition1
+    (87) condition1 -> . elseif head_cond body condition1
     (88) condition1 -> . else body
     (89) condition1 -> . empty
     (90) elseif -> . ELSEIF
     (91) else -> . ELSE
     (154) empty -> .
 
-    ELSEIF          shift and go to state 218
-    ELSE            shift and go to state 219
+    ELSEIF          shift and go to state 219
+    ELSE            shift and go to state 220
     IF              reduce using rule 154 (empty -> .)
     PRINT           reduce using rule 154 (empty -> .)
     READ            reduce using rule 154 (empty -> .)
@@ -5988,10 +5887,10 @@ state 268
     ARC             reduce using rule 154 (empty -> .)
     CLOSEBRACES     reduce using rule 154 (empty -> .)
 
-    elseif                         shift and go to state 215
+    elseif                         shift and go to state 216
     condition1                     shift and go to state 278
-    else                           shift and go to state 216
-    empty                          shift and go to state 217
+    else                           shift and go to state 217
+    empty                          shift and go to state 218
 
 state 269
 
@@ -6082,9 +5981,9 @@ state 273
 state 274
 
     (100) for -> FOR OPENPAREN ID TWODOTS exp CLOSEPAREN . body
-    (95) body -> . OPENBRACES body1 CLOSEBRACES
+    (96) body -> . OPENBRACES body1 CLOSEBRACES
 
-    OPENBRACES      shift and go to state 185
+    OPENBRACES      shift and go to state 173
 
     body                           shift and go to state 280
 
@@ -6118,33 +6017,33 @@ state 277
 
 state 278
 
-    (87) condition1 -> elseif head body_cond condition1 .
+    (87) condition1 -> elseif head_cond body condition1 .
 
-    IF              reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    PRINT           reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    READ            reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    REPEAT          reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    ID              reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    RETURN          reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    WHILE           reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    FOR             reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    CIRCLE          reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    SQUARE          reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    TRIANGLE        reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    RECTANGLE       reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    HIDE_STAR       reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    SHOW_STAR       reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    HAND_DOWN       reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    HAND_UP         reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    SETXY           reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    COLOR_STAR      reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    SIZE_STAR       reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    GO              reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    LEFT            reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    RIGHT           reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    BACK            reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    ARC             reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
-    CLOSEBRACES     reduce using rule 87 (condition1 -> elseif head body_cond condition1 .)
+    IF              reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    PRINT           reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    READ            reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    REPEAT          reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    ID              reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    RETURN          reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    WHILE           reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    FOR             reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    CIRCLE          reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    SQUARE          reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    TRIANGLE        reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    RECTANGLE       reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    HIDE_STAR       reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    SHOW_STAR       reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    HAND_DOWN       reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    HAND_UP         reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    SETXY           reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    COLOR_STAR      reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    SIZE_STAR       reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    GO              reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    LEFT            reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    RIGHT           reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    BACK            reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    ARC             reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
+    CLOSEBRACES     reduce using rule 87 (condition1 -> elseif head_cond body condition1 .)
 
 
 state 279
@@ -6267,13 +6166,13 @@ WARNING:
 WARNING: shift/reduce conflict for OPENPAREN in state 90 resolved as shift
 WARNING: shift/reduce conflict for ADDITION in state 92 resolved as shift
 WARNING: shift/reduce conflict for SUBSTRACTION in state 92 resolved as shift
-WARNING: shift/reduce conflict for CTEINT in state 141 resolved as shift
-WARNING: shift/reduce conflict for CTEFLOAT in state 141 resolved as shift
-WARNING: shift/reduce conflict for CTECHAR in state 141 resolved as shift
-WARNING: shift/reduce conflict for ID in state 141 resolved as shift
-WARNING: shift/reduce conflict for ADDITION in state 141 resolved as shift
-WARNING: shift/reduce conflict for SUBSTRACTION in state 141 resolved as shift
-WARNING: shift/reduce conflict for OPENPAREN in state 141 resolved as shift
+WARNING: shift/reduce conflict for CTEINT in state 142 resolved as shift
+WARNING: shift/reduce conflict for CTEFLOAT in state 142 resolved as shift
+WARNING: shift/reduce conflict for CTECHAR in state 142 resolved as shift
+WARNING: shift/reduce conflict for ID in state 142 resolved as shift
+WARNING: shift/reduce conflict for ADDITION in state 142 resolved as shift
+WARNING: shift/reduce conflict for SUBSTRACTION in state 142 resolved as shift
+WARNING: shift/reduce conflict for OPENPAREN in state 142 resolved as shift
 WARNING: reduce/reduce conflict in state 114 resolved using rule (assignment1 -> assignment2)
 WARNING: rejected rule (empty -> <empty>) in state 114
 WARNING: reduce/reduce conflict in state 124 resolved using rule (return1 -> vcte)

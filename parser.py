@@ -12,26 +12,12 @@ from intermediate_code_generation import Intermediate_CodeGeneration
 vars_t = VarsTable()
 cg = Intermediate_CodeGeneration()
 
-# CUÁNDO CHECAMOS QUE UNA VARIABLE QUE ESTAMOS USANDO FUE DECLARADA??¿?¿?¿?¿??
-
-def insert_vars(vars):
-    '''
-    Función para insertas las líneas de variables declaradas, se llama desde program, star y function
-    : param vars: Lista de tuplas con (type,id)
-    '''
-    if vars is not None:
-        for x in vars:
-            if x is not None:
-                vars_t.insert_var(x[1],x[0])
-
 # PROGRAM
 def p_program(p):
     '''
     program : PROGRAM ID SEMICOLON declara_vars program2 star
     '''
-    # vars_t.FunDirectory(p[2], 'np')
-    # insert_vars(p[4])
-    # print('done',vars_t.table)
+    print(cg.Quads)
 
     p[0] = "PROGRAM COMPILED"
 
@@ -62,8 +48,6 @@ def p_star(p):
     '''
     star : starI declara_vars star1 CLOSEBRACES
     '''
-
-    # insert_vars(p[3])
     vars_t.remove_table('star')
 
 
@@ -114,7 +98,6 @@ def p_stmt(p):
 
     p[0] = p[1]
 
-# no sé si estoy haciendo esto bien, de llevar todo parriba ?¿?
 
 # FUNCTION
 
@@ -129,15 +112,13 @@ def p_function(p):
     '''
     function : FUN functionI function2 inicia_fun declara_vars function4 termina_fun
     '''
-    # vars_t.FunDirectory(p[3], p[2])
-    # insert_vars(p[6])
 
     if p[7] != None:
         vars = p[7]
         vars = vars[:-1]
         p[0] = vars
 
-    # vars_t.remove_table(p[3])
+    vars_t.remove_table(p[3])
 def p_function1(p):
     '''
     function1 : type
@@ -436,7 +417,7 @@ def p_logical1(p):
 # CONDITION
 def p_condition(p):
     '''
-    condition : IF head body_cond condition1
+    condition : IF head_cond body condition1
     '''
     # 2.-
     end = cg.PJumps.pop()
@@ -444,7 +425,7 @@ def p_condition(p):
 
 def p_condition1(p):
     '''
-    condition1 : elseif head body_cond condition1
+    condition1 : elseif head_cond body condition1
                | else body
                | empty
     '''
@@ -452,6 +433,7 @@ def p_elseif(p):
     '''
     elseif : ELSEIF
     '''
+    cg.generate_elseif()
 
 def p_else(p):
     '''
@@ -465,6 +447,10 @@ def p_head(p):
     head : OPENPAREN head1 CLOSEPAREN
     '''
 
+def p_head_cond(p):
+    '''
+    head_cond : OPENPAREN head1 close_condition
+    '''
 
 
 def p_head1(p):
@@ -479,15 +465,10 @@ def p_body(p):
     body : OPENBRACES body1 CLOSEBRACES
     '''
 
-def p_body_cond(p):
-    '''
-    body_cond : OPENBRACES body1 close_condition
-    '''
-
 # termina la condición
 def p_close_condition(p):
     '''
-    close_condition : CLOSEBRACES
+    close_condition : CLOSEPAREN
     '''
     # genera GOTOF...
     cg.generate_GOTOF()

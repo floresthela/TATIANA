@@ -9,7 +9,7 @@ from semantic_cube import Operators, SemanticCube
 # TODO: hay que hacer cuadruplos especiales para nuestros statements de graficar
 
 class Quadruple:
-    def __init__(self, left_op, right_op, operator, result):
+    def __init__(self, operator,left_op, right_op, result):
         '''
         Inicializa cuádruplo
         '''
@@ -17,6 +17,12 @@ class Quadruple:
         self.right_op = right_op
         self.operator = operator
         self.result = result #DUDA: Podemos tener una tupla como resultado (para stmts de graph que llevan varios valores)???? por qué tengo una obsesión con las tuplas ??
+
+    def __repr__(self):
+        return f"\t{self.operator}\t{self.left_op}\t{self.right_op}\t{self.result}\n"
+
+    def __str__(self):
+        return f"{self.operator},{self.left_op},{self.right_op},{self.result}\n"
 
     def cambia_res(self,res):
         '''
@@ -59,16 +65,12 @@ class Intermediate_CodeGeneration:
                 temp_actual = "t" + str(self.temps)
                 self.temps += 1
                 result = temp_actual
-                quadruple = Quadruple(left_op,right_op, operator, result)
-                self.contador += 1
-                self.muestramelo(quadruple)
+                quadruple = Quadruple(operator, left_op,right_op, result)
                 self.PilaO.append(result)
                 self.PTypes.append(result_type)
             else:
                 result = left_op
-                quadruple = Quadruple(right_op, None, operator, result)
-                self.contador += 1
-                self.muestramelo(quadruple)
+                quadruple = Quadruple(operator, right_op, None, result)
         self.Quads.append(quadruple)
 
 
@@ -80,9 +82,7 @@ class Intermediate_CodeGeneration:
         # no nos importa el tipo xq no lo usaremos después ni nunca
         self.PTypes.pop()
         operator = self.POper.pop()
-        quadruple = Quadruple(None,None,operator,result)
-        self.contador += 1
-        self.muestramelo(quadruple)
+        quadruple = Quadruple(operator, None,None,result)
         self.Quads.append(quadruple)
 
     def generate_quad_read(self):
@@ -92,15 +92,8 @@ class Intermediate_CodeGeneration:
         result = self.PilaO.pop()
         self.PTypes.pop()
         operator = self.POper.pop()
-        quadruple = Quadruple(None,None,operator,result)
-        self.contador += 1
-        self.muestramelo(quadruple)
+        quadruple = Quadruple(operator, None,None,result)
         self.Quads.append(quadruple)
-
-
-    def muestramelo(self, quad):
-        print('quad',f'[{quad.operator},{quad.left_op},{quad.right_op},{quad.result}]')
-
 
     def generate_quad_graph(self):
         '''
@@ -138,6 +131,9 @@ class Intermediate_CodeGeneration:
         '''
         Genera cuádruplo para elseif statement
         '''
+        position = self.PJumps.pop()
+        self.PJumps.append(len(self.Quads) - 1)
+        self.fill_quad(position)
 
 
     def fill_quad(self,p):

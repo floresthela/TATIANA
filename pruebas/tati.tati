@@ -10,6 +10,9 @@ float glob2 = 40.5;
   if (a > b) {
     print(glob1);
   }
+  elseif(a > c+1){
+    print(c);
+  }
   else {
     c = b * 4 + a / 3;
   }
