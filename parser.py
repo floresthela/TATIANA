@@ -436,23 +436,36 @@ def p_logical1(p):
 # CONDITION
 def p_condition(p):
     '''
-    condition : IF head body condition1
+    condition : IF head body_cond condition1
     '''
-
+    # 2.-
+    end = cg.PJumps.pop()
+    cg.fill_quad(end)
 
 def p_condition1(p):
     '''
-    condition1 : ELSEIF head body condition1
-               | ELSE body
+    condition1 : elseif head body_cond condition1
+               | else body
                | empty
     '''
+def p_elseif(p):
+    '''
+    elseif : ELSEIF
+    '''
 
+def p_else(p):
+    '''
+    else : ELSE
+    '''
+    cg.generate_else_GOTO()
 
 # HEAD
 def p_head(p):
     '''
     head : OPENPAREN head1 CLOSEPAREN
     '''
+
+
 
 def p_head1(p):
     '''
@@ -461,13 +474,23 @@ def p_head1(p):
     '''
 
 # BODY
-
-
 def p_body(p):
     '''
     body : OPENBRACES body1 CLOSEBRACES
     '''
 
+def p_body_cond(p):
+    '''
+    body_cond : OPENBRACES body1 close_condition
+    '''
+
+# termina la condición
+def p_close_condition(p):
+    '''
+    close_condition : CLOSEBRACES
+    '''
+    # genera GOTOF...
+    cg.generate_GOTOF()
 
 def p_body1(p):
     '''
