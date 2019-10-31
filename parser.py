@@ -17,7 +17,11 @@ def p_program(p):
     '''
     program : PROGRAM ID SEMICOLON declara_vars program2 star
     '''
-    print(cg.Quads)
+    conta = 1
+    # print(cg.Quads)
+    for q in cg.Quads:
+        print(conta,q)
+        conta += 1
 
     p[0] = "PROGRAM COMPILED"
 
@@ -429,17 +433,21 @@ def p_condition1(p):
                | else body
                | empty
     '''
+    if len(p) == 5:
+        end = cg.PJumps.pop()
+        cg.fill_quad(end)
 def p_elseif(p):
     '''
     elseif : ELSEIF
     '''
-    cg.generate_elseif()
+    cg.generate_GOTO()
+    # cg.generate_elseif()
 
 def p_else(p):
     '''
     else : ELSE
     '''
-    cg.generate_else_GOTO()
+    cg.generate_GOTO()
 
 # HEAD
 def p_head(p):

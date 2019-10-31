@@ -16,7 +16,9 @@ class Quadruple:
         self.left_op = left_op
         self.right_op = right_op
         self.operator = operator
-        self.result = result #DUDA: Podemos tener una tupla como resultado (para stmts de graph que llevan varios valores)???? por qué tengo una obsesión con las tuplas ??
+        self.result = result
+
+        #DUDA: Podemos tener una tupla como resultado (para stmts de graph que llevan varios valores)???? por qué tengo una obsesión con las tuplas ??
 
     def __repr__(self):
         return f"\t{self.operator}\t{self.left_op}\t{self.right_op}\t{self.result}\n"
@@ -116,25 +118,16 @@ class Intermediate_CodeGeneration:
             self.Quads.append(quadruple)
             self.PJumps.append(len(self.Quads)-1)
 
-    def generate_else_GOTO(self):
+    def generate_GOTO(self):
         '''
         Genera GOTO para else
         '''
         # 3.-
-        quadruple = Quadruple('GOTO',None,None,None)
+        quadruple = Quadruple('Goto',None,None,None)
         self.Quads.append(quadruple)
         position = self.PJumps.pop()
         self.PJumps.append(len(self.Quads) - 1)
         self.fill_quad(position)
-
-    def generate_elseif(self):
-        '''
-        Genera cuádruplo para elseif statement
-        '''
-        position = self.PJumps.pop()
-        self.PJumps.append(len(self.Quads) - 1)
-        self.fill_quad(position)
-
 
     def fill_quad(self,p):
         '''
