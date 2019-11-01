@@ -335,8 +335,6 @@ def p_vcte3(p):
     '''
 
 # CTE
-
-
 def p_cte_int(p):
     '''
     cte_int : CTEINT
@@ -359,8 +357,6 @@ def p_cte_char(p):
     cg.PTypes.append('char')
 
 # RETURN
-
-
 def p_return(p):
     '''
     return : RETURN return1 SEMICOLON
@@ -410,7 +406,7 @@ def p_logical(p):
     logical : expression logical1 expression
     '''
 
-
+# ??
 def p_logical1(p):
     '''
     logical1 : OR
@@ -722,7 +718,9 @@ def p_factor2(p):
     cg.POper.append(p[0])
 
 # al chile no se que estoy haciendo
-
+# TODO: checar bien los quads en expresiones
+# por ejemplo, c = 4 + glob1 * glob2 / b + c;
+# hace primero la division y luego la multiplicación...
 # TERM
 def p_term(p):
     '''
