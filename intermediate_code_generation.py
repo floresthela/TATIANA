@@ -118,9 +118,9 @@ class Intermediate_CodeGeneration:
             self.Quads.append(quadruple)
             self.PJumps.append(len(self.Quads)-1)
 
-    def generate_GOTO(self):
+    def generate_else(self):
         '''
-        Genera GOTO para else
+        Genera GOTO para ELSE
         '''
         # 3.-
         quadruple = Quadruple('Goto',None,None,None)
@@ -129,9 +129,24 @@ class Intermediate_CodeGeneration:
         self.PJumps.append(len(self.Quads) - 1)
         self.fill_quad(position)
 
+    def generate_GOTO(self):
+        '''
+        Genera GOTO vacío que se rellenará después (while, for)
+        '''
+        quadruple = Quadruple('Goto', None, None, None)
+        self.Quads.append(quadruple)
+
     def fill_quad(self,p):
         '''
         Rellena (FILL) al cuádruplo
         :param p: La posición del cuádruplo a completar
         '''
         self.Quads[p].cambia_res(len(self.Quads)+1)
+
+    def fill_goto(self,result):
+        '''
+        Rellena el goto con el resultado
+        :param result: Valor a rellenar para el goto
+        '''
+        position = len(self.Quads) - 1
+        self.Quads[position].cambia_res(result)

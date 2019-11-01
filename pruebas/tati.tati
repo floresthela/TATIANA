@@ -17,4 +17,10 @@ float glob2 = 40.5;
     c = b * 4 + a / 3;
   }
   read(c);
+
+  while(b > c){
+    read(a);
+    }
+  print(a);
+  c = 4 + glob1 * glob2 / b + c;
 }

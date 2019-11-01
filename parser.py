@@ -440,14 +440,14 @@ def p_elseif(p):
     '''
     elseif : ELSEIF
     '''
-    cg.generate_GOTO()
+    cg.generate_else()
     # cg.generate_elseif()
 
 def p_else(p):
     '''
     else : ELSE
     '''
-    cg.generate_GOTO()
+    cg.generate_else()
 
 # HEAD
 def p_head(p):
@@ -489,6 +489,7 @@ def p_body1(p):
 
 
 # FOR
+# TODO: cuádruplos para for
 def p_for(p):
     '''
     for : FOR OPENPAREN ID TWODOTS exp CLOSEPAREN body
@@ -498,9 +499,28 @@ def p_for(p):
 # WHILE
 def p_while(p):
     '''
-    while : WHILE  head body
+    while : while1 body
     '''
+    end = cg.PJumps.pop()
+    w_return = cg.PJumps.pop()
 
+    cg.generate_GOTO()
+    cg.fill_goto(w_return)
+
+    cg.fill_quad(end)
+
+def p_while1(p):
+    '''
+    while1 : while_w OPENPAREN expression CLOSEPAREN
+    '''
+    cg.generate_GOTOF()
+# de tanto ver y escribir la palabra while siento que esta bien rara y la estoy escribiendo mal
+def p_while_w(p):
+    '''
+    while_w : WHILE
+    '''
+    # 1.-
+    cg.PJumps.append(len(cg.Quads) + 1)
 
 # FUN_CALL
 def p_funCall(p):
