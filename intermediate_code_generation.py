@@ -164,3 +164,18 @@ class Intermediate_CodeGeneration:
             result = self.PilaO.pop()
             quadruple = Quadruple(type, result, None, None)
             self.Quads.append(quadruple)
+    # def generate_quad_graph2(self,type):
+
+    def generate_quad_repeat(self):
+        '''
+        Cuádruplo para graph stmt REPEAT
+        '''
+        exp_type = self.PTypes.pop()
+        if exp_type != 'int':
+            raise TypeError("ERROR: Type-mismatch")
+        else:
+            # supongo que esto terminará siendo parecido a un FOR
+            result = self.PilaO.pop()
+            quadruple = Quadruple('Repeat', None, None, None)
+            self.Quads.append(quadruple)
+            self.PJumps.append(len(self.Quads)-1)

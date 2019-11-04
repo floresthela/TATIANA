@@ -28,4 +28,9 @@ float glob2 = 40.5;
   hand_down;
   go(9+3*7/6);
   triangle(5,4+4);
+  repeat(4){
+    go(5);
+    circle(5);
+    hand_up;
+  }
 }

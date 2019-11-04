@@ -612,17 +612,37 @@ def p_graphmove2(p):
     cg.generate_quad_graph1(p[0])
 
 # SUPER DUDA: QUADS CON VARIOS PARAMETROS ?¿?¿ CÓMO HACEMOS EL REPEAT
+# pensaba hacer un tipo while pero en lugar de gotof, ir restando al número asignado de veces que se repetirá... idk
+
 # GRAPH_REPEAT
 def p_graphr(p):
     '''
-    graphr : REPEAT laRegla2 OPENBRACES graphr1 CLOSEBRACES
+    graphr : repeat rep OPENBRACES graphstmt graphr1 CLOSEBRACES
     '''
+    end = cg.PJumps.pop()
+    r_return = cg.PJumps.pop()
+    # esto no lo sé
+    cg.generate_GOTO()
+    cg.fill_goto(r_return)
+    cg.fill_quad(end)
 
 def p_graphr1(p):
     '''
-    graphr1 : graphstmt COMMA graphr1
-            | graphstmt
+    graphr1 : graphstmt graphr1
+            | empty
     '''
+
+def p_rep(p):
+    '''
+    rep : OPENPAREN exp CLOSEPAREN
+    '''
+    cg.generate_quad_repeat()
+
+def p_repeat(p):
+    '''
+    repeat : REPEAT
+    '''
+    cg.PJumps.append(len(cg.Quads) + 1)
 
 # GRAPH_VIEW
 def p_graphview(p):
