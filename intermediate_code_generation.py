@@ -97,13 +97,6 @@ class Intermediate_CodeGeneration:
         quadruple = Quadruple(operator, None,None,result)
         self.Quads.append(quadruple)
 
-    def generate_quad_graph(self):
-        '''
-        Generar cuádruplos con expresiones para graficar...
-        '''
-        # hay que ver... unos no llevan nada, otros llevan uno o dos números
-        self.Quads.append(quadruple)
-
     def generate_GOTOF(self):
         '''
         Genera GOTOF para condicion y while
@@ -150,3 +143,24 @@ class Intermediate_CodeGeneration:
         '''
         position = len(self.Quads) - 1
         self.Quads[position].cambia_res(result)
+
+    def generate_quad_graph0(self,type):
+        '''
+        Genera cuádruplo de gráfica que no lleva ningún parámetro
+        :param type: tipo de acción para graficar (hand_down o hand_up)
+        '''
+        quadruple = Quadruple(type, None, None, None)
+        self.Quads.append(quadruple)
+
+    def generate_quad_graph1(self,type):
+        '''
+        Genera cuádruplo de gráfica que lleva solo un parámetro
+        :param type:
+        '''
+        exp_type = self.PTypes.pop()
+        if exp_type != 'int':
+            raise TypeError("ERROR: Type-mismatch")
+        else:
+            result = self.PilaO.pop()
+            quadruple = Quadruple(type, result, None, None)
+            self.Quads.append(quadruple)

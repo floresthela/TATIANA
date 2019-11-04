@@ -580,11 +580,14 @@ def p_graphfig1(p):
             | TRIANGLE laRegla
             | RECTANGLE laRegla
     '''
+    p[0] = p[1]
+    cg.generate_quad_graph1(p[0])
 
 # GRAPH_MOVEMENT
 def p_graphmove(p):
     '''
-    graphmove :  graphmove1  SEMICOLON
+    graphmove : graphmove1  SEMICOLON
+              | graphmove2 SEMICOLON
     '''
 
 
@@ -592,8 +595,9 @@ def p_graphmove1(p):
     '''
     graphmove1 : HAND_DOWN
               | HAND_UP
-              | graphmove2
     '''
+    p[0] = p[1]
+    cg.generate_quad_graph0(p[0])
 
 
 def p_graphmove2(p):
@@ -604,7 +608,10 @@ def p_graphmove2(p):
               | BACK laRegla2
               | ARC laRegla
     '''
+    p[0] = p[1]
+    cg.generate_quad_graph1(p[0])
 
+# SUPER DUDA: QUADS CON VARIOS PARAMETROS ?¿?¿ CÓMO HACEMOS EL REPEAT
 # GRAPH_REPEAT
 def p_graphr(p):
     '''
@@ -618,8 +625,6 @@ def p_graphr1(p):
     '''
 
 # GRAPH_VIEW
-
-
 def p_graphview(p):
     '''
     graphview : graphview1 SEMICOLON
@@ -632,8 +637,10 @@ def p_graphview1(p):
               | SHOW_STAR
               | graphview2 exp
     '''
+    if len(p) == 2:
+        p[0] = p[1]
+        cg.generate_quad_graph0(p[0])
 
-# NOTA: Hay que arreglar este pedo, creo que no están bien declaradas... btw... y si borramos el graph repeat??
 def p_graphview2(p):
     '''
     graphview2 : SETXY laRegla
@@ -649,14 +656,12 @@ def p_graphview2(p):
 #     '''
 
 # exp
-
-
 def p_exp(p):
     '''
     exp : term exp1
     '''
     p[0] = p[1]
-    if cg.POper and cg.POper[-1] in ['+','-']:
+    if cg.POper and cg.POper[-1] in ['+', '-']:
         cg.generate_quad()
 
 def p_exp1(p):
@@ -722,7 +727,7 @@ def p_term(p):
     term : factor term1
     '''
     p[0] = p[1]
-    if cg.POper and cg.POper[-1] in ['*','/']:
+    if cg.POper and cg.POper[-1] in ['*', '/']:
         cg.generate_quad()
 
 
