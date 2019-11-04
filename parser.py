@@ -27,14 +27,14 @@ def p_program(p):
 
     vars_t.remove_table('global')
 
-def p_program_vars(p):
-    '''
-    program_vars : vars program_vars
-            | empty
-    '''
-    if len(p) == 3:
-        p[0] = p[1:]
-        p[0] = flatten(p[0])
+# def p_program_vars(p):
+#     '''
+#     program_vars : vars program_vars
+#             | empty
+#     '''
+#     if len(p) == 3:
+#         p[0] = p[1:]
+#         p[0] = flatten(p[0])
 
 
 def p_program2(p):
@@ -123,12 +123,13 @@ def p_function(p):
         p[0] = vars
 
     vars_t.remove_table(p[3])
-def p_function1(p):
-    '''
-    function1 : type
-              | VOID
-    '''
-    p[0] = p[1]
+
+# def p_function1(p):
+#     '''
+#     function1 : type
+#               | VOID
+#     '''
+#     p[0] = p[1]
 
 
 def p_inicia_fun(p):
@@ -171,16 +172,16 @@ def p_function5(p):
     '''
 
 
-def p_fun_vars(p):
-    '''
-    fun_vars : vars fun_vars
-              | empty
-    '''
-    if len(p) == 3:
-        p[0] = p[1:]
-        p[0] = flatten(p[0])
-
-        #list.pop(obj = list[-1])
+# def p_fun_vars(p):
+#     '''
+#     fun_vars : vars fun_vars
+#               | empty
+#     '''
+#     if len(p) == 3:
+#         p[0] = p[1:]
+#         p[0] = flatten(p[0])
+#
+#         #list.pop(obj = list[-1])
 
 # VARS
 # al final hay que actualizar diagramas
@@ -446,10 +447,10 @@ def p_else(p):
     cg.generate_else()
 
 # HEAD
-def p_head(p):
-    '''
-    head : OPENPAREN head1 CLOSEPAREN
-    '''
+# def p_head(p):
+#     '''
+#     head : OPENPAREN head1 CLOSEPAREN
+#     '''
 
 def p_head_cond(p):
     '''
@@ -544,18 +545,20 @@ def p_funCall3(p):
     '''
 
 
+# (exp,exp)
 def p_laRegla(p):
     '''
     laRegla : OPENPAREN exp COMMA exp CLOSEPAREN
     '''
 
 
+# (exp)
 def p_laRegla2(p):
     '''
     laRegla2 : OPENPAREN exp CLOSEPAREN
     '''
 
-
+# TODAS LAS EXP DE GRAPH STMTS DEBERÁN SER INTS ALV
 # GRAPH_STMT
 def p_graphstmt(p):
     '''
@@ -565,13 +568,10 @@ def p_graphstmt(p):
     '''
 
 # GRAPH_FIGURE
-
-
 def p_graphfig(p):
     '''
     graphfig : graphfig1 SEMICOLON
     '''
-
 
 def p_graphfig1(p):
     '''
@@ -582,8 +582,6 @@ def p_graphfig1(p):
     '''
 
 # GRAPH_MOVEMENT
-
-
 def p_graphmove(p):
     '''
     graphmove :  graphmove1  SEMICOLON
@@ -608,18 +606,15 @@ def p_graphmove2(p):
     '''
 
 # GRAPH_REPEAT
-
-
 def p_graphr(p):
     '''
-    graphr : REPEAT exp OPENBRACES graphstmt graphr1 CLOSEBRACES
+    graphr : REPEAT laRegla2 OPENBRACES graphr1 CLOSEBRACES
     '''
-
 
 def p_graphr1(p):
     '''
-    graphr1 : graphstmt graphr1
-           | empty
+    graphr1 : graphstmt COMMA graphr1
+            | graphstmt
     '''
 
 # GRAPH_VIEW
@@ -638,20 +633,20 @@ def p_graphview1(p):
               | graphview2 exp
     '''
 
-
+# NOTA: Hay que arreglar este pedo, creo que no están bien declaradas... btw... y si borramos el graph repeat??
 def p_graphview2(p):
     '''
-    graphview2 : SETXY graphview3
-              | COLOR_STAR
-              | SIZE_STAR
+    graphview2 : SETXY laRegla
+              | COLOR_STAR laRegla2
+              | SIZE_STAR laRegla2
     '''
 
-
-def p_graphview3(p):
-    '''
-    graphview3 : exp COMMA
-              | laRegla
-    '''
+# Esto está malisimo
+# def p_graphview3(p):
+#     '''
+#     graphview3 : exp COMMA
+#               | laRegla
+#     '''
 
 # exp
 

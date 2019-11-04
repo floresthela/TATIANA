@@ -18,9 +18,10 @@ float glob2 = 40.5;
   }
   read(c);
 
-  while(b > c){
+  while(a > glob1){
     read(a);
     }
   print(a);
   c = 4 + glob1 * glob2 / b + c;
+  circle(a+b-1*7);
 }
