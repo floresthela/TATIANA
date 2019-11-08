@@ -17,8 +17,6 @@ class Operators(Enum):
     LESS = '<'
     NOT_EQUAL = '!='
     ISEQUAL = '=='
-    AND = 'and'
-    OR = 'or'
     EQUAL = '='
 
 
@@ -146,42 +144,6 @@ class SemanticCube:
                 'float': {
                     'int': 'bool',
                     'float': 'bool',
-                    'char': 'err'
-                },
-                'char': {
-                    'int': 'err',
-                    'float': 'err',
-                    'char': 'err'
-                }
-            },
-
-            Operators.AND: {
-                'int': {
-                    'int': 'err',
-                    'float': 'err',
-                    'char': 'err'
-                },
-                'float': {
-                    'int': 'err',
-                    'float': 'err',
-                    'char': 'err'
-                },
-                'char': {
-                    'int': 'err',
-                    'float': 'err',
-                    'char': 'err'
-                }
-            },
-
-            Operators.OR: {
-                'int': {
-                    'int': 'err',
-                    'float': 'err',
-                    'char': 'err'
-                },
-                'float': {
-                    'int': 'err',
-                    'float': 'err',
                     'char': 'err'
                 },
                 'char': {

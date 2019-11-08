@@ -155,7 +155,7 @@ class Intermediate_CodeGeneration:
     def generate_quad_graph1(self,type):
         '''
         Genera cuádruplo de gráfica que lleva solo un parámetro
-        :param type:
+        :param type: tipo de acción para graficar
         '''
         exp_type = self.PTypes.pop()
         if exp_type != 'int':
@@ -164,7 +164,13 @@ class Intermediate_CodeGeneration:
             result = self.PilaO.pop()
             quadruple = Quadruple(type, result, None, None)
             self.Quads.append(quadruple)
-    # def generate_quad_graph2(self,type):
+
+    def generate_quad_graph2(self,type):
+        '''
+        Genera cuádruplo de gráfica que lleva un parámetro (dos expresiones)
+        :param type: tipo de acción para graficar
+        '''
+        # igual que un quad normal creo
 
     def generate_quad_repeat(self):
         '''

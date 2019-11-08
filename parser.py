@@ -124,14 +124,6 @@ def p_function(p):
 
     vars_t.remove_table(p[3])
 
-# def p_function1(p):
-#     '''
-#     function1 : type
-#               | VOID
-#     '''
-#     p[0] = p[1]
-
-
 def p_inicia_fun(p):
     '''
     inicia_fun : OPENBRACES
@@ -148,7 +140,7 @@ def p_function2(p):
     function2 : OPENPAREN function3 CLOSEPAREN
     '''
 
-
+# TODO: modificar esto, para poder tener parametros de diferentes tipos de variables...
 def p_function3(p):
     '''
     function3 : type ID function5
@@ -168,7 +160,8 @@ def p_function4(p):
 
 def p_function5(p):
     '''
-    function5 : COMMA type ID function3
+    function5 : COMMA type ID function5
+              | empty
     '''
 
 
@@ -378,7 +371,6 @@ def p_expression(p):
     expression : exp expression1
     '''
 
-# POR QUÉ TENEMOS QUE PUEDE SER EMPTY ?? JAJA VERGA
 def p_expression1(p):
     '''
     expression1 : loper exp
@@ -396,23 +388,10 @@ def p_loper(p):
           | LESS
           | NOTEQUAL
           | ISEQUAL
+
     '''
     # 8. POper.Push(rel.op)
     cg.POper.append(p[1])
-
-# LOGICAL
-# CREO QUE DEBERÍAMOS QUITAR ESTO... NO?
-def p_logical(p):
-    '''
-    logical : expression logical1 expression
-    '''
-
-# ??
-def p_logical1(p):
-    '''
-    logical1 : OR
-             | AND
-    '''
 
 
 # CONDITION
@@ -454,14 +433,7 @@ def p_else(p):
 
 def p_head_cond(p):
     '''
-    head_cond : OPENPAREN head1 close_condition
-    '''
-
-
-def p_head1(p):
-    '''
-    head1 : expression
-          | logical
+    head_cond : OPENPAREN expression close_condition
     '''
 
 # BODY
