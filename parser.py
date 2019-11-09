@@ -12,6 +12,7 @@ from intermediate_code_generation import Intermediate_CodeGeneration
 vars_t = VarsTable()
 cg = Intermediate_CodeGeneration()
 
+
 # PROGRAM
 def p_program(p):
     '''
@@ -26,7 +27,7 @@ def p_program(p):
         conta += 1
 
     p[0] = "PROGRAM COMPILED"
-
+    print(vars_t.table)
     vars_t.remove_table('global')
 
 def p_program_modules(p):
@@ -42,13 +43,13 @@ def p_program_fun(p):
     '''
 
 
-
 # STAR
 def p_star(p):
     '''
     star : starI declara_vars star1 CLOSEBRACES
     '''
-
+    star = cg.PJumps.pop()
+    cg.fill_goto_star(star)
 
     vars_t.remove_table('star')
 
@@ -57,19 +58,14 @@ def p_starI(p):
     '''
     starI : star_sign OPENBRACES
     '''
-
-    star = cg.PJumps.pop()
-    cg.generate_GOTO_star()
-    cg.fill_goto_star(star)
     vars_t.FunDirectory('star', 'star')
 
 def p_star_sign(p):
     '''
     star_sign : MULTIPLICATION
     '''
-    empieza = len(cg.Quads) + 2
+    empieza = len(cg.Quads) + 1
     cg.PJumps.append(empieza)
-
 
 
 def p_star1(p):
@@ -121,19 +117,24 @@ def p_functionI(p):
     functionI : type ID
               | VOID ID
     '''
+    p[0] = p[2]
+    cg.generate_GOTO_star()
     vars_t.FunDirectory(p[2],p[1])
+
+    vars_t.table['global']['vars'][p[0]] = { 'id': p[0], 'type':p[1]}
 
 def p_function(p):
     '''
     function : FUN functionI function2 inicia_fun declara_vars function4 termina_fun
     '''
 
+
     if p[7] != None:
         vars = p[7]
         vars = vars[:-1]
         p[0] = vars
 
-    vars_t.remove_table(p[3])
+    # vars_t.remove_table(p[2])
 
 def p_inicia_fun(p):
     '''
@@ -778,7 +779,7 @@ yacc.yacc()
 # hay que ver CÓMO ponemos que hay errores en la sintaxis pero más específicos o algo asi
 if __name__ == '__main__':
     try:
-        nombreArchivo = 'pruebas/tati.tati'
+        nombreArchivo = 'pruebas/prueba7.tati'
 
         arch = open(nombreArchivo, 'r')
         print("Archivo a leer: " + nombreArchivo)

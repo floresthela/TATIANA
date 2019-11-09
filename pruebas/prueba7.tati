@@ -10,9 +10,18 @@ fun int function1(){
   gi1 = 6 * gi3;
 }
 
+fun float function(){
+  print(gi1);
+}
+
+fun void function2(){
+  int a1 = 10;
+  print(a1);
+}
+
 * {
   char c1;
   int star1;
   int i3;
-  i3 = function1() + 5;
+  i3 = star1 + 5;
 }
