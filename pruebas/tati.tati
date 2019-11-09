@@ -33,4 +33,8 @@ float glob2 = 40.5;
     circle(5);
     hand_up;
   }
+  arc(a,6+4);
+  show_star;
+  color_star(0);
+  setXY(0,1);
 }

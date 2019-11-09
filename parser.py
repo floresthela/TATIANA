@@ -15,8 +15,10 @@ cg = Intermediate_CodeGeneration()
 # PROGRAM
 def p_program(p):
     '''
-    program : PROGRAM ID SEMICOLON declara_vars program2 star
+    program : PROGRAM ID SEMICOLON declara_vars program_modules
     '''
+
+
     conta = 1
     # print(cg.Quads)
     for q in cg.Quads:
@@ -27,24 +29,18 @@ def p_program(p):
 
     vars_t.remove_table('global')
 
-# def p_program_vars(p):
-#     '''
-#     program_vars : vars program_vars
-#             | empty
-#     '''
-#     if len(p) == 3:
-#         p[0] = p[1:]
-#         p[0] = flatten(p[0])
+def p_program_modules(p):
+    '''
+    program_modules : program_fun star
+    '''
 
 
-def p_program2(p):
+def p_program_fun(p):
     '''
-    program2 : function program2
-            | empty
+    program_fun : function program_fun
+                | empty
     '''
-    if len(p) == 3:
-        p[0] = p[1]
-        # if p[2] != None:
+
 
 
 # STAR
@@ -52,14 +48,29 @@ def p_star(p):
     '''
     star : starI declara_vars star1 CLOSEBRACES
     '''
+
+
     vars_t.remove_table('star')
 
 
 def p_starI(p):
     '''
-    starI : MULTIPLICATION OPENBRACES
+    starI : star_sign OPENBRACES
     '''
+
+    star = cg.PJumps.pop()
+    cg.generate_GOTO_star()
+    cg.fill_goto_star(star)
     vars_t.FunDirectory('star', 'star')
+
+def p_star_sign(p):
+    '''
+    star_sign : MULTIPLICATION
+    '''
+    empieza = len(cg.Quads) + 2
+    cg.PJumps.append(empieza)
+
+
 
 def p_star1(p):
     '''
@@ -518,16 +529,17 @@ def p_funCall3(p):
 
 
 # (exp,exp)
-def p_laRegla(p):
+def p_dosExp(p):
     '''
-    laRegla : OPENPAREN exp COMMA exp CLOSEPAREN
+    dosExp : OPENPAREN exp COMMA exp CLOSEPAREN
     '''
+
 
 
 # (exp)
-def p_laRegla2(p):
+def p_unaExp(p):
     '''
-    laRegla2 : OPENPAREN exp CLOSEPAREN
+    unaExp : OPENPAREN exp CLOSEPAREN
     '''
 
 # TODAS LAS EXP DE GRAPH STMTS DEBERÁN SER INTS ALV
@@ -543,45 +555,60 @@ def p_graphstmt(p):
 def p_graphfig(p):
     '''
     graphfig : graphfig1 SEMICOLON
+             | graphfig2 SEMICOLON
     '''
-
+# Figures que llevan solo una exp
 def p_graphfig1(p):
     '''
-    graphfig1 : CIRCLE laRegla2
-            | SQUARE laRegla2
-            | TRIANGLE laRegla
-            | RECTANGLE laRegla
+    graphfig1 : CIRCLE unaExp
+            | SQUARE unaExp
     '''
     p[0] = p[1]
     cg.generate_quad_graph1(p[0])
 
+# Figures que llevan dos exp
+def p_graphfig2(p):
+    '''
+    graphfig2 : TRIANGLE dosExp
+            | RECTANGLE dosExp
+    '''
+    p[0] = p[1]
+    cg.generate_quad_graph2(p[0])
+
 # GRAPH_MOVEMENT
 def p_graphmove(p):
     '''
-    graphmove : graphmove1  SEMICOLON
+    graphmove : graphmove0  SEMICOLON
+              | graphmove1 SEMICOLON
               | graphmove2 SEMICOLON
     '''
 
 
-def p_graphmove1(p):
+def p_graphmove0(p):
     '''
-    graphmove1 : HAND_DOWN
+    graphmove0 : HAND_DOWN
               | HAND_UP
     '''
     p[0] = p[1]
     cg.generate_quad_graph0(p[0])
 
 
-def p_graphmove2(p):
+def p_graphmove1(p):
     '''
-    graphmove2 : GO laRegla2
-              | LEFT laRegla2
-              | RIGHT laRegla2
-              | BACK laRegla2
-              | ARC laRegla
+    graphmove1 : GO unaExp
+              | LEFT unaExp
+              | RIGHT unaExp
+              | BACK unaExp
     '''
     p[0] = p[1]
     cg.generate_quad_graph1(p[0])
+
+def p_graphmove2(p):
+    '''
+    graphmove2 : ARC dosExp
+    '''
+    p[0] = p[1]
+    cg.generate_quad_graph2(p[0])
 
 # SUPER DUDA: QUADS CON VARIOS PARAMETROS ?¿?¿ CÓMO HACEMOS EL REPEAT
 # pensaba hacer un tipo while pero en lugar de gotof, ir restando al número asignado de veces que se repetirá... idk
@@ -619,33 +646,33 @@ def p_repeat(p):
 # GRAPH_VIEW
 def p_graphview(p):
     '''
-    graphview : graphview1 SEMICOLON
+    graphview : graphview0 SEMICOLON
+              | graphview1 SEMICOLON
+              | graphview2 SEMICOLON
     '''
 
+def p_graphview0(p):
+    '''
+    graphview0 : HIDE_STAR
+              | SHOW_STAR
+    '''
+    p[0] = p[1]
+    cg.generate_quad_graph0(p[0])
 
 def p_graphview1(p):
     '''
-    graphview1 : HIDE_STAR
-              | SHOW_STAR
-              | graphview2 exp
+    graphview1 : COLOR_STAR unaExp
+              | SIZE_STAR unaExp
     '''
-    if len(p) == 2:
-        p[0] = p[1]
-        cg.generate_quad_graph0(p[0])
+    p[0] = p[1]
+    cg.generate_quad_graph1(p[0])
 
 def p_graphview2(p):
     '''
-    graphview2 : SETXY laRegla
-              | COLOR_STAR laRegla2
-              | SIZE_STAR laRegla2
+    graphview2 : SETXY dosExp
     '''
-
-# Esto está malisimo
-# def p_graphview3(p):
-#     '''
-#     graphview3 : exp COMMA
-#               | laRegla
-#     '''
+    p[0] = p[1]
+    cg.generate_quad_graph2(p[0])
 
 # exp
 def p_exp(p):

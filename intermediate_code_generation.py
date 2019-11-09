@@ -43,9 +43,13 @@ class Intermediate_CodeGeneration:
         # pending operands
         self.PilaO = []
         # pending jumps
-        self. PJumps = []
+        self.PJumps = []
 
-        self.temps = 0
+        self.inicia_star = None
+        # contadores
+        self.c_temps = 0
+        self.c_params = 0
+
         self.Quads = [] # lista de cuádruplos que llevamos
         self.contador = 1 # creo que este no lo necesitamos
         self.cubo = SemanticCube()
@@ -64,8 +68,8 @@ class Intermediate_CodeGeneration:
 
         if result_type:
             if operator != '=':
-                temp_actual = "t" + str(self.temps)
-                self.temps += 1
+                temp_actual = "t" + str(self.c_temps)
+                self.c_temps += 1
                 result = temp_actual
                 quadruple = Quadruple(operator, left_op,right_op, result)
                 self.PilaO.append(result)
@@ -129,6 +133,22 @@ class Intermediate_CodeGeneration:
         quadruple = Quadruple('Goto', None, None, None)
         self.Quads.append(quadruple)
 
+    def generate_GOTO_star(self):
+        '''
+        Genera goto para ir al main (función estrella)
+        '''
+        quadruple = Quadruple("Goto_main",None,None,None)
+        self.Quads.append(quadruple)
+        self.inicia_star = len(self.Quads) - 1
+
+    def fill_goto_star(self,result):
+        '''
+        Rellen el GOTO para ir a función star
+        :param result: Posición a llenar, donde comienza el main
+        '''
+        if self.inicia_star is not None:
+            self.Quads[self.inicia_star].cambia_res(result)
+
     def fill_quad(self,p):
         '''
         Rellena (FILL) al cuádruplo
@@ -171,6 +191,16 @@ class Intermediate_CodeGeneration:
         :param type: tipo de acción para graficar
         '''
         # igual que un quad normal creo
+        expT_1 = self.PTypes.pop()
+        expT_2 = self.PTypes.pop()
+
+        if expT_1 != 'int' or expT_2 != 'int':
+            raise TypeError("ERROR: Type-mismatch")
+        else:
+            exp_1 = self.PilaO.pop()
+            exp_2 = self.PilaO.pop()
+            quadruple = Quadruple(type, exp_2, exp_1, None)
+            self.Quads.append(quadruple)
 
     def generate_quad_repeat(self):
         '''
