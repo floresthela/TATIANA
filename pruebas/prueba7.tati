@@ -1,7 +1,7 @@
 program prueba7;
 int gi1 = 4 + 5;
 int gi2;
-int gi3 = 5;
+int gi3 = gi1;
 
 fun int function1(){
   float x;

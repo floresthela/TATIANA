@@ -18,14 +18,15 @@ class VarsTable:
             },
             'star': {
                 'type': 'void',
-                'vars': {}
+                'vars': {},
+                'begin': None
             }
         }
         self.current_type = ''
         self.current_scope = 'global'
         self.initialized = False
 
-    def FunDirectory(self, fun_id, type):
+    def FunDirectory(self, fun_id, type, start):
         '''
         Create main directory to store all functions created on a program, current scope is global
         : param fun_id: Nombre del programa, función creada por usuario o star (main)
@@ -40,13 +41,15 @@ class VarsTable:
         elif type == 'star':
             self.current_scope = 'star'
             self.current_type = type
+            self.table['star']['begin'] = start
 
         elif fun_id not in self.table:
             vt_name = 'vars-' + fun_id
             self.table[fun_id] = {
                 'type': type,
                 'vars': {},
-                'params': {}
+                'params': {},
+                'begin': start
             }
             self.current_scope = fun_id
             self.current_type = type

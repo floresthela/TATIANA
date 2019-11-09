@@ -12,14 +12,12 @@ from intermediate_code_generation import Intermediate_CodeGeneration
 vars_t = VarsTable()
 cg = Intermediate_CodeGeneration()
 
-
+# IMPORTANTE: descomentar el vars_t de remove a las funciones para eliminarlas
 # PROGRAM
 def p_program(p):
     '''
     program : PROGRAM ID SEMICOLON declara_vars program_modules
     '''
-
-
     conta = 1
     # print(cg.Quads)
     for q in cg.Quads:
@@ -51,21 +49,22 @@ def p_star(p):
     star = cg.PJumps.pop()
     cg.fill_goto_star(star)
 
-    vars_t.remove_table('star')
+    # vars_t.remove_table('star')
 
 
 def p_starI(p):
     '''
     starI : star_sign OPENBRACES
     '''
-    vars_t.FunDirectory('star', 'star')
+    vars_t.FunDirectory('star', 'star',p[1])
 
 def p_star_sign(p):
     '''
     star_sign : MULTIPLICATION
     '''
-    empieza = len(cg.Quads) + 1
-    cg.PJumps.append(empieza)
+    beginStar = len(cg.Quads) + 1
+    cg.PJumps.append(beginStar)
+    p[0] = beginStar
 
 
 def p_star1(p):
@@ -84,7 +83,38 @@ def p_declara_vars(p):
         p[0] = p[1:]
         p[0] = flatten(p[0])
 
+def p_vars(p):
+    '''
+    vars : type ID vars1 equals exp SEMICOLON
+         | type ID vars1 SEMICOLON
+    '''
+    p[0] = (p[1], p[2])
 
+    if len(p) == 7:
+        cg.PilaO.append(p[2])
+        cg.PTypes.append(p[1])
+        if cg.POper and cg.POper[-1] in '=':
+            cg.generate_quad()
+    if not vars_t.initialized:
+        vars_t.FunDirectory('global', 'np',None)
+        vars_t.insert_var(p[2],p[1])
+    else:
+        vars_t.insert_var(p[2],p[1])
+
+# TODO: una regla para arreglos y usarla siempre que necesitemos [] , [][]
+def p_vars1(p):
+    '''
+    vars1 : OPENBRACKET CTEINT CLOSEBRACKET vars3
+        | empty
+    '''
+
+# matrix
+def p_vars3(p):
+    '''
+    vars3 : OPENBRACKET CTEINT CLOSEBRACKET
+        | empty
+    '''
+    
 # LOOP
 def p_loop(p):
     '''
@@ -119,8 +149,10 @@ def p_functionI(p):
     '''
     p[0] = p[2]
     cg.generate_GOTO_star()
-    vars_t.FunDirectory(p[2],p[1])
+    beginFun = len(cg.Quads) + 1
+    vars_t.FunDirectory(p[2],p[1],beginFun)
 
+    # mete las funciones como variables globales...
     vars_t.table['global']['vars'][p[0]] = { 'id': p[0], 'type':p[1]}
 
 def p_function(p):
@@ -194,37 +226,7 @@ def p_function5(p):
 def flatten(li):
     return sum(([x] if not isinstance(x, list) else flatten(x) for x in li), [])
 
-def p_vars(p):
-    '''
-    vars : type ID vars1 equals exp SEMICOLON
-         | type ID vars1 SEMICOLON
-    '''
-    p[0] = (p[1], p[2])
 
-    if len(p) == 7:
-        cg.PilaO.append(p[2])
-        cg.PTypes.append(p[1])
-        if cg.POper and cg.POper[-1] in '=':
-            cg.generate_quad()
-    if not vars_t.initialized:
-        vars_t.FunDirectory('global', 'np')
-        vars_t.insert_var(p[2],p[1])
-    else:
-        vars_t.insert_var(p[2],p[1])
-
-# TODO: una regla para arreglos y usarla siempre que necesitemos [] , [][]
-def p_vars1(p):
-    '''
-    vars1 : OPENBRACKET CTEINT CLOSEBRACKET vars3
-        | empty
-    '''
-
-# matrix
-def p_vars3(p):
-    '''
-    vars3 : OPENBRACKET CTEINT CLOSEBRACKET
-        | empty
-    '''
 
 
 # TYPE
