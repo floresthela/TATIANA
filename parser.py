@@ -12,40 +12,29 @@ from intermediate_code_generation import Intermediate_CodeGeneration
 vars_t = VarsTable()
 cg = Intermediate_CodeGeneration()
 
-# CUÁNDO CHECAMOS QUE UNA VARIABLE QUE ESTAMOS USANDO FUE DECLARADA??¿?¿?¿?¿??
-
-def insert_vars(vars):
-    '''
-    Función para insertas las líneas de variables declaradas, se llama desde program, star y function
-    : param vars: Lista de tuplas con (type,id)
-    '''
-    if vars is not None:
-        for x in vars:
-            if x is not None:
-                vars_t.insert_var(x[1],x[0])
-
 # PROGRAM
 def p_program(p):
     '''
     program : PROGRAM ID SEMICOLON declara_vars program2 star
     '''
-    # vars_t.FunDirectory(p[2], 'np')
-    # insert_vars(p[4])
-    # print('done',vars_t.table)
+    conta = 1
+    # print(cg.Quads)
+    for q in cg.Quads:
+        print(conta,q)
+        conta += 1
 
     p[0] = "PROGRAM COMPILED"
 
     vars_t.remove_table('global')
 
-
-def p_program_vars(p):
-    '''
-    program_vars : vars program_vars
-            | empty
-    '''
-    if len(p) == 3:
-        p[0] = p[1:]
-        p[0] = flatten(p[0])
+# def p_program_vars(p):
+#     '''
+#     program_vars : vars program_vars
+#             | empty
+#     '''
+#     if len(p) == 3:
+#         p[0] = p[1:]
+#         p[0] = flatten(p[0])
 
 
 def p_program2(p):
@@ -63,8 +52,6 @@ def p_star(p):
     '''
     star : starI declara_vars star1 CLOSEBRACES
     '''
-
-    # insert_vars(p[3])
     vars_t.remove_table('star')
 
 
@@ -109,13 +96,12 @@ def p_stmt(p):
         | read
         | graphstmt
         | graphr
-        | funCall
+        | funCall SEMICOLON
         | return
     '''
 
     p[0] = p[1]
 
-# no sé si estoy haciendo esto bien, de llevar todo parriba ?¿?
 
 # FUNCTION
 
@@ -130,22 +116,13 @@ def p_function(p):
     '''
     function : FUN functionI function2 inicia_fun declara_vars function4 termina_fun
     '''
-    # vars_t.FunDirectory(p[3], p[2])
-    # insert_vars(p[6])
 
     if p[7] != None:
         vars = p[7]
         vars = vars[:-1]
         p[0] = vars
 
-    # vars_t.remove_table(p[3])
-def p_function1(p):
-    '''
-    function1 : type
-              | VOID
-    '''
-    p[0] = p[1]
-
+    vars_t.remove_table(p[3])
 
 def p_inicia_fun(p):
     '''
@@ -163,7 +140,7 @@ def p_function2(p):
     function2 : OPENPAREN function3 CLOSEPAREN
     '''
 
-
+# TODO: modificar esto, para poder tener parametros de diferentes tipos de variables...
 def p_function3(p):
     '''
     function3 : type ID function5
@@ -183,20 +160,21 @@ def p_function4(p):
 
 def p_function5(p):
     '''
-    function5 : COMMA type ID function3
-    '''
-
-
-def p_fun_vars(p):
-    '''
-    fun_vars : vars fun_vars
+    function5 : COMMA type ID function5
               | empty
     '''
-    if len(p) == 3:
-        p[0] = p[1:]
-        p[0] = flatten(p[0])
 
-        #list.pop(obj = list[-1])
+
+# def p_fun_vars(p):
+#     '''
+#     fun_vars : vars fun_vars
+#               | empty
+#     '''
+#     if len(p) == 3:
+#         p[0] = p[1:]
+#         p[0] = flatten(p[0])
+#
+#         #list.pop(obj = list[-1])
 
 # VARS
 # al final hay que actualizar diagramas
@@ -206,36 +184,28 @@ def flatten(li):
 
 def p_vars(p):
     '''
-    vars : type ID vars1 SEMICOLON
+    vars : type ID vars1 equals exp SEMICOLON
+         | type ID vars1 SEMICOLON
     '''
     p[0] = (p[1], p[2])
 
-    if p[3] is not None:
+    if len(p) == 7:
         cg.PilaO.append(p[2])
         cg.PTypes.append(p[1])
+        if cg.POper and cg.POper[-1] in '=':
+            cg.generate_quad()
     if not vars_t.initialized:
         vars_t.FunDirectory('global', 'np')
         vars_t.insert_var(p[2],p[1])
     else:
         vars_t.insert_var(p[2],p[1])
 
+# TODO: una regla para arreglos y usarla siempre que necesitemos [] , [][]
 def p_vars1(p):
     '''
-    vars1 : equals exp
-        | OPENBRACKET CTEINT CLOSEBRACKET vars3
+    vars1 : OPENBRACKET CTEINT CLOSEBRACKET vars3
         | empty
     '''
-    if len(p) == 3:
-        p[0] = 1
-
-# def p_vars2(p):
-#     '''
-#     vars2 : COMMA ID vars1
-#           | empty
-#     '''
-#     if len(p) == 4:
-#         p[0] = p[2:]
-
 
 # matrix
 def p_vars3(p):
@@ -258,17 +228,19 @@ def p_type(p):
 # PRINT
 def p_print(p):
     '''
-    print : PRINT OPENPAREN exp CLOSEPAREN SEMICOLON
+    print : PRINT OPENPAREN expression CLOSEPAREN SEMICOLON
     '''
-    # cg.POper.append('print')
+    cg.POper.append('print')
+    cg.generate_quad_print()
 
 # READ
+# qué pedo con el read?
 def p_read(p):
     '''
-    read : READ OPENPAREN ID read1 CLOSEPAREN SEMICOLON
+    read : READ OPENPAREN id read1 CLOSEPAREN SEMICOLON
     '''
-    # cg.POper.append('read')
-
+    cg.POper.append('read')
+    cg.generate_quad_read()
 
 # arreglo
 def p_read1(p):
@@ -284,6 +256,7 @@ def p_equals(p):
     '''
     cg.POper.append(p[1])
 
+
 # ASSIGNMENT
 
 def p_id(p):
@@ -296,9 +269,6 @@ def p_id(p):
         cg.PilaO.append(p[1])
         cg.PTypes.append(t['type'])
 
-        print(cg.PilaO)
-        print(cg.PTypes)
-        print(cg.POper)
 def p_assignment(p):
     '''
     assignment : id assignment1 equals assignment3 SEMICOLON
@@ -327,20 +297,20 @@ def p_assignment3(p):
                 | read
     '''
     p[0] = p[1]
-
+    if cg.POper[-1] == '=':
+        cg.generate_quad();
 
 # VAR_CTE
 def p_vcte(p):
     '''
-    vcte : cte
-        | id vcte1
-        | funCall
+    vcte : cte_int
+         | cte_float
+         | cte_char
+         | id vcte1
+         | funCall
     '''
     # 1. PilaO.Push(id.name)
-    # tambien tenemos que meter el tipo de la variable a la pila pero
-    # de donde se saca el tipo???
-    p[0] = p[1]
-    if len(p) == 3:
+    if len(p) == 2:
         cg.PilaO.append(p[1])
 
 
@@ -359,19 +329,28 @@ def p_vcte3(p):
     '''
 
 # CTE
-
-
-def p_cte(p):
+def p_cte_int(p):
     '''
-    cte : CTEINT
-        | CTEFLOAT
-        | CTECHAR
+    cte_int : CTEINT
     '''
     p[0] = p[1]
+    cg.PTypes.append('int')
+
+def p_cte_float(p):
+    '''
+    cte_float : CTEFLOAT
+    '''
+    p[0] = p[1]
+    cg.PTypes.append('float')
+
+def p_cte_char(p):
+    '''
+    cte_char : CTECHAR
+    '''
+    p[0] = p[1]
+    cg.PTypes.append('char')
 
 # RETURN
-
-
 def p_return(p):
     '''
     return : RETURN return1 SEMICOLON
@@ -392,77 +371,84 @@ def p_expression(p):
     expression : exp expression1
     '''
 
-
 def p_expression1(p):
     '''
     expression1 : loper exp
              | empty
     '''
+    if cg.POper and cg.POper[-1] in ['>','<','==','!=']:
+        cg.generate_quad()
 
 
-# L_OP
+
+# L_OP - LOGICAL OPERATOR
 def p_loper(p):
     '''
     loper : GREATER
           | LESS
           | NOTEQUAL
           | ISEQUAL
+
     '''
     # 8. POper.Push(rel.op)
     cg.POper.append(p[1])
-
-# LOGICAL
-
-
-def p_logical(p):
-    '''
-    logical : expression logical1 expression
-    '''
-
-
-def p_logical1(p):
-    '''
-    logical1 : OR
-             | AND
-    '''
 
 
 # CONDITION
 def p_condition(p):
     '''
-    condition : IF head body condition1
+    condition : IF head_cond body condition1
     '''
-
+    # 2.-
+    end = cg.PJumps.pop()
+    cg.fill_quad(end)
 
 def p_condition1(p):
     '''
-    condition1 : ELSEIF head body condition1
-               | ELSE body
+    condition1 : elseif head_cond body condition1
+               | else body
                | empty
     '''
+    if len(p) == 5:
+        end = cg.PJumps.pop()
+        cg.fill_quad(end)
+def p_elseif(p):
+    '''
+    elseif : ELSEIF
+    '''
+    cg.generate_else()
+    # cg.generate_elseif()
 
+def p_else(p):
+    '''
+    else : ELSE
+    '''
+    cg.generate_else()
 
 # HEAD
-def p_head(p):
-    '''
-    head : OPENPAREN head1 CLOSEPAREN
-    '''
+# def p_head(p):
+#     '''
+#     head : OPENPAREN head1 CLOSEPAREN
+#     '''
 
-
-def p_head1(p):
+def p_head_cond(p):
     '''
-    head1 : expression
-          | logical
+    head_cond : OPENPAREN expression close_condition
     '''
 
 # BODY
-
-
 def p_body(p):
     '''
     body : OPENBRACES body1 CLOSEBRACES
     '''
 
+# termina la condición
+def p_close_condition(p):
+    '''
+    close_condition : CLOSEPAREN
+    '''
+    # genera GOTOF...
+    cg.generate_GOTOF()
 
 def p_body1(p):
     '''
@@ -472,6 +458,7 @@ def p_body1(p):
 
 
 # FOR
+# TODO: cuádruplos para for
 def p_for(p):
     '''
     for : FOR OPENPAREN ID TWODOTS exp CLOSEPAREN body
@@ -481,17 +468,37 @@ def p_for(p):
 # WHILE
 def p_while(p):
     '''
-    while : WHILE  head body
+    while : while1 body
     '''
+    end = cg.PJumps.pop()
+    w_return = cg.PJumps.pop()
 
+    cg.generate_GOTO()
+    cg.fill_goto(w_return)
+
+    cg.fill_quad(end)
+
+def p_while1(p):
+    '''
+    while1 : while_w OPENPAREN expression CLOSEPAREN
+    '''
+    cg.generate_GOTOF()
+# de tanto ver y escribir la palabra while siento que esta bien rara y la estoy escribiendo mal
+def p_while_w(p):
+    '''
+    while_w : WHILE
+    '''
+    # 1.-
+    cg.PJumps.append(len(cg.Quads) + 1)
 
 # FUN_CALL
 def p_funCall(p):
     '''
-    funCall : ID OPENPAREN funCall2 CLOSEPAREN SEMICOLON
+    funCall : ID OPENPAREN funCall2 CLOSEPAREN
     '''
     if p[1] in vars_t.table:
-        print('todo bien')
+        p[0] = p[1]
+
     else:
          raise TypeError(f"Function '{p[1]}' not declared")
 
@@ -510,18 +517,20 @@ def p_funCall3(p):
     '''
 
 
+# (exp,exp)
 def p_laRegla(p):
     '''
     laRegla : OPENPAREN exp COMMA exp CLOSEPAREN
     '''
 
 
+# (exp)
 def p_laRegla2(p):
     '''
     laRegla2 : OPENPAREN exp CLOSEPAREN
     '''
 
-
+# TODAS LAS EXP DE GRAPH STMTS DEBERÁN SER INTS ALV
 # GRAPH_STMT
 def p_graphstmt(p):
     '''
@@ -531,13 +540,10 @@ def p_graphstmt(p):
     '''
 
 # GRAPH_FIGURE
-
-
 def p_graphfig(p):
     '''
     graphfig : graphfig1 SEMICOLON
     '''
-
 
 def p_graphfig1(p):
     '''
@@ -546,13 +552,14 @@ def p_graphfig1(p):
             | TRIANGLE laRegla
             | RECTANGLE laRegla
     '''
+    p[0] = p[1]
+    cg.generate_quad_graph1(p[0])
 
 # GRAPH_MOVEMENT
-
-
 def p_graphmove(p):
     '''
-    graphmove :  graphmove1  SEMICOLON
+    graphmove : graphmove1  SEMICOLON
+              | graphmove2 SEMICOLON
     '''
 
 
@@ -560,8 +567,9 @@ def p_graphmove1(p):
     '''
     graphmove1 : HAND_DOWN
               | HAND_UP
-              | graphmove2
     '''
+    p[0] = p[1]
+    cg.generate_quad_graph0(p[0])
 
 
 def p_graphmove2(p):
@@ -572,25 +580,43 @@ def p_graphmove2(p):
               | BACK laRegla2
               | ARC laRegla
     '''
+    p[0] = p[1]
+    cg.generate_quad_graph1(p[0])
+
+# SUPER DUDA: QUADS CON VARIOS PARAMETROS ?¿?¿ CÓMO HACEMOS EL REPEAT
+# pensaba hacer un tipo while pero en lugar de gotof, ir restando al número asignado de veces que se repetirá... idk
 
 # GRAPH_REPEAT
-
-
 def p_graphr(p):
     '''
-    graphr : REPEAT exp OPENBRACES graphstmt graphr1 CLOSEBRACES
+    graphr : repeat rep OPENBRACES graphstmt graphr1 CLOSEBRACES
     '''
-
+    end = cg.PJumps.pop()
+    r_return = cg.PJumps.pop()
+    # esto no lo sé
+    cg.generate_GOTO()
+    cg.fill_goto(r_return)
+    cg.fill_quad(end)
 
 def p_graphr1(p):
     '''
     graphr1 : graphstmt graphr1
-           | empty
+            | empty
     '''
 
+def p_rep(p):
+    '''
+    rep : OPENPAREN exp CLOSEPAREN
+    '''
+    cg.generate_quad_repeat()
+
+def p_repeat(p):
+    '''
+    repeat : REPEAT
+    '''
+    cg.PJumps.append(len(cg.Quads) + 1)
+
 # GRAPH_VIEW
-
-
 def p_graphview(p):
     '''
     graphview : graphview1 SEMICOLON
@@ -603,47 +629,32 @@ def p_graphview1(p):
               | SHOW_STAR
               | graphview2 exp
     '''
-
+    if len(p) == 2:
+        p[0] = p[1]
+        cg.generate_quad_graph0(p[0])
 
 def p_graphview2(p):
     '''
-    graphview2 : SETXY graphview3
-              | COLOR_STAR
-              | SIZE_STAR
+    graphview2 : SETXY laRegla
+              | COLOR_STAR laRegla2
+              | SIZE_STAR laRegla2
     '''
 
-
-def p_graphview3(p):
-    '''
-    graphview3 : exp COMMA
-              | laRegla
-    '''
+# Esto está malisimo
+# def p_graphview3(p):
+#     '''
+#     graphview3 : exp COMMA
+#               | laRegla
+#     '''
 
 # exp
-
-
 def p_exp(p):
     '''
     exp : term exp1
     '''
     p[0] = p[1]
-    # si pongo esto el parser no compila jajajaja sos
-    # if cg.POper[-1] == 'ADDITION' or cg.POper[-1] == 'SUBSTRACTION':
-    #     right_operand = cg.PilaO.pop()
-    #     right_type = cg.PTypes.pop()
-    #     left_operand = cg.PilaO.pop()
-    #     left_type = cg.PTypes.pop()
-    #     operator = cg.POper.pop()
-    #     #wtf con el cubo???
-    #     result_type = cube()
-    #     if result_type != 'err':
-    #         #wtf con el avail?
-    #         result = 1
-    #         quad = (operator, left_operand, right_operand, result)
-    #         cg.Quads.append(quad)
-    #         cg.PilaO.append(result)
-    #         cg.PTypes.append(result_type)
-
+    if cg.POper and cg.POper[-1] in ['+', '-']:
+        cg.generate_quad()
 
 def p_exp1(p):
     '''
@@ -654,6 +665,7 @@ def p_exp1(p):
     # 2. POper.push(+ or -)
     if len(p) == 3:
         cg.POper.append(p[1])
+
 
 
 def p_openP(p):
@@ -679,9 +691,7 @@ def p_factor(p):
     factor : vcte
            | factor1
     '''
-
     p[0] = p[1]
-
 
 def p_factor1(p):
     '''
@@ -698,15 +708,19 @@ def p_factor2(p):
     # 2.POper.push(+ or -)
     p[0] = p[1]
     cg.POper.append(p[0])
-    #print("printing p_factor2..")
 
 # al chile no se que estoy haciendo
-
+# TODO: checar bien los quads en expresiones
+# por ejemplo, c = 4 + glob1 * glob2 / b + c;
+# hace primero la division y luego la multiplicación...
 # TERM
 def p_term(p):
     '''
     term : factor term1
     '''
+    p[0] = p[1]
+    if cg.POper and cg.POper[-1] in ['*', '/']:
+        cg.generate_quad()
 
 
 def p_term1(p):
@@ -734,16 +748,16 @@ def p_error(p):
 
 yacc.yacc()
 
-
+# hay que ver CÓMO ponemos que hay errores en la sintaxis pero más específicos o algo asi
 if __name__ == '__main__':
     try:
-        nombreArchivo = 'pruebas/prueba7.txt'
+        nombreArchivo = 'pruebas/tati.tati'
+
         arch = open(nombreArchivo, 'r')
         print("Archivo a leer: " + nombreArchivo)
         info = arch.read()
         print(info)
         arch.close()
-        cg.generate_quad()
         if(yacc.parse(info, tracking=True) == 'PROGRAM COMPILED'):
             print("SINTAXIS VALIDA :) ")
         else:

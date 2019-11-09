@@ -17,8 +17,6 @@ class Operators(Enum):
     LESS = '<'
     NOT_EQUAL = '!='
     ISEQUAL = '=='
-    AND = 'and'
-    OR = 'or'
     EQUAL = '='
 
 
@@ -26,9 +24,11 @@ class SemanticCube:
     '''
     Cubo Semántico
     '''
-
     def __init__(self):
-        self.semantic_cube: {
+        '''
+        inicializa cubo semántico
+        '''
+        self.semantic_cube = {
             Operators.ADDITION: {
                 'int': {
                     'int': 'int',
@@ -152,42 +152,6 @@ class SemanticCube:
                     'char': 'err'
                 }
             },
-
-            Operators.AND: {
-                'int': {
-                    'int': 'err',
-                    'float': 'err',
-                    'char': 'err'
-                },
-                'float': {
-                    'int': 'err',
-                    'float': 'err',
-                    'char': 'err'
-                },
-                'char': {
-                    'int': 'err',
-                    'float': 'err',
-                    'char': 'err'
-                }
-            },
-
-            Operators.OR: {
-                'int': {
-                    'int': 'err',
-                    'float': 'err',
-                    'char': 'err'
-                },
-                'float': {
-                    'int': 'err',
-                    'float': 'err',
-                    'char': 'err'
-                },
-                'char': {
-                    'int': 'err',
-                    'float': 'err',
-                    'char': 'err'
-                }
-            },
             Operators.NOT_EQUAL: {
                 'int': {
                     'int': 'bool',
@@ -221,7 +185,7 @@ class SemanticCube:
                     'float': 'err',
                     'char': 'char'
                 }
-            },
+            }
 
         }
 
@@ -232,8 +196,8 @@ class SemanticCube:
         :param right_type: type of right variable of operation
         :param operator: operator given for the operation
         '''
-        if 'err' not in self.semantic_cube[left_type][right_type][operator]:
-            return self.semantic_cube[left_type][right_type][operator]
+        if self.semantic_cube[operator][left_type][right_type] is not 'err':
+            return self.semantic_cube[operator][left_type][right_type]
         raise TypeError("Unable to apply operator {} to types {} and {}".format(
             operator, left_type, right_type))
 

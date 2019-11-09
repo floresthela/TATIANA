@@ -19,8 +19,6 @@ reserved = {
     'float' : 'FLOAT',
     'char' : 'CHAR',
     'fun' : 'FUN',
-    'or' : 'OR',
-    'and' : 'AND',
     'read' : 'READ',
     'while' : 'WHILE',
     'circle': 'CIRCLE',

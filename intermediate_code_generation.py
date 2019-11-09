@@ -8,11 +8,8 @@ from semantic_cube import Operators, SemanticCube
 
 # TODO: hay que hacer cuadruplos especiales para nuestros statements de graficar
 
-# DUDA cuándo checamos si las variables ya fueron declaradas cuando las estamos usando en algo ??¿?¿?¿?¿?¿??¿
-
-
 class Quadruple:
-    def __init__(self, left_op, right_op, operator, result):
+    def __init__(self, operator,left_op, right_op, result):
         '''
         Inicializa cuádruplo
         '''
@@ -20,6 +17,22 @@ class Quadruple:
         self.right_op = right_op
         self.operator = operator
         self.result = result
+
+        #DUDA: Podemos tener una tupla como resultado (para stmts de graph que llevan varios valores)???? por qué tengo una obsesión con las tuplas ??
+
+    def __repr__(self):
+        return f"\t{self.operator}\t{self.left_op}\t{self.right_op}\t{self.result}\n"
+
+    def __str__(self):
+        return f"{self.operator},{self.left_op},{self.right_op},{self.result}\n"
+
+    def cambia_res(self,res):
+        '''
+        Cambia el resultado del cuádruplo (posición 4)
+        :param result: el resultado nuevo
+        '''
+        self.result = res
+
 
 class Intermediate_CodeGeneration:
     def __init__(self):
@@ -29,32 +42,146 @@ class Intermediate_CodeGeneration:
         self.PTypes = []
         # pending operands
         self.PilaO = []
+        # pending jumps
+        self. PJumps = []
 
         self.temps = 0
-        self. PJumps = []
-        self.Quads = []
+        self.Quads = [] # lista de cuádruplos que llevamos
+        self.contador = 1 # creo que este no lo necesitamos
+        self.cubo = SemanticCube()
+
     def generate_quad(self):
-        list = []
-        # left_op = self.PilaO.pop()
-        # left_type = self.PTypes.pop()
+        right_op = self.PilaO.pop()
+        right_type = self.PTypes.pop()
 
-        # right_op = self.PilaO.pop()object
-        # right_type = self.PTypes.pop()
+        left_op = self.PilaO.pop()
+        left_type = self.PTypes.pop()
 
-        # operator = self.POper.pop()
-        # operator_s = Operators(operator)
+        operator = self.POper.pop()
+        operator_s = Operators(operator)
 
-        # result_type = self.semantic_cube.semantics(left_type, right_type, operator_s)
+        result_type = self.cubo.semantics(left_type, right_type, operator_s)
 
-        # if result_type:
-        #     temp_actual = "t" + self.temps
-        #     self.temps += 1
-        #     result = temp_actual
-        #     quadruple = Quadruple(left_type,right_type, operator_s, result)
-        #     print(result)
-        #     self.POper.append(result)
-        #     self.PTypes.append(result_type)
-    #def graph_quad(self):
+        if result_type:
+            if operator != '=':
+                temp_actual = "t" + str(self.temps)
+                self.temps += 1
+                result = temp_actual
+                quadruple = Quadruple(operator, left_op,right_op, result)
+                self.PilaO.append(result)
+                self.PTypes.append(result_type)
+            else:
+                result = left_op
+                quadruple = Quadruple(operator, right_op, None, result)
+        self.Quads.append(quadruple)
 
-        # para prints o así ?
-    #def other_quad(self):
+
+    def generate_quad_print(self):
+        '''
+        Genera cuádruplo para print
+        '''
+        result = self.PilaO.pop()
+        # no nos importa el tipo xq no lo usaremos después ni nunca
+        self.PTypes.pop()
+        operator = self.POper.pop()
+        quadruple = Quadruple(operator, None,None,result)
+        self.Quads.append(quadruple)
+
+    def generate_quad_read(self):
+        '''
+        Generar cuádruplo para stmt read
+        '''
+        result = self.PilaO.pop()
+        self.PTypes.pop()
+        operator = self.POper.pop()
+        quadruple = Quadruple(operator, None,None,result)
+        self.Quads.append(quadruple)
+
+    def generate_GOTOF(self):
+        '''
+        Genera GOTOF para condicion y while
+        '''
+        # Hay que checar si sí jala un elseif igual... aunque si deberia no?? lo checamos.
+        exp_type = self.PTypes.pop()
+        if exp_type != 'bool':
+            raise TypeError("ERROR: Type-mismatch")
+        else:
+            result = self.PilaO.pop()
+            quadruple = Quadruple('GotoF',result,None,None)
+            self.Quads.append(quadruple)
+            self.PJumps.append(len(self.Quads)-1)
+
+    def generate_else(self):
+        '''
+        Genera GOTO para ELSE
+        '''
+        # 3.-
+        quadruple = Quadruple('Goto',None,None,None)
+        self.Quads.append(quadruple)
+        position = self.PJumps.pop()
+        self.PJumps.append(len(self.Quads) - 1)
+        self.fill_quad(position)
+
+    def generate_GOTO(self):
+        '''
+        Genera GOTO vacío que se rellenará después (while, for)
+        '''
+        quadruple = Quadruple('Goto', None, None, None)
+        self.Quads.append(quadruple)
+
+    def fill_quad(self,p):
+        '''
+        Rellena (FILL) al cuádruplo
+        :param p: La posición del cuádruplo a completar
+        '''
+        self.Quads[p].cambia_res(len(self.Quads)+1)
+
+    def fill_goto(self,result):
+        '''
+        Rellena el goto con el resultado
+        :param result: Valor a rellenar para el goto
+        '''
+        position = len(self.Quads) - 1
+        self.Quads[position].cambia_res(result)
+
+    def generate_quad_graph0(self,type):
+        '''
+        Genera cuádruplo de gráfica que no lleva ningún parámetro
+        :param type: tipo de acción para graficar (hand_down o hand_up)
+        '''
+        quadruple = Quadruple(type, None, None, None)
+        self.Quads.append(quadruple)
+
+    def generate_quad_graph1(self,type):
+        '''
+        Genera cuádruplo de gráfica que lleva solo un parámetro
+        :param type: tipo de acción para graficar
+        '''
+        exp_type = self.PTypes.pop()
+        if exp_type != 'int':
+            raise TypeError("ERROR: Type-mismatch")
+        else:
+            result = self.PilaO.pop()
+            quadruple = Quadruple(type, result, None, None)
+            self.Quads.append(quadruple)
+
+    def generate_quad_graph2(self,type):
+        '''
+        Genera cuádruplo de gráfica que lleva un parámetro (dos expresiones)
+        :param type: tipo de acción para graficar
+        '''
+        # igual que un quad normal creo
+
+    def generate_quad_repeat(self):
+        '''
+        Cuádruplo para graph stmt REPEAT
+        '''
+        exp_type = self.PTypes.pop()
+        if exp_type != 'int':
+            raise TypeError("ERROR: Type-mismatch")
+        else:
+            # supongo que esto terminará siendo parecido a un FOR
+            result = self.PilaO.pop()
+            quadruple = Quadruple('Repeat', None, None, None)
+            self.Quads.append(quadruple)
+            self.PJumps.append(len(self.Quads)-1)

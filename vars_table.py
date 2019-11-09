@@ -43,7 +43,6 @@ class VarsTable:
 
         elif fun_id not in self.table:
             vt_name = 'vars-' + fun_id
-            # print(vt_name)
             self.table[fun_id] = {
                 'type': type,
                 'vars': {},

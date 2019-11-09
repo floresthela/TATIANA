@@ -1,0 +1,36 @@
+program tati;
+int glob1 = 10;
+float glob2 = 40.5;
+
+* {
+  int a;
+  int b = 10;
+  int c = 12;
+  float abc;
+  a = (glob2 * 4 + c) / b + 1 - 2 * c;
+  if (a > b) {
+    print(glob1);
+  }
+  elseif(a > c+1){
+    print(c);
+  }
+  else {
+    c = b * 4 + a / 3;
+  }
+  read(c);
+
+  while(a > glob1){
+    read(a);
+    }
+  print(a);
+  c = 4 + glob1 * glob2 / b + c;
+  circle(a+b-1*7);
+  hand_down;
+  go(9+3*7/6);
+  triangle(5,4+4);
+  repeat(4){
+    go(5);
+    circle(5);
+    hand_up;
+  }
+}
