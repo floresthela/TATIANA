@@ -50,6 +50,8 @@ def p_star(p):
     star = cg.PJumps.pop()
     cg.fill_goto_star(star)
 
+    print('star',vars_t.table['star'])
+    print('star',len(vars_t.table['star']['vars']))
     vars_t.delete_vars('star')
 
 
@@ -102,6 +104,8 @@ def p_vars(p):
     else:
         vars_t.insert_var(p[2],p[1])
 
+
+
 # TODO: una regla para arreglos y usarla siempre que necesitemos [] , [][]
 def p_vars1(p):
     '''
@@ -149,12 +153,15 @@ def p_functionI(p):
               | VOID ID
     '''
     p[0] = p[2]
-    cg.generate_GOTO_star()
+
     beginFun = len(cg.Quads) + 1
     vars_t.FunDirectory(p[2],p[1],beginFun)
-
     # mete las funciones como variables globales...
     vars_t.table['global']['vars'][p[0]] = { 'id': p[0], 'type':p[1]}
+
+    if len(vars_t.table) == 3:
+        cg.generate_GOTO_star()
+
 
 def p_function(p):
     '''

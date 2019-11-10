@@ -24,5 +24,9 @@ fun void function2(){
   char c1;
   int star1;
   int i3;
+  int s = 1;
   i3 = star1 + 5;
+  circle(4);
+  triangle(4,5);
+  s = gi1 + i3 * 5 + (7 * gi3);
 }
