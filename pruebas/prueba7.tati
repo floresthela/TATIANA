@@ -11,6 +11,7 @@ fun int function1(){
 }
 
 fun float function(){
+  float x;
   print(gi1);
 }
 

@@ -76,8 +76,6 @@ class VarsTable:
         :param var_id: Name of the variable to be searched
         '''
         scope = self.current_scope
-        # if scope is None:
-        #     return 0
         if var_id in self.table[scope]['vars']:
             return self.table[scope]['vars'][var_id]
         elif var_id in self.table['global']['vars']:
@@ -85,12 +83,12 @@ class VarsTable:
         else:
             raise TypeError(f"Variable' {var_id} has not been declared")
 
-    def remove_table(self, table_id):
+    def delete_vars(self, table_id):
         '''
         Remove a vars table after function is no longer needed
         : param table_id: Name assigned to the function
         '''
         if table_id in self.table:
-            del self.table[table_id]
+            del self.table[table_id]['vars']
         else:
             raise TypeError(f"Table of variables for {table_id} wasn't found")

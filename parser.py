@@ -25,8 +25,9 @@ def p_program(p):
         conta += 1
 
     p[0] = "PROGRAM COMPILED"
+    vars_t.delete_vars('global')
     print(vars_t.table)
-    vars_t.remove_table('global')
+
 
 def p_program_modules(p):
     '''
@@ -49,7 +50,7 @@ def p_star(p):
     star = cg.PJumps.pop()
     cg.fill_goto_star(star)
 
-    # vars_t.remove_table('star')
+    vars_t.delete_vars('star')
 
 
 def p_starI(p):
@@ -114,7 +115,7 @@ def p_vars3(p):
     vars3 : OPENBRACKET CTEINT CLOSEBRACKET
         | empty
     '''
-    
+
 # LOOP
 def p_loop(p):
     '''
@@ -166,7 +167,7 @@ def p_function(p):
         vars = vars[:-1]
         p[0] = vars
 
-    # vars_t.remove_table(p[2])
+    vars_t.delete_vars(p[2])
 
 def p_inicia_fun(p):
     '''
