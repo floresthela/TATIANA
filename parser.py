@@ -12,10 +12,11 @@ from intermediate_code_generation import Intermediate_CodeGeneration
 vars_t = VarsTable()
 cg = Intermediate_CodeGeneration()
 
+# IMPORTANTE: descomentar el vars_t de remove a las funciones para eliminarlas
 # PROGRAM
 def p_program(p):
     '''
-    program : PROGRAM ID SEMICOLON declara_vars program2 star
+    program : PROGRAM ID SEMICOLON declara_vars program_modules
     '''
     conta = 1
     # print(cg.Quads)
@@ -24,27 +25,21 @@ def p_program(p):
         conta += 1
 
     p[0] = "PROGRAM COMPILED"
-
-    vars_t.remove_table('global')
-
-# def p_program_vars(p):
-#     '''
-#     program_vars : vars program_vars
-#             | empty
-#     '''
-#     if len(p) == 3:
-#         p[0] = p[1:]
-#         p[0] = flatten(p[0])
+    vars_t.delete_vars('global')
+    print(vars_t.table)
 
 
-def p_program2(p):
+def p_program_modules(p):
     '''
-    program2 : function program2
-            | empty
+    program_modules : program_fun star
     '''
-    if len(p) == 3:
-        p[0] = p[1]
-        # if p[2] != None:
+
+
+def p_program_fun(p):
+    '''
+    program_fun : function program_fun
+                | empty
+    '''
 
 
 # STAR
@@ -52,14 +47,28 @@ def p_star(p):
     '''
     star : starI declara_vars star1 CLOSEBRACES
     '''
-    vars_t.remove_table('star')
+    s_table = vars_t.table['star']
+
+    star = cg.PJumps.pop()
+    cg.fill_goto_star(star)
+
+    vars_t.delete_vars('star')
 
 
 def p_starI(p):
     '''
-    starI : MULTIPLICATION OPENBRACES
+    starI : star_sign OPENBRACES
     '''
-    vars_t.FunDirectory('star', 'star')
+    vars_t.FunDirectory('star', 'star',p[1])
+
+def p_star_sign(p):
+    '''
+    star_sign : MULTIPLICATION
+    '''
+    beginStar = len(cg.Quads) + 1
+    cg.PJumps.append(beginStar)
+    p[0] = beginStar
+
 
 def p_star1(p):
     '''
@@ -77,6 +86,39 @@ def p_declara_vars(p):
         p[0] = p[1:]
         p[0] = flatten(p[0])
 
+def p_vars(p):
+    '''
+    vars : type ID vars1 equals exp SEMICOLON
+         | type ID vars1 SEMICOLON
+    '''
+    p[0] = (p[1], p[2])
+
+    if len(p) == 7:
+        cg.PilaO.append(p[2])
+        cg.PTypes.append(p[1])
+        if cg.POper and cg.POper[-1] in '=':
+            cg.generate_quad()
+    if not vars_t.initialized:
+        vars_t.FunDirectory('global', 'np',None)
+        vars_t.insert_var(p[2],p[1])
+    else:
+        vars_t.insert_var(p[2],p[1])
+
+
+
+# TODO: una regla para arreglos y usarla siempre que necesitemos [] , [][]
+def p_vars1(p):
+    '''
+    vars1 : OPENBRACKET CTEINT CLOSEBRACKET vars3
+        | empty
+    '''
+
+# matrix
+def p_vars3(p):
+    '''
+    vars3 : OPENBRACKET CTEINT CLOSEBRACKET
+        | empty
+    '''
 
 # LOOP
 def p_loop(p):
@@ -109,20 +151,31 @@ def p_functionI(p):
     '''
     functionI : type ID
               | VOID ID
-    '''
-    vars_t.FunDirectory(p[2],p[1])
+        '''
+    vars_t.FunDirectory(p[2], p[1])
+    cg.generate_ERA(p[2])
+    p[0] = p[2]
+
+    beginFun = len(cg.Quads) + 1
+    vars_t.FunDirectory(p[2],p[1],beginFun)
+    # mete las funciones como variables globales...
+    vars_t.table['global']['vars'][p[0]] = { 'id': p[0], 'type':p[1]}
+
+    if len(vars_t.table) == 3:
+        cg.generate_GOTO_star()
+
 
 def p_function(p):
     '''
     function : FUN functionI function2 inicia_fun declara_vars function4 termina_fun
     '''
-
     if p[7] != None:
         vars = p[7]
         vars = vars[:-1]
         p[0] = vars
 
-    vars_t.remove_table(p[3])
+
+    vars_t.delete_vars(p[2])
 
 def p_inicia_fun(p):
     '''
@@ -140,12 +193,16 @@ def p_function2(p):
     function2 : OPENPAREN function3 CLOSEPAREN
     '''
 
-# TODO: modificar esto, para poder tener parametros de diferentes tipos de variables...
 def p_function3(p):
     '''
-    function3 : type ID function5
+    function3 : funParam function5
               | empty
     '''
+    if p[1] is not None:
+        p[0] = [p[1]]
+        p[0].append(p[2])
+        print('hey',p[0])
+
 
 
 def p_function4(p):
@@ -160,60 +217,25 @@ def p_function4(p):
 
 def p_function5(p):
     '''
-    function5 : COMMA type ID function5
+    function5 : COMMA funParam function5
               | empty
     '''
+    if p[1] is not None:
+        p[0] = p[2:]
+        p[0] = flatten(p[0])
 
-
-# def p_fun_vars(p):
-#     '''
-#     fun_vars : vars fun_vars
-#               | empty
-#     '''
-#     if len(p) == 3:
-#         p[0] = p[1:]
-#         p[0] = flatten(p[0])
-#
-#         #list.pop(obj = list[-1])
+def p_funParam(p):
+    '''
+    funParam : type ID
+    '''
+    p[0] = (p[1],p[2])
+    vars_t.insert_param(p[2],p[1])
 
 # VARS
 # al final hay que actualizar diagramas
 
 def flatten(li):
     return sum(([x] if not isinstance(x, list) else flatten(x) for x in li), [])
-
-def p_vars(p):
-    '''
-    vars : type ID vars1 equals exp SEMICOLON
-         | type ID vars1 SEMICOLON
-    '''
-    p[0] = (p[1], p[2])
-
-    if len(p) == 7:
-        cg.PilaO.append(p[2])
-        cg.PTypes.append(p[1])
-        if cg.POper and cg.POper[-1] in '=':
-            cg.generate_quad()
-    if not vars_t.initialized:
-        vars_t.FunDirectory('global', 'np')
-        vars_t.insert_var(p[2],p[1])
-    else:
-        vars_t.insert_var(p[2],p[1])
-
-# TODO: una regla para arreglos y usarla siempre que necesitemos [] , [][]
-def p_vars1(p):
-    '''
-    vars1 : OPENBRACKET CTEINT CLOSEBRACKET vars3
-        | empty
-    '''
-
-# matrix
-def p_vars3(p):
-    '''
-    vars3 : OPENBRACKET CTEINT CLOSEBRACKET
-        | empty
-    '''
-
 
 # TYPE
 def p_type(p):
@@ -457,12 +479,64 @@ def p_body1(p):
     '''
 
 
+
+# FOR
+# def p_for(p):
+#     '''
+#     for : FOR OPENPAREN ID TWODOTS exp CLOSEPAREN body
+#     '''
+
+
 # FOR
 # TODO: cuádruplos para for
 def p_for(p):
     '''
-    for : FOR OPENPAREN ID TWODOTS exp CLOSEPAREN body
+    for : for1 body
     '''
+    end = cg.PJumps.pop()
+    return_for = cg.PJumps.pop()
+    id = cg.PilaO.pop()
+    id += 1
+    cg.generate_GOTO()
+    cg.fill_goto(return_for)
+    cg.fill_quad(end)
+
+
+def p_for1(p):
+    '''
+    for1 : forInit OPENPAREN ID for2
+    '''
+    p[0] = p[3]
+    # 2
+    #cg.PilaO.push()
+    cg.check_type(p[3])
+
+
+def p_for2(p):
+    '''
+    for2 : TWODOTS exp for3
+    '''
+    # 3
+    cg.PilaO.append(p[2])
+    # tmp1 = cg.PilaO.pop()
+    # tmp2 = cg.PilaO.pop()
+    # cg.PilaO.append(tmp2)
+
+
+def p_for3(p):
+    '''
+    for3 : CLOSEPAREN
+    '''
+    # 4
+    cg.generate_GOTOV()
+
+
+def p_forInit(p):
+    '''
+    forInit : FOR
+    '''
+    # 1
+    cg.PJumps.append(len(cg.Quads)+1)
 
 
 # WHILE
@@ -478,11 +552,14 @@ def p_while(p):
 
     cg.fill_quad(end)
 
+
 def p_while1(p):
     '''
     while1 : while_w OPENPAREN expression CLOSEPAREN
     '''
     cg.generate_GOTOF()
+
+
 # de tanto ver y escribir la palabra while siento que esta bien rara y la estoy escribiendo mal
 def p_while_w(p):
     '''
@@ -491,6 +568,7 @@ def p_while_w(p):
     # 1.-
     cg.PJumps.append(len(cg.Quads) + 1)
 
+
 # FUN_CALL
 def p_funCall(p):
     '''
@@ -498,9 +576,9 @@ def p_funCall(p):
     '''
     if p[1] in vars_t.table:
         p[0] = p[1]
-
+        cg.generate_goSub(p[1])
     else:
-         raise TypeError(f"Function '{p[1]}' not declared")
+        raise TypeError(f"Function '{p[1]}' not declared")
 
 
 def p_funCall2(p):
@@ -518,16 +596,17 @@ def p_funCall3(p):
 
 
 # (exp,exp)
-def p_laRegla(p):
+def p_dosExp(p):
     '''
-    laRegla : OPENPAREN exp COMMA exp CLOSEPAREN
+    dosExp : OPENPAREN exp COMMA exp CLOSEPAREN
     '''
+
 
 
 # (exp)
-def p_laRegla2(p):
+def p_unaExp(p):
     '''
-    laRegla2 : OPENPAREN exp CLOSEPAREN
+    unaExp : OPENPAREN exp CLOSEPAREN
     '''
 
 # TODAS LAS EXP DE GRAPH STMTS DEBERÁN SER INTS ALV
@@ -543,45 +622,60 @@ def p_graphstmt(p):
 def p_graphfig(p):
     '''
     graphfig : graphfig1 SEMICOLON
+             | graphfig2 SEMICOLON
     '''
-
+# Figures que llevan solo una exp
 def p_graphfig1(p):
     '''
-    graphfig1 : CIRCLE laRegla2
-            | SQUARE laRegla2
-            | TRIANGLE laRegla
-            | RECTANGLE laRegla
+    graphfig1 : CIRCLE unaExp
+            | SQUARE unaExp
     '''
     p[0] = p[1]
     cg.generate_quad_graph1(p[0])
 
+# Figures que llevan dos exp
+def p_graphfig2(p):
+    '''
+    graphfig2 : TRIANGLE dosExp
+            | RECTANGLE dosExp
+    '''
+    p[0] = p[1]
+    cg.generate_quad_graph2(p[0])
+
 # GRAPH_MOVEMENT
 def p_graphmove(p):
     '''
-    graphmove : graphmove1  SEMICOLON
+    graphmove : graphmove0  SEMICOLON
+              | graphmove1 SEMICOLON
               | graphmove2 SEMICOLON
     '''
 
 
-def p_graphmove1(p):
+def p_graphmove0(p):
     '''
-    graphmove1 : HAND_DOWN
+    graphmove0 : HAND_DOWN
               | HAND_UP
     '''
     p[0] = p[1]
     cg.generate_quad_graph0(p[0])
 
 
-def p_graphmove2(p):
+def p_graphmove1(p):
     '''
-    graphmove2 : GO laRegla2
-              | LEFT laRegla2
-              | RIGHT laRegla2
-              | BACK laRegla2
-              | ARC laRegla
+    graphmove1 : GO unaExp
+              | LEFT unaExp
+              | RIGHT unaExp
+              | BACK unaExp
     '''
     p[0] = p[1]
     cg.generate_quad_graph1(p[0])
+
+def p_graphmove2(p):
+    '''
+    graphmove2 : ARC dosExp
+    '''
+    p[0] = p[1]
+    cg.generate_quad_graph2(p[0])
 
 # SUPER DUDA: QUADS CON VARIOS PARAMETROS ?¿?¿ CÓMO HACEMOS EL REPEAT
 # pensaba hacer un tipo while pero en lugar de gotof, ir restando al número asignado de veces que se repetirá... idk
@@ -619,33 +713,33 @@ def p_repeat(p):
 # GRAPH_VIEW
 def p_graphview(p):
     '''
-    graphview : graphview1 SEMICOLON
+    graphview : graphview0 SEMICOLON
+              | graphview1 SEMICOLON
+              | graphview2 SEMICOLON
     '''
 
+def p_graphview0(p):
+    '''
+    graphview0 : HIDE_STAR
+              | SHOW_STAR
+    '''
+    p[0] = p[1]
+    cg.generate_quad_graph0(p[0])
 
 def p_graphview1(p):
     '''
-    graphview1 : HIDE_STAR
-              | SHOW_STAR
-              | graphview2 exp
+    graphview1 : COLOR_STAR unaExp
+              | SIZE_STAR unaExp
     '''
-    if len(p) == 2:
-        p[0] = p[1]
-        cg.generate_quad_graph0(p[0])
+    p[0] = p[1]
+    cg.generate_quad_graph1(p[0])
 
 def p_graphview2(p):
     '''
-    graphview2 : SETXY laRegla
-              | COLOR_STAR laRegla2
-              | SIZE_STAR laRegla2
+    graphview2 : SETXY dosExp
     '''
-
-# Esto está malisimo
-# def p_graphview3(p):
-#     '''
-#     graphview3 : exp COMMA
-#               | laRegla
-#     '''
+    p[0] = p[1]
+    cg.generate_quad_graph2(p[0])
 
 # exp
 def p_exp(p):
@@ -751,12 +845,12 @@ yacc.yacc()
 # hay que ver CÓMO ponemos que hay errores en la sintaxis pero más específicos o algo asi
 if __name__ == '__main__':
     try:
-        nombreArchivo = 'pruebas/tati.tati'
+        nombreArchivo = 'pruebas/prueba1.tati'
 
         arch = open(nombreArchivo, 'r')
         print("Archivo a leer: " + nombreArchivo)
         info = arch.read()
-        print(info)
+        # print(info)
         arch.close()
         if(yacc.parse(info, tracking=True) == 'PROGRAM COMPILED'):
             print("SINTAXIS VALIDA :) ")
