@@ -64,6 +64,7 @@ class VarsTable:
 
     def insert_var(self, var_id, var_type):
         scope = self.current_scope
+        # A elda se le va a caer la trenza cuando vea estos ifs...
 
         if var_id not in self.table[scope]['vars'] and var_id not in self.table['global']['vars'] and scope is not 'global' and scope is not 'star' and var_id not in self.table[scope]['params']:
             new_var = {
@@ -71,14 +72,24 @@ class VarsTable:
                 'type': var_type,
             }
             self.table[scope]['vars'][var_id] = new_var
+
         elif var_id not in self.table[scope]['vars'] and var_id not in self.table['global']['vars'] and (scope is 'global' or scope is 'star'):
             new_var = {
                 'id': var_id,
                 'type': var_type,
             }
             self.table[scope]['vars'][var_id] = new_var
+
         else:
             raise TypeError(f'Variable {var_id} already declared')
+
+        if scope is not 'global':
+            if var_type == 'int':
+                self.table[scope]['size']['i'][0] += 1
+            elif var_type == 'float':
+                self.table[scope]['size']['f'][0] += 1
+            elif var_type == 'char':
+                self.table[scope]['size']['c'][0] += 1
 
     def insert_param(self,param_id,param_type):
         scope = self.current_scope

@@ -52,15 +52,6 @@ def p_star(p):
     star = cg.PJumps.pop()
     cg.fill_goto_star(star)
 
-    for v in s_table['vars']:
-        type = s_table['vars'][v]['type']
-        if type == 'int':
-            s_table['size']['i'][0] += 1
-        elif type == 'float':
-            s_table['size']['f'][0] += 1
-        elif type == 'char':
-            s_table['size']['c'][0] += 1
-
     vars_t.delete_vars('star')
 
 
@@ -177,22 +168,10 @@ def p_function(p):
     '''
     function : FUN functionI function2 inicia_fun declara_vars function4 termina_fun
     '''
-
-    f_table = vars_t.table[p[2]]
-
     if p[7] != None:
         vars = p[7]
         vars = vars[:-1]
         p[0] = vars
-
-    for v in f_table['vars']:
-        type = f_table['vars'][v]['type']
-        if type == 'int':
-            f_table['size']['i'][0] += 1
-        elif type == 'float':
-            f_table['size']['f'][0] += 1
-        elif type == 'char':
-            f_table['size']['c'][0] += 1
 
 
     vars_t.delete_vars(p[2])

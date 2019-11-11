@@ -5,12 +5,12 @@ int gi3 = gi1;
 
 fun int function1(int aa, int ai, char cc){
   float x;
-  int ai = 10;
+  int a1 = 10;
   int b = 9;
   gi1 = 6 * gi3;
 }
 
-fun float function(){
+fun float function(char cc, float ff){
   float x;
   print(gi1);
 }
