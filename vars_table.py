@@ -14,12 +14,14 @@ class VarsTable:
         self.table = {
             'global': {
                 'program': '',
-                'vars': {}
+                'vars': {},
             },
             'star': {
                 'type': 'void',
                 'vars': {},
-                'begin': None
+                'begin': None,
+                # [vars,temps]
+                'size': {'i':[0,0],'f':[0,0],'c':[0,0]},
             }
         }
         self.current_type = ''
@@ -49,7 +51,9 @@ class VarsTable:
                 'type': type,
                 'vars': {},
                 'params': {},
-                'begin': start
+                'begin': start,
+                # [vars,params,temps]
+                'size': {'i':[0,0,0],'f':[0,0,0],'c':[0,0,0]}
             }
             self.current_scope = fun_id
             self.current_type = type
@@ -60,15 +64,39 @@ class VarsTable:
 
     def insert_var(self, var_id, var_type):
         scope = self.current_scope
-        if var_id not in self.table[scope]['vars'] and var_id not in self.table['global']['vars']:
+
+        if var_id not in self.table[scope]['vars'] and var_id not in self.table['global']['vars'] and scope is not 'global' and scope is not 'star' and var_id not in self.table[scope]['params']:
             new_var = {
                 'id': var_id,
                 'type': var_type,
             }
             self.table[scope]['vars'][var_id] = new_var
-
+        elif var_id not in self.table[scope]['vars'] and var_id not in self.table['global']['vars'] and (scope is 'global' or scope is 'star'):
+            new_var = {
+                'id': var_id,
+                'type': var_type,
+            }
+            self.table[scope]['vars'][var_id] = new_var
         else:
             raise TypeError(f'Variable {var_id} already declared')
+
+    def insert_param(self,param_id,param_type):
+        scope = self.current_scope
+        if param_id not in self.table[scope]['params'] and param_id not in self.table['global']['vars']:
+            new_param = {
+                'id': param_id,
+                'type' : param_type
+            }
+            self.table[scope]['params'][param_id] = new_param
+
+            if param_type == 'int':
+                self.table[scope]['size']['i'][1] += 1
+            elif param_type == 'float':
+                self.table[scope]['size']['f'][1] += 1
+            elif param_type == 'char':
+                self.table[scope]['size']['c'][1] += 1
+        else:
+            raise TypeError(f'Parameter {param_id} already declared')
 
     def search_var(self, var_id):
         '''

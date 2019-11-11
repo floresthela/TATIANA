@@ -6,7 +6,6 @@
 
 from semantic_cube import Operators, SemanticCube
 
-# TODO: hay que hacer cuadruplos especiales para nuestros statements de graficar
 
 class Quadruple:
     def __init__(self, operator,left_op, right_op, result):
@@ -17,8 +16,6 @@ class Quadruple:
         self.right_op = right_op
         self.operator = operator
         self.result = result
-
-        #DUDA: Podemos tener una tupla como resultado (para stmts de graph que llevan varios valores)???? por qué tengo una obsesión con las tuplas ??
 
     def __repr__(self):
         return f"\t{self.operator}\t{self.left_op}\t{self.right_op}\t{self.result}\n"

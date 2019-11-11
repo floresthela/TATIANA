@@ -47,11 +47,20 @@ def p_star(p):
     '''
     star : starI declara_vars star1 CLOSEBRACES
     '''
+    s_table = vars_t.table['star']
+
     star = cg.PJumps.pop()
     cg.fill_goto_star(star)
 
-    print('star',vars_t.table['star'])
-    print('star',len(vars_t.table['star']['vars']))
+    for v in s_table['vars']:
+        type = s_table['vars'][v]['type']
+        if type == 'int':
+            s_table['size']['i'][0] += 1
+        elif type == 'float':
+            s_table['size']['f'][0] += 1
+        elif type == 'char':
+            s_table['size']['c'][0] += 1
+
     vars_t.delete_vars('star')
 
 
@@ -163,16 +172,28 @@ def p_functionI(p):
         cg.generate_GOTO_star()
 
 
+
 def p_function(p):
     '''
     function : FUN functionI function2 inicia_fun declara_vars function4 termina_fun
     '''
 
+    f_table = vars_t.table[p[2]]
 
     if p[7] != None:
         vars = p[7]
         vars = vars[:-1]
         p[0] = vars
+
+    for v in f_table['vars']:
+        type = f_table['vars'][v]['type']
+        if type == 'int':
+            f_table['size']['i'][0] += 1
+        elif type == 'float':
+            f_table['size']['f'][0] += 1
+        elif type == 'char':
+            f_table['size']['c'][0] += 1
+
 
     vars_t.delete_vars(p[2])
 
@@ -192,12 +213,16 @@ def p_function2(p):
     function2 : OPENPAREN function3 CLOSEPAREN
     '''
 
-# TODO: modificar esto, para poder tener parametros de diferentes tipos de variables...
 def p_function3(p):
     '''
-    function3 : type ID function5
+    function3 : funParam function5
               | empty
     '''
+    if p[1] is not None:
+        p[0] = [p[1]]
+        p[0].append(p[2])
+        print('hey',p[0])
+
 
 
 def p_function4(p):
@@ -212,30 +237,25 @@ def p_function4(p):
 
 def p_function5(p):
     '''
-    function5 : COMMA type ID function5
+    function5 : COMMA funParam function5
               | empty
     '''
+    if p[1] is not None:
+        p[0] = p[2:]
+        p[0] = flatten(p[0])
 
-
-# def p_fun_vars(p):
-#     '''
-#     fun_vars : vars fun_vars
-#               | empty
-#     '''
-#     if len(p) == 3:
-#         p[0] = p[1:]
-#         p[0] = flatten(p[0])
-#
-#         #list.pop(obj = list[-1])
+def p_funParam(p):
+    '''
+    funParam : type ID
+    '''
+    p[0] = (p[1],p[2])
+    vars_t.insert_param(p[2],p[1])
 
 # VARS
 # al final hay que actualizar diagramas
 
 def flatten(li):
     return sum(([x] if not isinstance(x, list) else flatten(x) for x in li), [])
-
-
-
 
 # TYPE
 def p_type(p):
@@ -794,7 +814,7 @@ if __name__ == '__main__':
         arch = open(nombreArchivo, 'r')
         print("Archivo a leer: " + nombreArchivo)
         info = arch.read()
-        print(info)
+        # print(info)
         arch.close()
         if(yacc.parse(info, tracking=True) == 'PROGRAM COMPILED'):
             print("SINTAXIS VALIDA :) ")
