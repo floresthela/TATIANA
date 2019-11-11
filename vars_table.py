@@ -66,6 +66,7 @@ class VarsTable:
         scope = self.current_scope
         # A elda se le va a caer la trenza cuando vea estos ifs...
 
+        # Función declarada por el usuario
         if var_id not in self.table[scope]['vars'] and var_id not in self.table['global']['vars'] and scope is not 'global' and scope is not 'star' and var_id not in self.table[scope]['params']:
             new_var = {
                 'id': var_id,
@@ -73,6 +74,7 @@ class VarsTable:
             }
             self.table[scope]['vars'][var_id] = new_var
 
+        # Global o main
         elif var_id not in self.table[scope]['vars'] and var_id not in self.table['global']['vars'] and (scope is 'global' or scope is 'star'):
             new_var = {
                 'id': var_id,
@@ -83,6 +85,7 @@ class VarsTable:
         else:
             raise TypeError(f'Variable {var_id} already declared')
 
+        # metemos a size (vars)
         if scope is not 'global':
             if var_type == 'int':
                 self.table[scope]['size']['i'][0] += 1
@@ -100,6 +103,7 @@ class VarsTable:
             }
             self.table[scope]['params'][param_id] = new_param
 
+            # metemos a size (params)
             if param_type == 'int':
                 self.table[scope]['size']['i'][1] += 1
             elif param_type == 'float':
@@ -131,3 +135,6 @@ class VarsTable:
             del self.table[table_id]['vars']
         else:
             raise TypeError(f"Table of variables for {table_id} wasn't found")
+
+    # también borramos los parametros o qué pedo ???
+    
