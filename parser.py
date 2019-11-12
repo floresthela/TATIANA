@@ -443,22 +443,6 @@ def p_return1(p):
     p[0] = p[1]
 
 
-# expression
-def p_expression(p):
-    '''
-    expression : exp expression1
-    '''
-
-
-def p_expression1(p):
-    '''
-    expression1 : loper exp
-             | empty
-    '''
-    if cg.POper and cg.POper[-1] in ['>','<','==','!=']:
-        cg.generate_quad()
-
-
 # L_OP - LOGICAL OPERATOR
 def p_loper(p):
     '''
@@ -778,26 +762,37 @@ def p_graphview2(p):
     p[0] = p[1]
     cg.generate_quad_graph2(p[0])
 
+# expression
+def p_expression(p):
+    '''
+    expression : exp loper exp
+               | exp
+    '''
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = p[1:]
+
 # exp
 def p_exp(p):
     '''
-    exp : term exp1
+    exp : term
+        | term exp_o exp
     '''
-    p[0] = p[1]
-    if cg.POper and cg.POper[-1] in ['+', '-']:
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = p[1:]
+
+    if cg.POper and cg.POper[-1] in ['>','<','==','!=']:
         cg.generate_quad()
 
-
-def p_exp1(p):
+def p_exp_o(p):
     '''
-    exp1 : ADDITION exp
-         | SUBSTRACTION exp
-         | empty
+    exp_o : ADDITION
+          | SUBSTRACTION
     '''
-    # 2. POper.push(+ or -)
-    if len(p) == 3:
-        cg.POper.append(p[1])
-
+    cg.POper.append(p[1])
 
 def p_openP(p):
     '''
@@ -817,55 +812,53 @@ def p_closeP(p):
 # TERM
 def p_term(p):
     '''
-    term : factor term1
+    term : factor term_o term
+         | factor
     '''
-    p[0] = p[1]
-    if cg.POper and cg.POper[-1] in ['*', '/']:
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = p[1:]
+
+    if cg.POper and cg.POper[-1] in ['+', '-']:
         cg.generate_quad()
 
-
-def p_term1(p):
+def p_term_o(p):
     '''
-    term1 : MULTIPLICATION term
-          | DIVISION term
-          | empty
+    term_o : MULTIPLICATION
+           | DIVISION
     '''
-    # 3. POper.push(* or /)
-    p[0] = p[1]
-    if len(p) == 3:
-        print('hola',p[1])
-        cg.POper.append(p[1])
-
+    cg.POper.append(p[1])
 
 
 # FACTOR
 def p_factor(p):
     '''
     factor : vcte
-           | factor1
+           | openP expression closeP
     '''
-    p[0] = p[1]
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = p[1]
 
-def p_factor1(p):
-    '''
-    factor1 : factor2 vcte
-            | openP expression closeP
-    '''
+    if cg.POper and cg.POper[-1] in ['*', '/']:
+        cg.generate_quad()
 
-def p_factor2(p):
-    '''
-    factor2 : ADDITION
-            | SUBSTRACTION
-    '''
-    # 2.POper.push(+ or -)
-    p[0] = p[1]
-    cg.POper.append(p[0])
+# def p_factor1(p):
+#     '''
+#     factor1 : factor2 vcte
+#             | openP expression closeP
+#     '''
 
-
-# al chile no se que estoy haciendo
-# TODO: checar bien los quads en expresiones
-# por ejemplo, c = 4 + glob1 * glob2 / b + c;
-# hace primero la division y luego la multiplicación...
+# def p_factor2(p):
+#     '''
+#     factor2 : ADDITION
+#             | SUBSTRACTION
+#     '''
+#     # 2.POper.push(+ or -)
+#     p[0] = p[1]
+#     cg.POper.append(p[0])
 
 
 

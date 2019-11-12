@@ -10,4 +10,7 @@ fun void fun1(float b) {
  print(b);
  fun1(b+1);
  b = g1 * 4 / 6 + 5;
+ print(b);
+ fun1(b);
+ b = g1 * 4 / 6 + 5 - 40 * 4 + (9 + 5 * 6);
 }

@@ -1,4 +1,3 @@
-
 # TATIANA
 # Flor Esthela Barbosa & Laura Santacruz
 
@@ -64,7 +63,6 @@ class VarsTable:
 
     def insert_var(self, var_id, var_type):
         scope = self.current_scope
-        # A elda se le va a caer la trenza cuando vea estos ifs...
 
         # Función declarada por el usuario
         if var_id not in self.table[scope]['vars'] and var_id not in self.table['global']['vars'] and scope is not 'global' and scope is not 'star' and var_id not in self.table[scope]['params']:
