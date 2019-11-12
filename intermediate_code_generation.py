@@ -43,6 +43,7 @@ class Intermediate_CodeGeneration:
         self.PJumps = []
 
         self.inicia_star = None
+        self.era = None
         # contadores
         self.c_temps = 0
         self.c_params = 0
@@ -52,8 +53,8 @@ class Intermediate_CodeGeneration:
         self.cubo = SemanticCube()
 
     def generate_quad(self):
-        print(self.PilaO)
-        print(self.POper)
+        # print(self.PilaO)
+        # print(self.POper)
         right_op = self.PilaO.pop()
         right_type = self.PTypes.pop()
 
@@ -77,7 +78,6 @@ class Intermediate_CodeGeneration:
                 result = left_op
                 quadruple = Quadruple(operator, right_op, None, result)
         self.Quads.append(quadruple)
-
 
     def generate_quad_print(self):
         '''
@@ -247,22 +247,22 @@ class Intermediate_CodeGeneration:
             self.Quads.append(quadruple)
             self.PJumps.append(len(self.Quads)-1)
 
-    def generate_ERA(self, fun_id):
+    def generate_ERA(self):
         '''
         Genera cuadruplo de ERA (llamada a funcion)
         :param fun_id: el nombre de la funcion
         '''
-        quadruple = Quadruple('ERA', None, None, fun_id)
+        quadruple = Quadruple('ERA', None, None, None)
         self.Quads.append(quadruple)
+        self.era = len(self.Quads)-1
 
-    # def fill_ERA(self, funcName):
-    #     '''
-    #     Rellena el era con el nombre de la funcion
-    #     '''
-    #     position = len(self.Quads) - 1
-    #     print("HOLAAA2")
-    #     print(position)
-    #     self.Quads[3].cambia_res(funcName)
+
+    def fill_ERA(self, funcName):
+        '''
+        Rellena el era con el num
+        '''
+        if self.era is not None:
+            self.Quads[self.era].cambia_res(funcName)
 
     # def generate_paramQuad(self, arg1, arg2):
     #     '''
@@ -271,7 +271,6 @@ class Intermediate_CodeGeneration:
     #     resp = self.PilaO.pop()
     #     tipo = self.PTypes.pop()
     #     quadruple = ('param', resp, None,  )
-
 
     def generate_goSub(self, funcName):
         '''

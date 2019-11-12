@@ -350,29 +350,32 @@ def p_id(p):
 # FUN_CALL
 def p_funCall(p):
     '''
-    funCall : id OPENPAREN funCall2 CLOSEPAREN
+    funCall : ID iniciaFunCall funCall2 terminaFunCall
     '''
     if p[1] in vars_t.table:
         p[0] = p[1]
         # print("HOLAA")
         # print(p[0])
-        # cg.fill_ERA(p[0])
+        init = vars_t.table[p[0]]['begin']
+        print("INIT")
+        print(init)
+        cg.fill_ERA(p[1])
         cg.generate_goSub(p[1])
     else:
         raise TypeError(f"Function '{p[1]}' not declared")
 
-def p_funID(p):
-    '''
-    funID : ID
-    '''
-    cg.generate_ERA(p[1])
-
+# def p_funID(p):
+#     '''
+#     funID : ID
+#     '''
+#     cg.generate_ERA()
 
 
 def p_iniciaFunCall(p):
     '''
     iniciaFunCall : OPENPAREN
     '''
+    cg.generate_ERA()
 
 
 def p_terminaFunCall(p):
@@ -387,6 +390,9 @@ def p_funCall2(p):
              | empty
     '''
     # k+=1
+    # tmp = vars_t.table['star']['size']
+    # print("HELLOOOOO")
+    # print(tmp)
     # cg.generate_paramQuad(p[1], arg2)
 
 
@@ -395,8 +401,6 @@ def p_funCall3(p):
     funCall3 : COMMA funCall2
              | empty
     '''
-
-
 
 
 # CTE
@@ -628,9 +632,6 @@ def p_while_w(p):
     cg.PJumps.append(len(cg.Quads) + 1)
 
 
-
-
-
 # (exp,exp)
 def p_dosExp(p):
     '''
@@ -859,6 +860,7 @@ def p_factor2(p):
     # 2.POper.push(+ or -)
     p[0] = p[1]
     cg.POper.append(p[0])
+
 
 # al chile no se que estoy haciendo
 # TODO: checar bien los quads en expresiones

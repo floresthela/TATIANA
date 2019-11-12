@@ -8,5 +8,6 @@ fun void fun1(float b) {
 *{
  float b = 3;
  print(b);
+ fun1(b+1);
  b = g1 * 4 / 6 + 5;
 }
