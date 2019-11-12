@@ -1,12 +1,13 @@
 program prueba2;
-
-fun void fun1() {
- vars int a = 10;
+int g1;
+fun void fun1(float b) {
+ int a;
  print(a);
 }
 
 *{
- vars float b = 3;
+ float b = 3.4;
  print(b);
- fun1();
+ fun1(b);
+ b = g1 * 4 / 6 + 5 - 40 * 4 + (9 + 5 * 6);
 }
