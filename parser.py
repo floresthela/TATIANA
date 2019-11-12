@@ -28,7 +28,7 @@ def p_program(p):
 
     p[0] = "PROGRAM COMPILED"
     vars_t.delete_vars('global')
-    print(vars_t.table)
+    # print(vars_t.table)
 
 
 def p_program_modules(p):
@@ -144,7 +144,61 @@ def p_stmt(p):
         | return
     '''
 
+def p_assignment(p):
+    '''
+    assignment : id assignment1 equals assignment3 SEMICOLON
+    '''
+    # c = a + b; -> mete c a pilao
 
+def p_assignment1(p):
+    '''
+    assignment1 : assignment2
+                | assignment2 assignment1
+                | empty
+    '''
+
+
+def p_assignment2(p):
+    '''
+    assignment2 : OPENBRACKET exp CLOSEBRACKET
+    '''
+
+
+def p_assignment3(p):
+    '''
+    assignment3 : exp
+                | read
+    '''
+    p[0] = p[1]
+    if cg.POper[-1] == '=':
+        cg.generate_quad();
+
+# VAR_CTE
+def p_vcte(p):
+    '''
+    vcte : cte_int
+         | cte_float
+         | cte_char
+         | id vcte1
+         | funCall
+    '''
+    # 1. PilaO.Push(id.name)
+    if len(p) == 2:
+        cg.PilaO.append(p[1])
+
+def p_vcte1(p):
+    '''
+    vcte1 : OPENBRACKET exp CLOSEBRACKET vcte3
+          | empty
+    '''
+
+
+def p_vcte3(p):
+    '''
+    vcte3 : OPENBRACKET exp CLOSEBRACKET
+        | empty
+
+    '''
 # FUNCTION
 def p_functionI(p):
     '''
@@ -200,7 +254,7 @@ def p_function3(p):
     if p[1] is not None:
         p[0] = [p[1]]
         p[0].append(p[2])
-        print('hey',p[0])
+        # print('hey',p[0])
 
 
 
@@ -229,6 +283,7 @@ def p_funParam(p):
     '''
     p[0] = (p[1],p[2])
     vars_t.insert_param(p[2],p[1])
+
 
 # VARS
 # al final hay que actualizar diagramas
@@ -285,69 +340,63 @@ def p_id(p):
     id : ID
     '''
     p[0] = p[1]
+    # print(vars_t.table['global'])
     t = vars_t.search_var(p[1])
     if t:
         cg.PilaO.append(p[1])
         cg.PTypes.append(t['type'])
 
-def p_assignment(p):
+
+# FUN_CALL
+def p_funCall(p):
     '''
-    assignment : id assignment1 equals assignment3 SEMICOLON
+    funCall : id OPENPAREN funCall2 CLOSEPAREN
     '''
-    # c = a + b; -> mete c a pilao
+    if p[1] in vars_t.table:
+        p[0] = p[1]
+        # print("HOLAA")
+        # print(p[0])
+        # cg.fill_ERA(p[0])
+        cg.generate_goSub(p[1])
+    else:
+        raise TypeError(f"Function '{p[1]}' not declared")
+
+def p_funID(p):
+    '''
+    funID : ID
+    '''
+    cg.generate_ERA(p[1])
 
 
 
-def p_assignment1(p):
+def p_iniciaFunCall(p):
     '''
-    assignment1 : assignment2
-                | assignment2 assignment1
-                | empty
+    iniciaFunCall : OPENPAREN
     '''
 
 
-def p_assignment2(p):
+def p_terminaFunCall(p):
     '''
-    assignment2 : OPENBRACKET exp CLOSEBRACKET
-    '''
-
-
-def p_assignment3(p):
-    '''
-    assignment3 : exp
-                | read
-    '''
-    p[0] = p[1]
-    if cg.POper[-1] == '=':
-        cg.generate_quad();
-
-# VAR_CTE
-def p_vcte(p):
-    '''
-    vcte : cte_int
-         | cte_float
-         | cte_char
-         | id vcte1
-         | funCall
-    '''
-    # 1. PilaO.Push(id.name)
-    if len(p) == 2:
-        cg.PilaO.append(p[1])
-
-
-def p_vcte1(p):
-    '''
-    vcte1 : OPENBRACKET exp CLOSEBRACKET vcte3
-          | empty
+    terminaFunCall : CLOSEPAREN
     '''
 
 
-def p_vcte3(p):
+def p_funCall2(p):
     '''
-    vcte3 : OPENBRACKET exp CLOSEBRACKET
-        | empty
+    funCall2 : exp funCall3
+             | empty
+    '''
+    # k+=1
+    # cg.generate_paramQuad(p[1], arg2)
 
+
+def p_funCall3(p):
     '''
+    funCall3 : COMMA funCall2
+             | empty
+    '''
+
+
 
 
 # CTE
@@ -579,48 +628,7 @@ def p_while_w(p):
     cg.PJumps.append(len(cg.Quads) + 1)
 
 
-# FUN_CALL
-def p_funCall(p):
-    '''
-    funCall : ID iniciaFunCall funCall2 terminaFunCall
-    '''
-    if p[1] in vars_t.table:
-        p[0] = p[1]
-        # print("HOLAA")
-        # print(p[0])
-        cg.fill_ERA(p[0])
-        cg.generate_goSub(p[1])
-    else:
-        raise TypeError(f"Function '{p[1]}' not declared")
 
-
-def p_iniciaFunCall(p):
-    '''
-    iniciaFunCall : OPENPAREN
-    '''
-    cg.generate_ERA()
-
-
-def p_terminaFunCall(p):
-    '''
-    terminaFunCall : CLOSEPAREN
-    '''
-
-
-def p_funCall2(p):
-    '''
-    funCall2 : exp funCall3
-             | empty
-    '''
-    # k+=1
-    # cg.generate_paramQuad(p[1], arg2)
-
-
-def p_funCall3(p):
-    '''
-    funCall3 : COMMA exp funCall2
-             | empty
-    '''
 
 
 # (exp,exp)
@@ -805,36 +813,6 @@ def p_closeP(p):
     # 7. quita fondo falso
     cg.POper.pop()
 
-# FACTOR
-
-
-def p_factor(p):
-    '''
-    factor : vcte
-           | factor1
-    '''
-    p[0] = p[1]
-
-def p_factor1(p):
-    '''
-    factor1 : factor2 vcte
-            | openP expression closeP
-    '''
-
-
-def p_factor2(p):
-    '''
-    factor2 : ADDITION
-            | SUBSTRACTION
-    '''
-    # 2.POper.push(+ or -)
-    p[0] = p[1]
-    cg.POper.append(p[0])
-
-# al chile no se que estoy haciendo
-# TODO: checar bien los quads en expresiones
-# por ejemplo, c = 4 + glob1 * glob2 / b + c;
-# hace primero la division y luego la multiplicación...
 # TERM
 def p_term(p):
     '''
@@ -854,7 +832,39 @@ def p_term1(p):
     # 3. POper.push(* or /)
     p[0] = p[1]
     if len(p) == 3:
+        print('hola',p[1])
         cg.POper.append(p[1])
+
+
+
+# FACTOR
+def p_factor(p):
+    '''
+    factor : vcte
+           | factor1
+    '''
+    p[0] = p[1]
+
+def p_factor1(p):
+    '''
+    factor1 : factor2 vcte
+            | openP expression closeP
+    '''
+
+def p_factor2(p):
+    '''
+    factor2 : ADDITION
+            | SUBSTRACTION
+    '''
+    # 2.POper.push(+ or -)
+    p[0] = p[1]
+    cg.POper.append(p[0])
+
+# al chile no se que estoy haciendo
+# TODO: checar bien los quads en expresiones
+# por ejemplo, c = 4 + glob1 * glob2 / b + c;
+# hace primero la division y luego la multiplicación...
+
 
 
 

@@ -52,6 +52,8 @@ class Intermediate_CodeGeneration:
         self.cubo = SemanticCube()
 
     def generate_quad(self):
+        print(self.PilaO)
+        print(self.POper)
         right_op = self.PilaO.pop()
         right_type = self.PTypes.pop()
 
@@ -245,22 +247,22 @@ class Intermediate_CodeGeneration:
             self.Quads.append(quadruple)
             self.PJumps.append(len(self.Quads)-1)
 
-    def generate_ERA(self):
+    def generate_ERA(self, fun_id):
         '''
         Genera cuadruplo de ERA (llamada a funcion)
-        param: el nombre de la funcion
+        :param fun_id: el nombre de la funcion
         '''
-        quadruple = Quadruple('ERA', None, None, None)
+        quadruple = Quadruple('ERA', None, None, fun_id)
         self.Quads.append(quadruple)
 
-    def fill_ERA(self, funcName):
-        '''
-        Rellena el era con el nombre de la funcion
-        '''
-        position = len(self.Quads) - 1
-        print("HOLAAA2")
-        print(position)
-        self.Quads[3].cambia_res(funcName)
+    # def fill_ERA(self, funcName):
+    #     '''
+    #     Rellena el era con el nombre de la funcion
+    #     '''
+    #     position = len(self.Quads) - 1
+    #     print("HOLAAA2")
+    #     print(position)
+    #     self.Quads[3].cambia_res(funcName)
 
     # def generate_paramQuad(self, arg1, arg2):
     #     '''

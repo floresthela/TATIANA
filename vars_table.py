@@ -124,7 +124,7 @@ class VarsTable:
         elif var_id in self.table['global']['vars']:
             return self.table['global']['vars'][var_id]
         else:
-            raise TypeError(f"Variable' {var_id} has not been declared")
+            raise TypeError(f"Variable {var_id} has not been declared")
 
     def delete_vars(self, table_id):
         '''
@@ -137,4 +137,3 @@ class VarsTable:
             raise TypeError(f"Table of variables for {table_id} wasn't found")
 
     # también borramos los parametros o qué pedo ???
-    

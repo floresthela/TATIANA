@@ -27,6 +27,7 @@ fun void function2(){
   int s = 1;
   i3 = star1 + 5;
   circle(4);
+  function2();
   triangle(4,5);
   s = gi1 + i3 * 5 + (7 * gi3);
 }
