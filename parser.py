@@ -11,6 +11,8 @@ from intermediate_code_generation import Intermediate_CodeGeneration
 
 vars_t = VarsTable()
 cg = Intermediate_CodeGeneration()
+#contador para la llamada de funcion
+# k = 0
 
 # IMPORTANTE: descomentar el vars_t de remove a las funciones para eliminarlas
 # PROGRAM
@@ -142,18 +144,15 @@ def p_stmt(p):
         | return
     '''
 
-    p[0] = p[1]
-
 
 # FUNCTION
-
 def p_functionI(p):
     '''
     functionI : type ID
               | VOID ID
         '''
-    vars_t.FunDirectory(p[2], p[1])
-    cg.generate_ERA(p[2])
+    #vars_t.FunDirectory(p[2], p[1])
+    #cg.generate_ERA(p[2])
     p[0] = p[2]
 
     beginFun = len(cg.Quads) + 1
@@ -350,6 +349,7 @@ def p_vcte3(p):
 
     '''
 
+
 # CTE
 def p_cte_int(p):
     '''
@@ -358,6 +358,7 @@ def p_cte_int(p):
     p[0] = p[1]
     cg.PTypes.append('int')
 
+
 def p_cte_float(p):
     '''
     cte_float : CTEFLOAT
@@ -365,12 +366,14 @@ def p_cte_float(p):
     p[0] = p[1]
     cg.PTypes.append('float')
 
+
 def p_cte_char(p):
     '''
     cte_char : CTECHAR
     '''
     p[0] = p[1]
     cg.PTypes.append('char')
+
 
 # RETURN
 def p_return(p):
@@ -393,6 +396,7 @@ def p_expression(p):
     expression : exp expression1
     '''
 
+
 def p_expression1(p):
     '''
     expression1 : loper exp
@@ -400,7 +404,6 @@ def p_expression1(p):
     '''
     if cg.POper and cg.POper[-1] in ['>','<','==','!=']:
         cg.generate_quad()
-
 
 
 # L_OP - LOGICAL OPERATOR
@@ -425,6 +428,7 @@ def p_condition(p):
     end = cg.PJumps.pop()
     cg.fill_quad(end)
 
+
 def p_condition1(p):
     '''
     condition1 : elseif head_cond body condition1
@@ -434,6 +438,8 @@ def p_condition1(p):
     if len(p) == 5:
         end = cg.PJumps.pop()
         cg.fill_quad(end)
+
+
 def p_elseif(p):
     '''
     elseif : ELSEIF
@@ -441,28 +447,31 @@ def p_elseif(p):
     cg.generate_else()
     # cg.generate_elseif()
 
+
 def p_else(p):
     '''
     else : ELSE
     '''
     cg.generate_else()
 
+
 # HEAD
 # def p_head(p):
 #     '''
 #     head : OPENPAREN head1 CLOSEPAREN
 #     '''
-
 def p_head_cond(p):
     '''
     head_cond : OPENPAREN expression close_condition
     '''
+
 
 # BODY
 def p_body(p):
     '''
     body : OPENBRACES body1 CLOSEBRACES
     '''
+
 
 # termina la condición
 def p_close_condition(p):
@@ -471,6 +480,7 @@ def p_close_condition(p):
     '''
     # genera GOTOF...
     cg.generate_GOTOF()
+
 
 def p_body1(p):
     '''
@@ -572,13 +582,29 @@ def p_while_w(p):
 # FUN_CALL
 def p_funCall(p):
     '''
-    funCall : ID OPENPAREN funCall2 CLOSEPAREN
+    funCall : ID iniciaFunCall funCall2 terminaFunCall
     '''
     if p[1] in vars_t.table:
         p[0] = p[1]
+        # print("HOLAA")
+        # print(p[0])
+        cg.fill_ERA(p[0])
         cg.generate_goSub(p[1])
     else:
         raise TypeError(f"Function '{p[1]}' not declared")
+
+
+def p_iniciaFunCall(p):
+    '''
+    iniciaFunCall : OPENPAREN
+    '''
+    cg.generate_ERA()
+
+
+def p_terminaFunCall(p):
+    '''
+    terminaFunCall : CLOSEPAREN
+    '''
 
 
 def p_funCall2(p):
@@ -586,6 +612,8 @@ def p_funCall2(p):
     funCall2 : exp funCall3
              | empty
     '''
+    # k+=1
+    # cg.generate_paramQuad(p[1], arg2)
 
 
 def p_funCall3(p):
@@ -602,12 +630,12 @@ def p_dosExp(p):
     '''
 
 
-
 # (exp)
 def p_unaExp(p):
     '''
     unaExp : OPENPAREN exp CLOSEPAREN
     '''
+
 
 # TODAS LAS EXP DE GRAPH STMTS DEBERÁN SER INTS ALV
 # GRAPH_STMT
@@ -750,6 +778,7 @@ def p_exp(p):
     if cg.POper and cg.POper[-1] in ['+', '-']:
         cg.generate_quad()
 
+
 def p_exp1(p):
     '''
     exp1 : ADDITION exp
@@ -759,7 +788,6 @@ def p_exp1(p):
     # 2. POper.push(+ or -)
     if len(p) == 3:
         cg.POper.append(p[1])
-
 
 
 def p_openP(p):
@@ -845,7 +873,7 @@ yacc.yacc()
 # hay que ver CÓMO ponemos que hay errores en la sintaxis pero más específicos o algo asi
 if __name__ == '__main__':
     try:
-        nombreArchivo = 'pruebas/prueba1.tati'
+        nombreArchivo = 'pruebas/prueba2.tati'
 
         arch = open(nombreArchivo, 'r')
         print("Archivo a leer: " + nombreArchivo)

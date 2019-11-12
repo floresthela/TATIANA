@@ -1,6 +1,6 @@
 program prueba2;
 
-fun void fun1() {
+fun void fun1(float b) {
  int a = 10;
  print(a);
 }
@@ -8,5 +8,5 @@ fun void fun1() {
 *{
  float b = 3;
  print(b);
- fun1();
+ fun1(b+1);
 }

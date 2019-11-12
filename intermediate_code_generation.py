@@ -245,17 +245,31 @@ class Intermediate_CodeGeneration:
             self.Quads.append(quadruple)
             self.PJumps.append(len(self.Quads)-1)
 
-    def generate_ERA(self, funcName):
+    def generate_ERA(self):
         '''
         Genera cuadruplo de ERA (llamada a funcion)
         param: el nombre de la funcion
         '''
-        quadruple = Quadruple('ERA', None, None, funcName)
+        quadruple = Quadruple('ERA', None, None, None)
         self.Quads.append(quadruple)
 
-    def generate_paramQuad(self):
+    def fill_ERA(self, funcName):
         '''
+        Rellena el era con el nombre de la funcion
         '''
+        position = len(self.Quads) - 1
+        print("HOLAAA2")
+        print(position)
+        self.Quads[3].cambia_res(funcName)
+
+    # def generate_paramQuad(self, arg1, arg2):
+    #     '''
+    #     Generate params quad
+    #     '''
+    #     resp = self.PilaO.pop()
+    #     tipo = self.PTypes.pop()
+    #     quadruple = ('param', resp, None,  )
+
 
     def generate_goSub(self, funcName):
         '''
