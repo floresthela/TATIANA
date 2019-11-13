@@ -4,10 +4,14 @@ float f1 = 5.4 + g1;
 fun void fun1(float b) {
  int a = 10;
  print(a + 5);
+
 }
 
 *{
- float b = 3.4;
+ float b = 3;
+ print(b);
+ fun1(b+1);
+ b = g1 * 4 / 6 + 5;
  print(b);
  fun1(b);
  b = g1 * 4 / 6 + 5 - 40 * 4 + (9 + 5 * 6);

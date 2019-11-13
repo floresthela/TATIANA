@@ -1,7 +1,10 @@
 program prueba6;
 
 *{
- vars float a = 10, b = 2, c, d = 4;
+ float a = 10;
+ float b = 2;
+ float c;
+ float d = 4;
  c = a + b * d;
 
 }

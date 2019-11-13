@@ -351,13 +351,12 @@ def p_id(p):
 # FUN_CALL
 def p_funCall(p):
     '''
-    funCall : id OPENPAREN funCall2 CLOSEPAREN
+    funCall : ID iniciaFunCall funCall2 terminaFunCall
     '''
     if p[1] in vars_t.table:
         p[0] = p[1]
         # print("HOLAA")
         # print(p[0])
-        # cg.fill_ERA(p[0])
 
         init = vars_t.table[p[0]]['begin']
         print("INIT")
@@ -368,18 +367,18 @@ def p_funCall(p):
     else:
         raise TypeError(f"Function '{p[1]}' not declared")
 
-def p_funID(p):
-    '''
-    funID : ID
-    '''
-    cg.generate_ERA(p[1])
-
+# def p_funID(p):
+#     '''
+#     funID : ID
+#     '''
+#     cg.generate_ERA()
 
 
 def p_iniciaFunCall(p):
     '''
     iniciaFunCall : OPENPAREN
     '''
+    cg.generate_ERA()
 
 
 def p_terminaFunCall(p):
@@ -403,8 +402,6 @@ def p_funCall3(p):
     funCall3 : COMMA funCall2
              | empty
     '''
-
-
 
 
 # CTE
@@ -445,9 +442,6 @@ def p_return1(p):
             | exp
     '''
     p[0] = p[1]
-
-
-
 
 
 # L_OP - LOGICAL OPERATOR
@@ -621,9 +615,6 @@ def p_while_w(p):
     '''
     # 1.-
     cg.PJumps.append(len(cg.Quads) + 1)
-
-
-
 
 
 # (exp,exp)
@@ -805,7 +796,6 @@ def p_exp_o(p):
     '''
     cg.POper.append(p[1])
 
-
 def p_openP(p):
     '''
     openP : OPENPAREN
@@ -877,6 +867,8 @@ def p_factor(p):
 #     # 2.POper.push(+ or -)
 #     p[0] = p[1]
 #     cg.POper.append(p[0])
+
+
 
 
 def p_empty(p):
