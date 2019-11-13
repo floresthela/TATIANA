@@ -44,15 +44,86 @@ class Intermediate_CodeGeneration:
 
         self.inicia_star = None
         self.era = None
+
         # contadores
-        self.c_temps = 0
+        # self.c_temps = [0,0,0]
         self.c_params = 0
+        self.c_global = [0,0,0]
+        self.c_local = [0,0,0]
+        self.c_constantes = [0,0,0]
 
         self.Quads = [] # lista de cuádruplos que llevamos
         self.contador = 1 # creo que este no lo necesitamos
         self.cubo = SemanticCube()
 
+        # Tabla de constantes [valor,dir]
+        self.constantes = {}
 
+        # bases para memoria
+        self.base_global = 1000
+
+        # temporales locales a los módulos
+        self.base_local = 16000
+        self.base_constantes = 31000
+
+        self.b_int = 0
+        self.b_float = 5000
+        self.b_char = 10000
+
+    def reset_locales(self):
+        '''
+        Resetea el contador de las variables locales
+        '''
+        self.c_local = [0,0,0]
+
+    def direccion_mem(self, mem, type, val = None):
+        '''
+        Ingresa variable en memoria y regresa la dirección
+        :param mem: tipo de memoria en la que se encuentra
+        :param type: tipo de variable
+        '''
+
+        if type == 'int':
+            # para checar al rato que no nos pasemos
+            t_inicia = self.b_int
+            t_fin = self.b_float - 1
+            indice = 0
+        elif type == 'float':
+            t_inicia = self.b_float
+            t_fin = self.b_char - 1
+            indice = 1
+        elif type == 'char':
+            t_inicia = self.b_char
+            t_fin = 14999
+            indice = 2
+        else:
+            raise TypeError(f"Tipo '{type}' desconocido")
+
+        if mem == 'global':
+            dir = self.base_global + t_inicia + self.c_global[indice]
+            self.c_global[indice] += 1
+
+            # falta checar que no nos pasemos de los rangos vvv
+        elif mem == 'local':
+            dir = self.base_local + t_inicia + self.c_local[indice]
+            self.c_local[indice] += 1
+        elif mem == 'constantes':
+            if val != None:
+                for v in self.constantes:
+                    if val == v[0]:
+                        return v[1]
+
+
+                dir = self.base_constantes + t_inicia + self.c_constantes[indice]
+                self.c_constantes[indice] += 1
+                self.constantes[type[0]] = [val, dir]
+            else:
+                raise TypeError(f"Valor de constante no especificado")
+        else:
+            raise TypeError(f"Tipo de memoria '{mem}' desconocida")
+
+        print(dir)
+        return dir
 
     def generate_quad(self):
         # print(self.PilaO)
@@ -70,9 +141,8 @@ class Intermediate_CodeGeneration:
 
         if result_type:
             if operator != '=':
-                temp_actual = "t" + str(self.c_temps)
-                self.c_temps += 1
-                result = temp_actual
+                # se genera temporal
+                result = self.direccion_mem('local',result_type)
                 quadruple = Quadruple(operator, left_op, right_op, result)
                 self.PilaO.append(result)
                 self.PTypes.append(result_type)
@@ -98,11 +168,14 @@ class Intermediate_CodeGeneration:
         '''
         Generar cuádruplo para stmt read
         '''
-        result = self.PilaO.pop()
-        self.PTypes.pop()
+        result = self.direccion_mem('local','string')
+
         operator = self.POper.pop()
         quadruple = Quadruple(operator, None, None, result)
+
         self.Quads.append(quadruple)
+        self.POper.append(result)
+        self.PTypes.append('string')
 
     def generate_GOTOF(self):
         '''

@@ -30,7 +30,6 @@ def p_program(p):
     vars_t.delete_vars('global')
     print(vars_t.table)
 
-
 def p_program_modules(p):
     '''
     program_modules : program_fun star
@@ -61,6 +60,7 @@ def p_starI(p):
     '''
     starI : star_sign OPENBRACES
     '''
+    cg.reset_locales()
     vars_t.FunDirectory('star', 'star',p[1])
 
 def p_star_sign(p):
@@ -84,6 +84,7 @@ def p_declara_vars(p):
     declara_vars : vars declara_vars
           | empty
     '''
+
     if len(p) == 3:
         p[0] = p[1:]
         p[0] = flatten(p[0])
@@ -95,27 +96,31 @@ def p_vars(p):
     '''
     p[0] = (p[1], p[2])
 
+    if not vars_t.initialized:
+        vars_t.FunDirectory('global', 'np',None)
+        dir = cg.direccion_mem('global',p[1],)
+        vars_t.insert_var(p[2],p[1],dir)
+
+    else:
+        dir = cg.direccion_mem('local',p[1])
+        vars_t.insert_var(p[2],p[1],dir)
+
     if len(p) == 7:
-        cg.PilaO.append(p[2])
+        cg.PilaO.append(dir)
         cg.PTypes.append(p[1])
         if cg.POper and cg.POper[-1] in '=':
             cg.generate_quad()
-    if not vars_t.initialized:
-        vars_t.FunDirectory('global', 'np',None)
-        vars_t.insert_var(p[2],p[1])
-    else:
-        vars_t.insert_var(p[2],p[1])
-
-
 
 # TODO: una regla para arreglos y usarla siempre que necesitemos [] , [][]
+
+# VECTOR
 def p_vars1(p):
     '''
     vars1 : OPENBRACKET CTEINT CLOSEBRACKET vars3
         | empty
     '''
 
-# matrix
+# MATRIXXX
 def p_vars3(p):
     '''
     vars3 : OPENBRACKET CTEINT CLOSEBRACKET
@@ -210,6 +215,7 @@ def p_functionI(p):
     #cg.generate_ERA(p[2])
     p[0] = p[2]
 
+    cg.reset_locales()
     beginFun = len(cg.Quads) + 1
     vars_t.FunDirectory(p[2],p[1],beginFun)
     # mete las funciones como variables globales...
@@ -344,7 +350,8 @@ def p_id(p):
 
     t = vars_t.search_var(p[1])
     if t:
-        cg.PilaO.append(p[1])
+        print(t)
+        cg.PilaO.append(t['dir'])
         cg.PTypes.append(t['type'])
 
 
@@ -409,15 +416,19 @@ def p_cte_int(p):
     '''
     cte_int : CTEINT
     '''
-    p[0] = p[1]
+
+    dir = cg.direccion_mem('constantes','int',p[1])
+    p[0] = dir
     cg.PTypes.append('int')
+
 
 
 def p_cte_float(p):
     '''
     cte_float : CTEFLOAT
     '''
-    p[0] = p[1]
+    dir = cg.direccion_mem('constantes','float',p[1])
+    p[0] = dir
     cg.PTypes.append('float')
 
 
@@ -425,7 +436,9 @@ def p_cte_char(p):
     '''
     cte_char : CTECHAR
     '''
-    p[0] = p[1]
+
+    cg.direccion_mem('constantes','char',p[1])
+    p[0] = dir
     cg.PTypes.append('char')
 
 
@@ -886,7 +899,7 @@ yacc.yacc()
 # hay que ver CÓMO ponemos que hay errores en la sintaxis pero más específicos o algo asi
 if __name__ == '__main__':
     try:
-        nombreArchivo = 'pruebas/prueba2.tati'
+        nombreArchivo = 'pruebas/prueba8.tati'
 
         arch = open(nombreArchivo, 'r')
         print("Archivo a leer: " + nombreArchivo)
