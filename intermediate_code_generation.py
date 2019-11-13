@@ -52,6 +52,8 @@ class Intermediate_CodeGeneration:
         self.contador = 1 # creo que este no lo necesitamos
         self.cubo = SemanticCube()
 
+
+
     def generate_quad(self):
         # print(self.PilaO)
         # print(self.POper)
@@ -74,10 +76,12 @@ class Intermediate_CodeGeneration:
                 quadruple = Quadruple(operator, left_op, right_op, result)
                 self.PilaO.append(result)
                 self.PTypes.append(result_type)
+
             else:
                 result = left_op
                 quadruple = Quadruple(operator, right_op, None, result)
         self.Quads.append(quadruple)
+        return result_type
 
     def generate_quad_print(self):
         '''

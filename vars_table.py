@@ -14,6 +14,7 @@ class VarsTable:
             'global': {
                 'program': '',
                 'vars': {},
+                'temps':{'i':0,'f':0,'c':0}
             },
             'star': {
                 'type': 'void',
@@ -36,7 +37,7 @@ class VarsTable:
 
         if type == 'np':
             self.current_scope = 'global'
-            self.current_type = ''
+            self.current_type = type
             self.table['global']['program'] = fun_id
 
         elif type == 'star':
@@ -111,6 +112,30 @@ class VarsTable:
         else:
             raise TypeError(f'Parameter {param_id} already declared')
 
+    def insert_temp(self,type,scope):
+
+        # metemos a size (temps)
+        index = -1
+        if scope == 'star':
+            index = 1
+        elif scope is not 'global':
+            index = 2
+
+        if index > 0:
+            if type == 'int':
+                self.table[scope]['size']['i'][index] += 1
+            elif type == 'float':
+                self.table[scope]['size']['f'][index] += 1
+            elif type == 'char':
+                self.table[scope]['size']['c'][index] += 1
+        else:
+            if type == 'int':
+                self.table[scope]['temps']['i'] += 1
+            elif type == 'float':
+                self.table[scope]['temps']['f']+= 1
+            elif type == 'char':
+                self.table[scope]['temps']['c'] += 1
+                
     def search_var(self, var_id):
         '''
         Search of variables function to detect multiple declaration of same id on a specific scope

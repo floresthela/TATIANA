@@ -28,7 +28,7 @@ def p_program(p):
 
     p[0] = "PROGRAM COMPILED"
     vars_t.delete_vars('global')
-    # print(vars_t.table)
+    print(vars_t.table)
 
 
 def p_program_modules(p):
@@ -172,6 +172,7 @@ def p_assignment3(p):
     p[0] = p[1]
     if cg.POper[-1] == '=':
         cg.generate_quad();
+
 
 # VAR_CTE
 def p_vcte(p):
@@ -340,7 +341,7 @@ def p_id(p):
     id : ID
     '''
     p[0] = p[1]
-    # print(vars_t.table['global'])
+
     t = vars_t.search_var(p[1])
     if t:
         cg.PilaO.append(p[1])
@@ -356,10 +357,12 @@ def p_funCall(p):
         p[0] = p[1]
         # print("HOLAA")
         # print(p[0])
+
         init = vars_t.table[p[0]]['begin']
         print("INIT")
         print(init)
         cg.fill_ERA(p[1])
+
         cg.generate_goSub(p[1])
     else:
         raise TypeError(f"Function '{p[1]}' not declared")
@@ -390,9 +393,7 @@ def p_funCall2(p):
              | empty
     '''
     # k+=1
-    # tmp = vars_t.table['star']['size']
-    # print("HELLOOOOO")
-    # print(tmp)
+
     # cg.generate_paramQuad(p[1], arg2)
 
 
@@ -768,6 +769,7 @@ def p_expression(p):
     expression : exp loper exp
                | exp
     '''
+
     if len(p) == 2:
         p[0] = p[1]
     else:
@@ -821,7 +823,10 @@ def p_term(p):
         p[0] = p[1:]
 
     if cg.POper and cg.POper[-1] in ['+', '-']:
-        cg.generate_quad()
+        t = cg.generate_quad()
+
+        vars_t.insert_temp(t,vars_t.current_scope)
+
 
 def p_term_o(p):
     '''
@@ -840,10 +845,13 @@ def p_factor(p):
     if len(p) == 2:
         p[0] = p[1]
     else:
-        p[0] = p[1]
+        p[0] = p[1:]
 
     if cg.POper and cg.POper[-1] in ['*', '/']:
-        cg.generate_quad()
+        t = cg.generate_quad()
+        vars_t.insert_temp(t,vars_t.current_scope)
+
+
 
 # def p_factor1(p):
 #     '''
