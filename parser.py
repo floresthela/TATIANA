@@ -1,9 +1,14 @@
-# TATIANA
-# Flor Esthela Barbosa & Laura Santacruz
+'''
+TATIANA
+Archivo parser del lenguaje que contiene las reglas gramaticales
 
+Flor Esthela Barbosa y Laura Santacruz
+'''
 # PARSER
 import sys
 import ply.yacc as yacc
+import json
+import genera_comp
 from lexer import tokens
 from functools import reduce
 from vars_table import VarsTable
@@ -15,20 +20,19 @@ cg = Intermediate_CodeGeneration()
 # k = 0
 
 # IMPORTANTE: descomentar el vars_t de remove a las funciones para eliminarlas
+
 # PROGRAM
 def p_program(p):
     '''
     program : PROGRAM ID SEMICOLON declara_vars program_modules
     '''
-    conta = 1
-    # print(cg.Quads)
-    for q in cg.Quads:
-        print(conta,q)
-        conta += 1
-
     p[0] = "PROGRAM COMPILED"
     vars_t.delete_vars('global')
-    print(vars_t.table)
+    
+    f_quads = cg.format_quads()
+    f_constantes = cg.format_constantes()
+
+    genera_comp.genera_arch(p[2],vars_t.table, f_quads, f_constantes)
 
 def p_program_modules(p):
     '''
@@ -229,7 +233,7 @@ def p_function(p):
     '''
     function : FUN functionI function2 inicia_fun declara_vars function4 termina_fun
     '''
-    if p[7] != None:
+    if p[7] is not None:
         vars = p[7]
         vars = vars[:-1]
         p[0] = vars
@@ -261,7 +265,7 @@ def p_function3(p):
     if p[1] is not None:
         p[0] = [p[1]]
         p[0].append(p[2])
-        # print('hey',p[0])
+        
 
 
 
@@ -350,7 +354,6 @@ def p_id(p):
 
     t = vars_t.search_var(p[1])
     if t:
-        print(t)
         cg.PilaO.append(t['dir'])
         cg.PTypes.append(t['type'])
 
@@ -864,8 +867,6 @@ def p_factor(p):
         t = cg.generate_quad()
         vars_t.insert_temp(t,vars_t.current_scope)
 
-
-
 # def p_factor1(p):
 #     '''
 #     factor1 : factor2 vcte
@@ -881,9 +882,6 @@ def p_factor(p):
 #     p[0] = p[1]
 #     cg.POper.append(p[0])
 
-
-
-
 def p_empty(p):
     '''empty :'''
     p[0] = None
@@ -891,25 +889,10 @@ def p_empty(p):
 
 
 def p_error(p):
-    print("ERROR {}".format(p))
+    
+    if p is not None:
+        err = f"{p.value} en la linea {p.lineno}"
+    
+    raise TypeError(f"Error de sintaxis: {err}")
 
-
-yacc.yacc()
-
-# hay que ver CÓMO ponemos que hay errores en la sintaxis pero más específicos o algo asi
-if __name__ == '__main__':
-    try:
-        nombreArchivo = 'pruebas/prueba8.tati'
-
-        arch = open(nombreArchivo, 'r')
-        print("Archivo a leer: " + nombreArchivo)
-        info = arch.read()
-        # print(info)
-        arch.close()
-        if(yacc.parse(info, tracking=True) == 'PROGRAM COMPILED'):
-            print("SINTAXIS VALIDA :) ")
-        else:
-            print("ERRORES EN LA SINTAXIS :( ")
-
-    except EOFError:
-        print(EOFError)
+parser = yacc.yacc(start='program')

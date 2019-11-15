@@ -1,7 +1,9 @@
-# TATIANA
-# Flor Esthela Barbosa & Laura Santacruz
+'''
+TATIANA
+Archivo para el diseño del directorio de funciones y sus tablas de variables
 
-# VARS AND PROCEDURES TABLES
+Flor Esthela Barbosa y Laura Santacruz
+'''
 
 
 class VarsTable:
