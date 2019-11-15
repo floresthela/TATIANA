@@ -13,8 +13,14 @@ class Memoria:
 
     def __init__(self):
         
-        self.mem_global = {}
-        self.mem_local = {}
-        self.mem_constantes = {}
+        # = [[ints],[floats],[strings]]
+        # = [type] = [[dir,val]...]
 
-        
+        self.mem_global = [[],[],[]]
+        self.mem_local = [[],[],[]]
+
+        # = [[dir,val]...]
+        self.mem_constantes = []
+
+    
+    # def record_activacion(self, scope):

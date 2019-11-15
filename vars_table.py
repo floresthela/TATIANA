@@ -16,7 +16,8 @@ class VarsTable:
             'global': {
                 'program': '',
                 'vars': {},
-                'temps':{'i':0,'f':0,'s':0}
+                # [vars,temps]
+                'size': {'i':[0,0],'f':[0,0],'s':[0,0]},
             },
             'star': {
                 'type': 'void',
@@ -68,7 +69,7 @@ class VarsTable:
         scope = self.current_scope
 
         # Función declarada por el usuario
-        if var_id not in self.table[scope]['vars'] and var_id not in self.table['global']['vars'] and scope is not 'global' and scope is not 'star' and var_id not in self.table[scope]['params']:
+        if var_id not in self.table[scope]['vars'] and var_id not in self.table['global']['vars'] and scope != 'global' and scope != 'star' and var_id not in self.table[scope]['params']:
             new_var = {
                 'id': var_id,
                 'type': var_type,
@@ -77,7 +78,7 @@ class VarsTable:
             self.table[scope]['vars'][var_id] = new_var
 
         # Global o main
-        elif var_id not in self.table[scope]['vars'] and var_id not in self.table['global']['vars'] and (scope is 'global' or scope is 'star'):
+        elif var_id not in self.table[scope]['vars'] and var_id not in self.table['global']['vars'] and (scope == 'global' or scope == 'star'):
             new_var = {
                 'id': var_id,
                 'type': var_type,
@@ -89,13 +90,13 @@ class VarsTable:
             raise TypeError(f'Variable {var_id} already declared')
 
         # metemos a size (vars)
-        if scope is not 'global':
-            if var_type == 'int':
-                self.table[scope]['size']['i'][0] += 1
-            elif var_type == 'float':
-                self.table[scope]['size']['f'][0] += 1
-            elif var_type == 'string':
-                self.table[scope]['size']['s'][0] += 1
+        # if scope is not 'global':
+        if var_type == 'int':
+            self.table[scope]['size']['i'][0] += 1
+        elif var_type == 'float':
+            self.table[scope]['size']['f'][0] += 1
+        elif var_type == 'string':
+            self.table[scope]['size']['s'][0] += 1
 
     def insert_param(self,param_id,param_type):
         scope = self.current_scope
@@ -117,28 +118,20 @@ class VarsTable:
             raise TypeError(f'Parameter {param_id} already declared')
 
     def insert_temp(self,type,scope):
-
+        print(type,scope)
         # metemos a size (temps)
         index = -1
-        if scope == 'star':
-            index = 1
-        elif scope is not 'global':
-            index = 2
+        if scope == 'global' or scope == 'star': index = 0
+        # if scope == 'star': index = 1
+        else: index = 2
 
-        if index > 0:
-            if type == 'int':
-                self.table[scope]['size']['i'][index] += 1
-            elif type == 'float':
-                self.table[scope]['size']['f'][index] += 1
-            elif type == 'string':
-                self.table[scope]['size']['s'][index] += 1
-        else:
-            if type == 'int':
-                self.table[scope]['temps']['i'] += 1
-            elif type == 'float':
-                self.table[scope]['temps']['f']+= 1
-            elif type == 'string':
-                self.table[scope]['temps']['s'] += 1
+        if type == 'int':
+            self.table[scope]['size']['i'][index] += 1
+        elif type == 'float':
+            self.table[scope]['size']['f'][index] += 1
+        elif type == 'string':
+            self.table[scope]['size']['s'][index] += 1
+
 
     def search_var(self, var_id):
         '''

@@ -12,6 +12,7 @@ from vars_table import VarsTable
 from intermediate_code_generation import Intermediate_CodeGeneration
 
 
+
 vars_t = VarsTable()
 cg = Intermediate_CodeGeneration()
 

@@ -116,7 +116,8 @@ def p_vars(p):
         cg.PilaO.append(dir)
         cg.PTypes.append(p[1])
         if cg.POper and cg.POper[-1] in '=':
-            cg.generate_quad()
+            result = cg.generate_quad()
+
 
 # TODO: una regla para arreglos y usarla siempre que necesitemos [] , [][]
 

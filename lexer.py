@@ -13,7 +13,6 @@ reserved = {
     'elseif' : 'ELSEIF',
     'print' : 'PRINT',
     'program' : 'PROGRAM',
-    # 'vars' : 'VARS',
     'int': 'INT',
     'float' : 'FLOAT',
     'string' : 'STRING',

@@ -47,7 +47,10 @@ class Intermediate_CodeGeneration:
         self.era = None
 
         # contadores
-        # self.c_temps = [0,0,0]
+        # self.c_temps = [0,0,0] = [int,float,string]
+
+        self.temps = 0
+
         self.c_params = 0
         self.c_global = [0,0,0]
         self.c_local = [0,0,0]
@@ -58,18 +61,38 @@ class Intermediate_CodeGeneration:
         self.cubo = SemanticCube()
 
         # Tabla de constantes [valor,dir]
+        # un diccionario para buscar, si hacemos un arreglo creo que sería más tardado (for loop)
         self.constantes = {}
 
         # bases para memoria
         self.base_global = 1000
 
         # temporales locales a los módulos
-        self.base_local = 16000
-        self.base_constantes = 31000
+        self.base_local = 21000
+        self.base_constantes = 41000
+        
+        '''
+        GLOBAL
+        i [1000  -  5999]
+        f [6000  -  9999]
+        s [11000 - 15999]
+        t [16000 - 20999]
+
+        LOCAL
+        i [21000 - 25999]
+        f [26000 - 30999]
+        s [31000 - 35999]
+        t [36000 - 40999]
+
+        CONSTANTES
+        c [41000 - 50999]
+
+        '''
 
         self.b_int = 0
         self.b_float = 5000
         self.b_string = 10000
+        self.b_temps = 15000
 
     def reset_locales(self):
         '''
@@ -121,6 +144,7 @@ class Intermediate_CodeGeneration:
             
             if indice == 2:
                 val = val.strip('"')
+
             self.constantes[dir] = val
             self.c_constantes[indice] += size
             
@@ -146,7 +170,7 @@ class Intermediate_CodeGeneration:
         if result_type:
             if operator != '=':
                 # se genera temporal
-                result = self.direccion_mem('local',result_type)
+                # result = self.direccion_mem('local',result_type)
                 quadruple = Quadruple(operator, left_op, right_op, result)
                 self.PilaO.append(result)
                 self.PTypes.append(result_type)

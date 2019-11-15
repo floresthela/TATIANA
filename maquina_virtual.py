@@ -14,15 +14,14 @@ class MaquinaVirtual:
 
     def agarra_ta(self,program):
         '''
-        Recibe archivo .ta* con todo (Quads, FunDir, tConstantes)
+        Recibe archivo .ta* con todo { Quads:, FunDir:, tConstantes: }
         :param program: Nombre del archivo
         '''
-        arch = program + '.ta*'
-        archivo = open(program, 'r')
+        arch = f"pruebas/{program}.ta*"
+        archivo = open(arch, 'r')
         todito = json.load(archivo)
 
-        for const in todito['tConstantes']:
-            dir = const[0]
-            valor = const[1]
-            self.memoria.mem_constantes[dir] = self.convert_to_type(valor)
-            
+        # creamos memoria de constantes...
+        Memoria.mem_constantes = todito['tConstantes']
+
+        
