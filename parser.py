@@ -6,11 +6,12 @@ Flor Esthela Barbosa y Laura Santacruz
 '''
 # PARSER
 import sys
-import ply.yacc as yacc
+from ply import yacc
 import json
 import genera_comp
-from lexer import tokens
+
 from functools import reduce
+from lexer import tokens
 from vars_table import VarsTable
 from intermediate_code_generation import Intermediate_CodeGeneration
 
@@ -28,11 +29,13 @@ def p_program(p):
     '''
     p[0] = "PROGRAM COMPILED"
     vars_t.delete_vars('global')
+    print(cg.Quads)
+    print(cg.constantes)
     
     f_quads = cg.format_quads()
     f_constantes = cg.format_constantes()
-
     genera_comp.genera_arch(p[2],vars_t.table, f_quads, f_constantes)
+    
 
 def p_program_modules(p):
     '''
@@ -102,7 +105,7 @@ def p_vars(p):
 
     if not vars_t.initialized:
         vars_t.FunDirectory('global', 'np',None)
-        dir = cg.direccion_mem('global',p[1],)
+        dir = cg.direccion_mem('global',p[1])
         vars_t.insert_var(p[2],p[1],dir)
 
     else:
@@ -188,7 +191,7 @@ def p_vcte(p):
     '''
     vcte : cte_int
          | cte_float
-         | cte_char
+         | cte_string
          | id vcte1
          | funCall
     '''
@@ -307,7 +310,7 @@ def p_type(p):
     '''
     type : INT
          | FLOAT
-         | CHAR
+         | STRING
     '''
     p[0] = p[1]
 
@@ -420,7 +423,7 @@ def p_cte_int(p):
     cte_int : CTEINT
     '''
 
-    dir = cg.direccion_mem('constantes','int',p[1])
+    dir = cg.direccion_mem('constantes','int',1, p[1])
     p[0] = dir
     cg.PTypes.append('int')
 
@@ -430,19 +433,19 @@ def p_cte_float(p):
     '''
     cte_float : CTEFLOAT
     '''
-    dir = cg.direccion_mem('constantes','float',p[1])
+    dir = cg.direccion_mem('constantes','float',1, p[1])
     p[0] = dir
     cg.PTypes.append('float')
 
 
-def p_cte_char(p):
+def p_cte_string(p):
     '''
-    cte_char : CTECHAR
+    cte_string : CTESTRING
     '''
-
-    cg.direccion_mem('constantes','char',p[1])
+    dir = cg.direccion_mem('constantes','string', 1, p[1])
     p[0] = dir
-    cg.PTypes.append('char')
+   
+    cg.PTypes.append('string')
 
 
 # RETURN
@@ -891,7 +894,7 @@ def p_empty(p):
 def p_error(p):
     
     if p is not None:
-        err = f"{p.value} en la linea {p.lineno}"
+        err = f"token {p.value} en la linea {p.lineno}"
     
     raise TypeError(f"Error de sintaxis: {err}")
 

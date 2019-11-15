@@ -6,6 +6,7 @@ Flor Esthela Barbosa y Laura Santacruz
 '''
 
 from semantic_cube import Operators, SemanticCube
+import json
 
 class Quadruple:
     def __init__(self, operator,left_op, right_op, result):
@@ -68,7 +69,7 @@ class Intermediate_CodeGeneration:
 
         self.b_int = 0
         self.b_float = 5000
-        self.b_char = 10000
+        self.b_string = 10000
 
     def reset_locales(self):
         '''
@@ -76,7 +77,7 @@ class Intermediate_CodeGeneration:
         '''
         self.c_local = [0,0,0]
 
-    def direccion_mem(self, mem, type, val = None, size = 1):
+    def direccion_mem(self, mem, type, size = 1, val = None):
         '''
         Ingresa variable en memoria y regresa la dirección
         :param mem: tipo de memoria en la que se encuentra
@@ -90,12 +91,13 @@ class Intermediate_CodeGeneration:
             indice = 0
         elif type == 'float':
             t_inicia = self.b_float
-            t_fin = self.b_char - 1
+            t_fin = self.b_string - 1
             indice = 1
-        elif type == 'char':
-            t_inicia = self.b_char
+        elif type == 'string':
+            t_inicia = self.b_string
             t_fin = 14999
             indice = 2
+            
         else:
             raise TypeError(f"Tipo '{type}' desconocido")
 
@@ -117,14 +119,16 @@ class Intermediate_CodeGeneration:
                return [x for x, y in self.constantes.items() if y == val].pop()
             dir = self.base_constantes + t_inicia + self.c_constantes[indice]
             
-            self.c_constantes[indice] += size
+            if indice == 2:
+                val = val.strip('"')
             self.constantes[dir] = val
+            self.c_constantes[indice] += size
+            
 
         
         else:
             raise TypeError(f"Tipo de memoria '{mem}' desconocida")
 
-        print(dir)
         return dir
 
     def generate_quad(self):
@@ -359,6 +363,6 @@ class Intermediate_CodeGeneration:
 
     def format_quads(self):
         return [(quad.operator, quad.left_op, quad.right_op, quad.result) for quad in self.Quads]
-   
+
     def format_constantes(self):
-        return [(x,y) for x,y in self.constantes.items()]
+        return [(k, v) for k, v in self.constantes.items()]

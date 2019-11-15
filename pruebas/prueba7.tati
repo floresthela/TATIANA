@@ -1,27 +1,26 @@
 program prueba7;
 int gi1 = 4 + 5;
 int gi2;
-int gi3 = gi1;
-
-fun int function1(int aa, int ai, char cc){
+int gi3 = 1;
+string c1 = "hola";
+fun int function1(int aa, int ai, string cc){
   float x;
   int a1 = 10;
   int b = 9;
   gi1 = 6 * gi3;
 }
 
-fun float function(char cc, float ff){
+fun float function(string cc, float ff){
   float x;
   print(gi1);
 }
 
 fun void function2(){
-  int a1 = 10;
+  int a1 = 1033;
   print(a1);
 }
 
 * {
-  char c1;
   int star1;
   int i3;
   int s = 1;

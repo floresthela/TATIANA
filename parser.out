@@ -40,7 +40,7 @@ Rule 34    assignment3 -> exp
 Rule 35    assignment3 -> read
 Rule 36    vcte -> cte_int
 Rule 37    vcte -> cte_float
-Rule 38    vcte -> cte_char
+Rule 38    vcte -> cte_string
 Rule 39    vcte -> id vcte1
 Rule 40    vcte -> funCall
 Rule 41    vcte1 -> OPENBRACKET exp CLOSEBRACKET vcte3
@@ -62,7 +62,7 @@ Rule 56    function5 -> empty
 Rule 57    funParam -> type ID
 Rule 58    type -> INT
 Rule 59    type -> FLOAT
-Rule 60    type -> CHAR
+Rule 60    type -> STRING
 Rule 61    print -> PRINT OPENPAREN expression CLOSEPAREN SEMICOLON
 Rule 62    read -> READ OPENPAREN id read1 CLOSEPAREN SEMICOLON
 Rule 63    read1 -> OPENBRACKET exp CLOSEBRACKET OPENBRACKET exp CLOSEBRACKET
@@ -79,7 +79,7 @@ Rule 73    funCall3 -> COMMA funCall2
 Rule 74    funCall3 -> empty
 Rule 75    cte_int -> CTEINT
 Rule 76    cte_float -> CTEFLOAT
-Rule 77    cte_char -> CTECHAR
+Rule 77    cte_string -> CTESTRING
 Rule 78    return -> RETURN return1 SEMICOLON
 Rule 79    return1 -> vcte
 Rule 80    return1 -> exp
@@ -161,16 +161,15 @@ Terminals, with rules where they appear
 ADDITION             : 142
 ARC                  : 124
 BACK                 : 123
-CHAR                 : 60
 CIRCLE               : 111
 CLOSEBRACES          : 5 49 92 125
 CLOSEBRACKET         : 14 16 33 41 43 63 63 64
 CLOSEPAREN           : 50 61 62 70 93 99 102 104 105 128 145
 COLOR_STAR           : 135
 COMMA                : 55 73 104
-CTECHAR              : 77
 CTEFLOAT             : 76
 CTEINT               : 14 16 75
+CTESTRING            : 77
 DIVISION             : 149
 ELSE                 : 90
 ELSEIF               : 89
@@ -206,6 +205,7 @@ SETXY                : 137
 SHOW_STAR            : 134
 SIZE_STAR            : 136
 SQUARE               : 112
+STRING               : 60
 SUBSTRACTION         : 143
 TRIANGLE             : 113
 TWODOTS              : 98
@@ -225,9 +225,9 @@ closeP               : 151
 close_condition      : 91
 condition            : 21
 condition1           : 85 86
-cte_char             : 38
 cte_float            : 37
 cte_int              : 36
+cte_string           : 38
 declara_vars         : 1 5 10 47
 dosExp               : 113 114 124 137
 else                 : 87
@@ -346,13 +346,13 @@ state 4
     (152) empty -> .
     (58) type -> . INT
     (59) type -> . FLOAT
-    (60) type -> . CHAR
+    (60) type -> . STRING
 
     FUN             reduce using rule 152 (empty -> .)
     MULTIPLICATION  reduce using rule 152 (empty -> .)
     INT             shift and go to state 9
     FLOAT           shift and go to state 10
-    CHAR            shift and go to state 11
+    STRING          shift and go to state 11
 
     declara_vars                   shift and go to state 5
     vars                           shift and go to state 6
@@ -386,7 +386,7 @@ state 6
     (152) empty -> .
     (58) type -> . INT
     (59) type -> . FLOAT
-    (60) type -> . CHAR
+    (60) type -> . STRING
 
     FUN             reduce using rule 152 (empty -> .)
     MULTIPLICATION  reduce using rule 152 (empty -> .)
@@ -417,7 +417,7 @@ state 6
     CLOSEBRACES     reduce using rule 152 (empty -> .)
     INT             shift and go to state 9
     FLOAT           shift and go to state 10
-    CHAR            shift and go to state 11
+    STRING          shift and go to state 11
 
     vars                           shift and go to state 6
     declara_vars                   shift and go to state 17
@@ -481,9 +481,9 @@ state 10
 
 state 11
 
-    (60) type -> CHAR .
+    (60) type -> STRING .
 
-    ID              reduce using rule 60 (type -> CHAR .)
+    ID              reduce using rule 60 (type -> STRING .)
 
 
 state 12
@@ -535,12 +535,12 @@ state 16
     (46) functionI -> . VOID ID
     (58) type -> . INT
     (59) type -> . FLOAT
-    (60) type -> . CHAR
+    (60) type -> . STRING
 
     VOID            shift and go to state 26
     INT             shift and go to state 9
     FLOAT           shift and go to state 10
-    CHAR            shift and go to state 11
+    STRING          shift and go to state 11
 
     functionI                      shift and go to state 24
     type                           shift and go to state 25
@@ -610,7 +610,7 @@ state 20
     (152) empty -> .
     (58) type -> . INT
     (59) type -> . FLOAT
-    (60) type -> . CHAR
+    (60) type -> . STRING
 
     IF              reduce using rule 152 (empty -> .)
     PRINT           reduce using rule 152 (empty -> .)
@@ -639,7 +639,7 @@ state 20
     CLOSEBRACES     reduce using rule 152 (empty -> .)
     INT             shift and go to state 9
     FLOAT           shift and go to state 10
-    CHAR            shift and go to state 11
+    STRING          shift and go to state 11
 
     declara_vars                   shift and go to state 30
     vars                           shift and go to state 6
@@ -840,7 +840,7 @@ state 31
 
     INT             reduce using rule 6 (starI -> star_sign OPENBRACES .)
     FLOAT           reduce using rule 6 (starI -> star_sign OPENBRACES .)
-    CHAR            reduce using rule 6 (starI -> star_sign OPENBRACES .)
+    STRING          reduce using rule 6 (starI -> star_sign OPENBRACES .)
     IF              reduce using rule 6 (starI -> star_sign OPENBRACES .)
     PRINT           reduce using rule 6 (starI -> star_sign OPENBRACES .)
     READ            reduce using rule 6 (starI -> star_sign OPENBRACES .)
@@ -886,12 +886,12 @@ state 33
     (152) empty -> .
     (58) type -> . INT
     (59) type -> . FLOAT
-    (60) type -> . CHAR
+    (60) type -> . STRING
 
     CLOSEPAREN      reduce using rule 152 (empty -> .)
     INT             shift and go to state 9
     FLOAT           shift and go to state 10
-    CHAR            shift and go to state 11
+    STRING          shift and go to state 11
 
     function3                      shift and go to state 97
     funParam                       shift and go to state 98
@@ -923,20 +923,20 @@ state 36
     (151) factor -> . openP expression closeP
     (36) vcte -> . cte_int
     (37) vcte -> . cte_float
-    (38) vcte -> . cte_char
+    (38) vcte -> . cte_string
     (39) vcte -> . id vcte1
     (40) vcte -> . funCall
     (144) openP -> . OPENPAREN
     (75) cte_int -> . CTEINT
     (76) cte_float -> . CTEFLOAT
-    (77) cte_char -> . CTECHAR
+    (77) cte_string -> . CTESTRING
     (67) id -> . ID
     (68) funCall -> . ID iniciaFunCall funCall2 terminaFunCall
 
     OPENPAREN       shift and go to state 112
     CTEINT          shift and go to state 113
     CTEFLOAT        shift and go to state 114
-    CTECHAR         shift and go to state 115
+    CTESTRING       shift and go to state 115
     ID              shift and go to state 101
 
     exp                            shift and go to state 102
@@ -946,7 +946,7 @@ state 36
     openP                          shift and go to state 106
     cte_int                        shift and go to state 107
     cte_float                      shift and go to state 108
-    cte_char                       shift and go to state 109
+    cte_string                     shift and go to state 109
     id                             shift and go to state 110
     funCall                        shift and go to state 111
 
@@ -956,7 +956,7 @@ state 37
 
     INT             reduce using rule 13 (vars -> type ID vars1 SEMICOLON .)
     FLOAT           reduce using rule 13 (vars -> type ID vars1 SEMICOLON .)
-    CHAR            reduce using rule 13 (vars -> type ID vars1 SEMICOLON .)
+    STRING          reduce using rule 13 (vars -> type ID vars1 SEMICOLON .)
     FUN             reduce using rule 13 (vars -> type ID vars1 SEMICOLON .)
     MULTIPLICATION  reduce using rule 13 (vars -> type ID vars1 SEMICOLON .)
     IF              reduce using rule 13 (vars -> type ID vars1 SEMICOLON .)
@@ -993,7 +993,7 @@ state 38
     OPENPAREN       reduce using rule 66 (equals -> EQUALS .)
     CTEINT          reduce using rule 66 (equals -> EQUALS .)
     CTEFLOAT        reduce using rule 66 (equals -> EQUALS .)
-    CTECHAR         reduce using rule 66 (equals -> EQUALS .)
+    CTESTRING       reduce using rule 66 (equals -> EQUALS .)
     ID              reduce using rule 66 (equals -> EQUALS .)
     READ            reduce using rule 66 (equals -> EQUALS .)
 
@@ -1614,14 +1614,14 @@ state 63
     (80) return1 -> . exp
     (36) vcte -> . cte_int
     (37) vcte -> . cte_float
-    (38) vcte -> . cte_char
+    (38) vcte -> . cte_string
     (39) vcte -> . id vcte1
     (40) vcte -> . funCall
     (140) exp -> . term
     (141) exp -> . term exp_o exp
     (75) cte_int -> . CTEINT
     (76) cte_float -> . CTEFLOAT
-    (77) cte_char -> . CTECHAR
+    (77) cte_string -> . CTESTRING
     (67) id -> . ID
     (68) funCall -> . ID iniciaFunCall funCall2 terminaFunCall
     (146) term -> . factor term_o term
@@ -1632,7 +1632,7 @@ state 63
 
     CTEINT          shift and go to state 113
     CTEFLOAT        shift and go to state 114
-    CTECHAR         shift and go to state 115
+    CTESTRING       shift and go to state 115
     ID              shift and go to state 101
     OPENPAREN       shift and go to state 112
 
@@ -1641,7 +1641,7 @@ state 63
     exp                            shift and go to state 134
     cte_int                        shift and go to state 107
     cte_float                      shift and go to state 108
-    cte_char                       shift and go to state 109
+    cte_string                     shift and go to state 109
     id                             shift and go to state 110
     funCall                        shift and go to state 111
     term                           shift and go to state 103
@@ -1903,7 +1903,7 @@ state 95
     (152) empty -> .
     (58) type -> . INT
     (59) type -> . FLOAT
-    (60) type -> . CHAR
+    (60) type -> . STRING
 
     IF              reduce using rule 152 (empty -> .)
     PRINT           reduce using rule 152 (empty -> .)
@@ -1932,7 +1932,7 @@ state 95
     CLOSEBRACES     reduce using rule 152 (empty -> .)
     INT             shift and go to state 9
     FLOAT           shift and go to state 10
-    CHAR            shift and go to state 11
+    STRING          shift and go to state 11
 
     declara_vars                   shift and go to state 162
     vars                           shift and go to state 6
@@ -1945,7 +1945,7 @@ state 96
 
     INT             reduce using rule 48 (inicia_fun -> OPENBRACES .)
     FLOAT           reduce using rule 48 (inicia_fun -> OPENBRACES .)
-    CHAR            reduce using rule 48 (inicia_fun -> OPENBRACES .)
+    STRING          reduce using rule 48 (inicia_fun -> OPENBRACES .)
     IF              reduce using rule 48 (inicia_fun -> OPENBRACES .)
     PRINT           reduce using rule 48 (inicia_fun -> OPENBRACES .)
     READ            reduce using rule 48 (inicia_fun -> OPENBRACES .)
@@ -2110,20 +2110,20 @@ state 106
     (151) factor -> . openP expression closeP
     (36) vcte -> . cte_int
     (37) vcte -> . cte_float
-    (38) vcte -> . cte_char
+    (38) vcte -> . cte_string
     (39) vcte -> . id vcte1
     (40) vcte -> . funCall
     (144) openP -> . OPENPAREN
     (75) cte_int -> . CTEINT
     (76) cte_float -> . CTEFLOAT
-    (77) cte_char -> . CTECHAR
+    (77) cte_string -> . CTESTRING
     (67) id -> . ID
     (68) funCall -> . ID iniciaFunCall funCall2 terminaFunCall
 
     OPENPAREN       shift and go to state 112
     CTEINT          shift and go to state 113
     CTEFLOAT        shift and go to state 114
-    CTECHAR         shift and go to state 115
+    CTESTRING       shift and go to state 115
     ID              shift and go to state 101
 
     openP                          shift and go to state 106
@@ -2134,7 +2134,7 @@ state 106
     vcte                           shift and go to state 105
     cte_int                        shift and go to state 107
     cte_float                      shift and go to state 108
-    cte_char                       shift and go to state 109
+    cte_string                     shift and go to state 109
     id                             shift and go to state 110
     funCall                        shift and go to state 111
 
@@ -2176,20 +2176,20 @@ state 108
 
 state 109
 
-    (38) vcte -> cte_char .
+    (38) vcte -> cte_string .
 
-    MULTIPLICATION  reduce using rule 38 (vcte -> cte_char .)
-    DIVISION        reduce using rule 38 (vcte -> cte_char .)
-    ADDITION        reduce using rule 38 (vcte -> cte_char .)
-    SUBSTRACTION    reduce using rule 38 (vcte -> cte_char .)
-    SEMICOLON       reduce using rule 38 (vcte -> cte_char .)
-    GREATER         reduce using rule 38 (vcte -> cte_char .)
-    LESS            reduce using rule 38 (vcte -> cte_char .)
-    NOTEQUAL        reduce using rule 38 (vcte -> cte_char .)
-    ISEQUAL         reduce using rule 38 (vcte -> cte_char .)
-    CLOSEPAREN      reduce using rule 38 (vcte -> cte_char .)
-    CLOSEBRACKET    reduce using rule 38 (vcte -> cte_char .)
-    COMMA           reduce using rule 38 (vcte -> cte_char .)
+    MULTIPLICATION  reduce using rule 38 (vcte -> cte_string .)
+    DIVISION        reduce using rule 38 (vcte -> cte_string .)
+    ADDITION        reduce using rule 38 (vcte -> cte_string .)
+    SUBSTRACTION    reduce using rule 38 (vcte -> cte_string .)
+    SEMICOLON       reduce using rule 38 (vcte -> cte_string .)
+    GREATER         reduce using rule 38 (vcte -> cte_string .)
+    LESS            reduce using rule 38 (vcte -> cte_string .)
+    NOTEQUAL        reduce using rule 38 (vcte -> cte_string .)
+    ISEQUAL         reduce using rule 38 (vcte -> cte_string .)
+    CLOSEPAREN      reduce using rule 38 (vcte -> cte_string .)
+    CLOSEBRACKET    reduce using rule 38 (vcte -> cte_string .)
+    COMMA           reduce using rule 38 (vcte -> cte_string .)
 
 
 state 110
@@ -2241,7 +2241,7 @@ state 112
     OPENPAREN       reduce using rule 144 (openP -> OPENPAREN .)
     CTEINT          reduce using rule 144 (openP -> OPENPAREN .)
     CTEFLOAT        reduce using rule 144 (openP -> OPENPAREN .)
-    CTECHAR         reduce using rule 144 (openP -> OPENPAREN .)
+    CTESTRING       reduce using rule 144 (openP -> OPENPAREN .)
     ID              reduce using rule 144 (openP -> OPENPAREN .)
 
 
@@ -2283,20 +2283,20 @@ state 114
 
 state 115
 
-    (77) cte_char -> CTECHAR .
+    (77) cte_string -> CTESTRING .
 
-    MULTIPLICATION  reduce using rule 77 (cte_char -> CTECHAR .)
-    DIVISION        reduce using rule 77 (cte_char -> CTECHAR .)
-    ADDITION        reduce using rule 77 (cte_char -> CTECHAR .)
-    SUBSTRACTION    reduce using rule 77 (cte_char -> CTECHAR .)
-    SEMICOLON       reduce using rule 77 (cte_char -> CTECHAR .)
-    GREATER         reduce using rule 77 (cte_char -> CTECHAR .)
-    LESS            reduce using rule 77 (cte_char -> CTECHAR .)
-    NOTEQUAL        reduce using rule 77 (cte_char -> CTECHAR .)
-    ISEQUAL         reduce using rule 77 (cte_char -> CTECHAR .)
-    CLOSEPAREN      reduce using rule 77 (cte_char -> CTECHAR .)
-    CLOSEBRACKET    reduce using rule 77 (cte_char -> CTECHAR .)
-    COMMA           reduce using rule 77 (cte_char -> CTECHAR .)
+    MULTIPLICATION  reduce using rule 77 (cte_string -> CTESTRING .)
+    DIVISION        reduce using rule 77 (cte_string -> CTESTRING .)
+    ADDITION        reduce using rule 77 (cte_string -> CTESTRING .)
+    SUBSTRACTION    reduce using rule 77 (cte_string -> CTESTRING .)
+    SEMICOLON       reduce using rule 77 (cte_string -> CTESTRING .)
+    GREATER         reduce using rule 77 (cte_string -> CTESTRING .)
+    LESS            reduce using rule 77 (cte_string -> CTESTRING .)
+    NOTEQUAL        reduce using rule 77 (cte_string -> CTESTRING .)
+    ISEQUAL         reduce using rule 77 (cte_string -> CTESTRING .)
+    CLOSEPAREN      reduce using rule 77 (cte_string -> CTESTRING .)
+    CLOSEBRACKET    reduce using rule 77 (cte_string -> CTESTRING .)
+    COMMA           reduce using rule 77 (cte_string -> CTESTRING .)
 
 
 state 116
@@ -2405,20 +2405,20 @@ state 123
     (151) factor -> . openP expression closeP
     (36) vcte -> . cte_int
     (37) vcte -> . cte_float
-    (38) vcte -> . cte_char
+    (38) vcte -> . cte_string
     (39) vcte -> . id vcte1
     (40) vcte -> . funCall
     (144) openP -> . OPENPAREN
     (75) cte_int -> . CTEINT
     (76) cte_float -> . CTEFLOAT
-    (77) cte_char -> . CTECHAR
+    (77) cte_string -> . CTESTRING
     (67) id -> . ID
     (68) funCall -> . ID iniciaFunCall funCall2 terminaFunCall
 
     OPENPAREN       shift and go to state 112
     CTEINT          shift and go to state 113
     CTEFLOAT        shift and go to state 114
-    CTECHAR         shift and go to state 115
+    CTESTRING       shift and go to state 115
     ID              shift and go to state 101
 
     exp                            shift and go to state 185
@@ -2428,7 +2428,7 @@ state 123
     openP                          shift and go to state 106
     cte_int                        shift and go to state 107
     cte_float                      shift and go to state 108
-    cte_char                       shift and go to state 109
+    cte_string                     shift and go to state 109
     id                             shift and go to state 110
     funCall                        shift and go to state 111
 
@@ -2454,20 +2454,20 @@ state 125
     (151) factor -> . openP expression closeP
     (36) vcte -> . cte_int
     (37) vcte -> . cte_float
-    (38) vcte -> . cte_char
+    (38) vcte -> . cte_string
     (39) vcte -> . id vcte1
     (40) vcte -> . funCall
     (144) openP -> . OPENPAREN
     (75) cte_int -> . CTEINT
     (76) cte_float -> . CTEFLOAT
-    (77) cte_char -> . CTECHAR
+    (77) cte_string -> . CTESTRING
     (67) id -> . ID
     (68) funCall -> . ID iniciaFunCall funCall2 terminaFunCall
 
     OPENPAREN       shift and go to state 112
     CTEINT          shift and go to state 113
     CTEFLOAT        shift and go to state 114
-    CTECHAR         shift and go to state 115
+    CTESTRING       shift and go to state 115
     ID              shift and go to state 101
 
     expression                     shift and go to state 187
@@ -2478,7 +2478,7 @@ state 125
     openP                          shift and go to state 106
     cte_int                        shift and go to state 107
     cte_float                      shift and go to state 108
-    cte_char                       shift and go to state 109
+    cte_string                     shift and go to state 109
     id                             shift and go to state 110
     funCall                        shift and go to state 111
 
@@ -2495,20 +2495,20 @@ state 126
     (151) factor -> . openP expression closeP
     (36) vcte -> . cte_int
     (37) vcte -> . cte_float
-    (38) vcte -> . cte_char
+    (38) vcte -> . cte_string
     (39) vcte -> . id vcte1
     (40) vcte -> . funCall
     (144) openP -> . OPENPAREN
     (75) cte_int -> . CTEINT
     (76) cte_float -> . CTEFLOAT
-    (77) cte_char -> . CTECHAR
+    (77) cte_string -> . CTESTRING
     (67) id -> . ID
     (68) funCall -> . ID iniciaFunCall funCall2 terminaFunCall
 
     OPENPAREN       shift and go to state 112
     CTEINT          shift and go to state 113
     CTEFLOAT        shift and go to state 114
-    CTECHAR         shift and go to state 115
+    CTESTRING       shift and go to state 115
     ID              shift and go to state 101
 
     expression                     shift and go to state 188
@@ -2519,7 +2519,7 @@ state 126
     openP                          shift and go to state 106
     cte_int                        shift and go to state 107
     cte_float                      shift and go to state 108
-    cte_char                       shift and go to state 109
+    cte_string                     shift and go to state 109
     id                             shift and go to state 110
     funCall                        shift and go to state 111
 
@@ -2550,20 +2550,20 @@ state 129
     (151) factor -> . openP expression closeP
     (36) vcte -> . cte_int
     (37) vcte -> . cte_float
-    (38) vcte -> . cte_char
+    (38) vcte -> . cte_string
     (39) vcte -> . id vcte1
     (40) vcte -> . funCall
     (144) openP -> . OPENPAREN
     (75) cte_int -> . CTEINT
     (76) cte_float -> . CTEFLOAT
-    (77) cte_char -> . CTECHAR
+    (77) cte_string -> . CTESTRING
     (67) id -> . ID
     (68) funCall -> . ID iniciaFunCall funCall2 terminaFunCall
 
     OPENPAREN       shift and go to state 112
     CTEINT          shift and go to state 113
     CTEFLOAT        shift and go to state 114
-    CTECHAR         shift and go to state 115
+    CTESTRING       shift and go to state 115
     ID              shift and go to state 101
 
     exp                            shift and go to state 192
@@ -2573,7 +2573,7 @@ state 129
     openP                          shift and go to state 106
     cte_int                        shift and go to state 107
     cte_float                      shift and go to state 108
-    cte_char                       shift and go to state 109
+    cte_string                     shift and go to state 109
     id                             shift and go to state 110
     funCall                        shift and go to state 111
 
@@ -2591,13 +2591,13 @@ state 130
     (151) factor -> . openP expression closeP
     (36) vcte -> . cte_int
     (37) vcte -> . cte_float
-    (38) vcte -> . cte_char
+    (38) vcte -> . cte_string
     (39) vcte -> . id vcte1
     (40) vcte -> . funCall
     (144) openP -> . OPENPAREN
     (75) cte_int -> . CTEINT
     (76) cte_float -> . CTEFLOAT
-    (77) cte_char -> . CTECHAR
+    (77) cte_string -> . CTESTRING
     (67) id -> . ID
     (68) funCall -> . ID iniciaFunCall funCall2 terminaFunCall
 
@@ -2605,7 +2605,7 @@ state 130
     OPENPAREN       shift and go to state 112
     CTEINT          shift and go to state 113
     CTEFLOAT        shift and go to state 114
-    CTECHAR         shift and go to state 115
+    CTESTRING       shift and go to state 115
     ID              shift and go to state 101
 
     funCall2                       shift and go to state 193
@@ -2617,7 +2617,7 @@ state 130
     openP                          shift and go to state 106
     cte_int                        shift and go to state 107
     cte_float                      shift and go to state 108
-    cte_char                       shift and go to state 109
+    cte_string                     shift and go to state 109
     id                             shift and go to state 110
     funCall                        shift and go to state 111
 
@@ -2628,7 +2628,7 @@ state 131
     OPENPAREN       reduce using rule 69 (iniciaFunCall -> OPENPAREN .)
     CTEINT          reduce using rule 69 (iniciaFunCall -> OPENPAREN .)
     CTEFLOAT        reduce using rule 69 (iniciaFunCall -> OPENPAREN .)
-    CTECHAR         reduce using rule 69 (iniciaFunCall -> OPENPAREN .)
+    CTESTRING       reduce using rule 69 (iniciaFunCall -> OPENPAREN .)
     ID              reduce using rule 69 (iniciaFunCall -> OPENPAREN .)
     CLOSEPAREN      reduce using rule 69 (iniciaFunCall -> OPENPAREN .)
 
@@ -3103,20 +3103,20 @@ state 146
     (151) factor -> . openP expression closeP
     (36) vcte -> . cte_int
     (37) vcte -> . cte_float
-    (38) vcte -> . cte_char
+    (38) vcte -> . cte_string
     (39) vcte -> . id vcte1
     (40) vcte -> . funCall
     (144) openP -> . OPENPAREN
     (75) cte_int -> . CTEINT
     (76) cte_float -> . CTEFLOAT
-    (77) cte_char -> . CTECHAR
+    (77) cte_string -> . CTESTRING
     (67) id -> . ID
     (68) funCall -> . ID iniciaFunCall funCall2 terminaFunCall
 
     OPENPAREN       shift and go to state 112
     CTEINT          shift and go to state 113
     CTEFLOAT        shift and go to state 114
-    CTECHAR         shift and go to state 115
+    CTESTRING       shift and go to state 115
     ID              shift and go to state 101
 
     expression                     shift and go to state 200
@@ -3127,7 +3127,7 @@ state 146
     openP                          shift and go to state 106
     cte_int                        shift and go to state 107
     cte_float                      shift and go to state 108
-    cte_char                       shift and go to state 109
+    cte_string                     shift and go to state 109
     id                             shift and go to state 110
     funCall                        shift and go to state 111
 
@@ -3156,20 +3156,20 @@ state 149
     (151) factor -> . openP expression closeP
     (36) vcte -> . cte_int
     (37) vcte -> . cte_float
-    (38) vcte -> . cte_char
+    (38) vcte -> . cte_string
     (39) vcte -> . id vcte1
     (40) vcte -> . funCall
     (144) openP -> . OPENPAREN
     (75) cte_int -> . CTEINT
     (76) cte_float -> . CTEFLOAT
-    (77) cte_char -> . CTECHAR
+    (77) cte_string -> . CTESTRING
     (67) id -> . ID
     (68) funCall -> . ID iniciaFunCall funCall2 terminaFunCall
 
     OPENPAREN       shift and go to state 112
     CTEINT          shift and go to state 113
     CTEFLOAT        shift and go to state 114
-    CTECHAR         shift and go to state 115
+    CTESTRING       shift and go to state 115
     ID              shift and go to state 101
 
     exp                            shift and go to state 202
@@ -3179,7 +3179,7 @@ state 149
     openP                          shift and go to state 106
     cte_int                        shift and go to state 107
     cte_float                      shift and go to state 108
-    cte_char                       shift and go to state 109
+    cte_string                     shift and go to state 109
     id                             shift and go to state 110
     funCall                        shift and go to state 111
 
@@ -3208,20 +3208,20 @@ state 152
     (151) factor -> . openP expression closeP
     (36) vcte -> . cte_int
     (37) vcte -> . cte_float
-    (38) vcte -> . cte_char
+    (38) vcte -> . cte_string
     (39) vcte -> . id vcte1
     (40) vcte -> . funCall
     (144) openP -> . OPENPAREN
     (75) cte_int -> . CTEINT
     (76) cte_float -> . CTEFLOAT
-    (77) cte_char -> . CTECHAR
+    (77) cte_string -> . CTESTRING
     (67) id -> . ID
     (68) funCall -> . ID iniciaFunCall funCall2 terminaFunCall
 
     OPENPAREN       shift and go to state 112
     CTEINT          shift and go to state 113
     CTEFLOAT        shift and go to state 114
-    CTECHAR         shift and go to state 115
+    CTESTRING       shift and go to state 115
     ID              shift and go to state 101
 
     exp                            shift and go to state 203
@@ -3231,7 +3231,7 @@ state 152
     openP                          shift and go to state 106
     cte_int                        shift and go to state 107
     cte_float                      shift and go to state 108
-    cte_char                       shift and go to state 109
+    cte_string                     shift and go to state 109
     id                             shift and go to state 110
     funCall                        shift and go to state 111
 
@@ -3436,11 +3436,11 @@ state 165
     (57) funParam -> . type ID
     (58) type -> . INT
     (59) type -> . FLOAT
-    (60) type -> . CHAR
+    (60) type -> . STRING
 
     INT             shift and go to state 9
     FLOAT           shift and go to state 10
-    CHAR            shift and go to state 11
+    STRING          shift and go to state 11
 
     funParam                       shift and go to state 207
     type                           shift and go to state 100
@@ -3466,7 +3466,7 @@ state 168
 
     INT             reduce using rule 12 (vars -> type ID vars1 equals exp SEMICOLON .)
     FLOAT           reduce using rule 12 (vars -> type ID vars1 equals exp SEMICOLON .)
-    CHAR            reduce using rule 12 (vars -> type ID vars1 equals exp SEMICOLON .)
+    STRING          reduce using rule 12 (vars -> type ID vars1 equals exp SEMICOLON .)
     FUN             reduce using rule 12 (vars -> type ID vars1 equals exp SEMICOLON .)
     MULTIPLICATION  reduce using rule 12 (vars -> type ID vars1 equals exp SEMICOLON .)
     IF              reduce using rule 12 (vars -> type ID vars1 equals exp SEMICOLON .)
@@ -3507,20 +3507,20 @@ state 169
     (151) factor -> . openP expression closeP
     (36) vcte -> . cte_int
     (37) vcte -> . cte_float
-    (38) vcte -> . cte_char
+    (38) vcte -> . cte_string
     (39) vcte -> . id vcte1
     (40) vcte -> . funCall
     (144) openP -> . OPENPAREN
     (75) cte_int -> . CTEINT
     (76) cte_float -> . CTEFLOAT
-    (77) cte_char -> . CTECHAR
+    (77) cte_string -> . CTESTRING
     (67) id -> . ID
     (68) funCall -> . ID iniciaFunCall funCall2 terminaFunCall
 
     OPENPAREN       shift and go to state 112
     CTEINT          shift and go to state 113
     CTEFLOAT        shift and go to state 114
-    CTECHAR         shift and go to state 115
+    CTESTRING       shift and go to state 115
     ID              shift and go to state 101
 
     term                           shift and go to state 103
@@ -3530,7 +3530,7 @@ state 169
     openP                          shift and go to state 106
     cte_int                        shift and go to state 107
     cte_float                      shift and go to state 108
-    cte_char                       shift and go to state 109
+    cte_string                     shift and go to state 109
     id                             shift and go to state 110
     funCall                        shift and go to state 111
 
@@ -3541,7 +3541,7 @@ state 170
     OPENPAREN       reduce using rule 142 (exp_o -> ADDITION .)
     CTEINT          reduce using rule 142 (exp_o -> ADDITION .)
     CTEFLOAT        reduce using rule 142 (exp_o -> ADDITION .)
-    CTECHAR         reduce using rule 142 (exp_o -> ADDITION .)
+    CTESTRING       reduce using rule 142 (exp_o -> ADDITION .)
     ID              reduce using rule 142 (exp_o -> ADDITION .)
 
 
@@ -3552,7 +3552,7 @@ state 171
     OPENPAREN       reduce using rule 143 (exp_o -> SUBSTRACTION .)
     CTEINT          reduce using rule 143 (exp_o -> SUBSTRACTION .)
     CTEFLOAT        reduce using rule 143 (exp_o -> SUBSTRACTION .)
-    CTECHAR         reduce using rule 143 (exp_o -> SUBSTRACTION .)
+    CTESTRING       reduce using rule 143 (exp_o -> SUBSTRACTION .)
     ID              reduce using rule 143 (exp_o -> SUBSTRACTION .)
 
 
@@ -3565,20 +3565,20 @@ state 172
     (151) factor -> . openP expression closeP
     (36) vcte -> . cte_int
     (37) vcte -> . cte_float
-    (38) vcte -> . cte_char
+    (38) vcte -> . cte_string
     (39) vcte -> . id vcte1
     (40) vcte -> . funCall
     (144) openP -> . OPENPAREN
     (75) cte_int -> . CTEINT
     (76) cte_float -> . CTEFLOAT
-    (77) cte_char -> . CTECHAR
+    (77) cte_string -> . CTESTRING
     (67) id -> . ID
     (68) funCall -> . ID iniciaFunCall funCall2 terminaFunCall
 
     OPENPAREN       shift and go to state 112
     CTEINT          shift and go to state 113
     CTEFLOAT        shift and go to state 114
-    CTECHAR         shift and go to state 115
+    CTESTRING       shift and go to state 115
     ID              shift and go to state 101
 
     factor                         shift and go to state 104
@@ -3587,7 +3587,7 @@ state 172
     openP                          shift and go to state 106
     cte_int                        shift and go to state 107
     cte_float                      shift and go to state 108
-    cte_char                       shift and go to state 109
+    cte_string                     shift and go to state 109
     id                             shift and go to state 110
     funCall                        shift and go to state 111
 
@@ -3598,7 +3598,7 @@ state 173
     OPENPAREN       reduce using rule 148 (term_o -> MULTIPLICATION .)
     CTEINT          reduce using rule 148 (term_o -> MULTIPLICATION .)
     CTEFLOAT        reduce using rule 148 (term_o -> MULTIPLICATION .)
-    CTECHAR         reduce using rule 148 (term_o -> MULTIPLICATION .)
+    CTESTRING       reduce using rule 148 (term_o -> MULTIPLICATION .)
     ID              reduce using rule 148 (term_o -> MULTIPLICATION .)
 
 
@@ -3609,7 +3609,7 @@ state 174
     OPENPAREN       reduce using rule 149 (term_o -> DIVISION .)
     CTEINT          reduce using rule 149 (term_o -> DIVISION .)
     CTEFLOAT        reduce using rule 149 (term_o -> DIVISION .)
-    CTECHAR         reduce using rule 149 (term_o -> DIVISION .)
+    CTESTRING       reduce using rule 149 (term_o -> DIVISION .)
     ID              reduce using rule 149 (term_o -> DIVISION .)
 
 
@@ -3668,20 +3668,20 @@ state 178
     (151) factor -> . openP expression closeP
     (36) vcte -> . cte_int
     (37) vcte -> . cte_float
-    (38) vcte -> . cte_char
+    (38) vcte -> . cte_string
     (39) vcte -> . id vcte1
     (40) vcte -> . funCall
     (144) openP -> . OPENPAREN
     (75) cte_int -> . CTEINT
     (76) cte_float -> . CTEFLOAT
-    (77) cte_char -> . CTECHAR
+    (77) cte_string -> . CTESTRING
     (67) id -> . ID
     (68) funCall -> . ID iniciaFunCall funCall2 terminaFunCall
 
     OPENPAREN       shift and go to state 112
     CTEINT          shift and go to state 113
     CTEFLOAT        shift and go to state 114
-    CTECHAR         shift and go to state 115
+    CTESTRING       shift and go to state 115
     ID              shift and go to state 101
 
     exp                            shift and go to state 217
@@ -3691,7 +3691,7 @@ state 178
     openP                          shift and go to state 106
     cte_int                        shift and go to state 107
     cte_float                      shift and go to state 108
-    cte_char                       shift and go to state 109
+    cte_string                     shift and go to state 109
     id                             shift and go to state 110
     funCall                        shift and go to state 111
 
@@ -3750,13 +3750,13 @@ state 183
     (151) factor -> . openP expression closeP
     (36) vcte -> . cte_int
     (37) vcte -> . cte_float
-    (38) vcte -> . cte_char
+    (38) vcte -> . cte_string
     (39) vcte -> . id vcte1
     (40) vcte -> . funCall
     (144) openP -> . OPENPAREN
     (75) cte_int -> . CTEINT
     (76) cte_float -> . CTEFLOAT
-    (77) cte_char -> . CTECHAR
+    (77) cte_string -> . CTESTRING
     (67) id -> . ID
     (68) funCall -> . ID iniciaFunCall funCall2 terminaFunCall
 
@@ -3764,7 +3764,7 @@ state 183
     OPENPAREN       shift and go to state 112
     CTEINT          shift and go to state 113
     CTEFLOAT        shift and go to state 114
-    CTECHAR         shift and go to state 115
+    CTESTRING       shift and go to state 115
     ID              shift and go to state 101
 
     id                             shift and go to state 110
@@ -3777,7 +3777,7 @@ state 183
     openP                          shift and go to state 106
     cte_int                        shift and go to state 107
     cte_float                      shift and go to state 108
-    cte_char                       shift and go to state 109
+    cte_string                     shift and go to state 109
     funCall                        shift and go to state 111
 
 state 184
@@ -4389,20 +4389,20 @@ state 212
     (151) factor -> . openP expression closeP
     (36) vcte -> . cte_int
     (37) vcte -> . cte_float
-    (38) vcte -> . cte_char
+    (38) vcte -> . cte_string
     (39) vcte -> . id vcte1
     (40) vcte -> . funCall
     (144) openP -> . OPENPAREN
     (75) cte_int -> . CTEINT
     (76) cte_float -> . CTEFLOAT
-    (77) cte_char -> . CTECHAR
+    (77) cte_string -> . CTESTRING
     (67) id -> . ID
     (68) funCall -> . ID iniciaFunCall funCall2 terminaFunCall
 
     OPENPAREN       shift and go to state 112
     CTEINT          shift and go to state 113
     CTEFLOAT        shift and go to state 114
-    CTECHAR         shift and go to state 115
+    CTESTRING       shift and go to state 115
     ID              shift and go to state 101
 
     exp                            shift and go to state 253
@@ -4412,7 +4412,7 @@ state 212
     openP                          shift and go to state 106
     cte_int                        shift and go to state 107
     cte_float                      shift and go to state 108
-    cte_char                       shift and go to state 109
+    cte_string                     shift and go to state 109
     id                             shift and go to state 110
     funCall                        shift and go to state 111
 
@@ -4423,7 +4423,7 @@ state 213
     OPENPAREN       reduce using rule 81 (loper -> GREATER .)
     CTEINT          reduce using rule 81 (loper -> GREATER .)
     CTEFLOAT        reduce using rule 81 (loper -> GREATER .)
-    CTECHAR         reduce using rule 81 (loper -> GREATER .)
+    CTESTRING       reduce using rule 81 (loper -> GREATER .)
     ID              reduce using rule 81 (loper -> GREATER .)
 
 
@@ -4434,7 +4434,7 @@ state 214
     OPENPAREN       reduce using rule 82 (loper -> LESS .)
     CTEINT          reduce using rule 82 (loper -> LESS .)
     CTEFLOAT        reduce using rule 82 (loper -> LESS .)
-    CTECHAR         reduce using rule 82 (loper -> LESS .)
+    CTESTRING       reduce using rule 82 (loper -> LESS .)
     ID              reduce using rule 82 (loper -> LESS .)
 
 
@@ -4445,7 +4445,7 @@ state 215
     OPENPAREN       reduce using rule 83 (loper -> NOTEQUAL .)
     CTEINT          reduce using rule 83 (loper -> NOTEQUAL .)
     CTEFLOAT        reduce using rule 83 (loper -> NOTEQUAL .)
-    CTECHAR         reduce using rule 83 (loper -> NOTEQUAL .)
+    CTESTRING       reduce using rule 83 (loper -> NOTEQUAL .)
     ID              reduce using rule 83 (loper -> NOTEQUAL .)
 
 
@@ -4456,7 +4456,7 @@ state 216
     OPENPAREN       reduce using rule 84 (loper -> ISEQUAL .)
     CTEINT          reduce using rule 84 (loper -> ISEQUAL .)
     CTEFLOAT        reduce using rule 84 (loper -> ISEQUAL .)
-    CTECHAR         reduce using rule 84 (loper -> ISEQUAL .)
+    CTESTRING       reduce using rule 84 (loper -> ISEQUAL .)
     ID              reduce using rule 84 (loper -> ISEQUAL .)
 
 
@@ -4637,20 +4637,20 @@ state 233
     (151) factor -> . openP expression closeP
     (36) vcte -> . cte_int
     (37) vcte -> . cte_float
-    (38) vcte -> . cte_char
+    (38) vcte -> . cte_string
     (39) vcte -> . id vcte1
     (40) vcte -> . funCall
     (144) openP -> . OPENPAREN
     (75) cte_int -> . CTEINT
     (76) cte_float -> . CTEFLOAT
-    (77) cte_char -> . CTECHAR
+    (77) cte_string -> . CTESTRING
     (67) id -> . ID
     (68) funCall -> . ID iniciaFunCall funCall2 terminaFunCall
 
     OPENPAREN       shift and go to state 112
     CTEINT          shift and go to state 113
     CTEFLOAT        shift and go to state 114
-    CTECHAR         shift and go to state 115
+    CTESTRING       shift and go to state 115
     ID              shift and go to state 101
 
     exp                            shift and go to state 261
@@ -4660,7 +4660,7 @@ state 233
     openP                          shift and go to state 106
     cte_int                        shift and go to state 107
     cte_float                      shift and go to state 108
-    cte_char                       shift and go to state 109
+    cte_string                     shift and go to state 109
     id                             shift and go to state 110
     funCall                        shift and go to state 111
 
@@ -4802,13 +4802,13 @@ state 240
     (151) factor -> . openP expression closeP
     (36) vcte -> . cte_int
     (37) vcte -> . cte_float
-    (38) vcte -> . cte_char
+    (38) vcte -> . cte_string
     (39) vcte -> . id vcte1
     (40) vcte -> . funCall
     (144) openP -> . OPENPAREN
     (75) cte_int -> . CTEINT
     (76) cte_float -> . CTEFLOAT
-    (77) cte_char -> . CTECHAR
+    (77) cte_string -> . CTESTRING
     (67) id -> . ID
     (68) funCall -> . ID iniciaFunCall funCall2 terminaFunCall
 
@@ -4816,7 +4816,7 @@ state 240
     OPENPAREN       shift and go to state 112
     CTEINT          shift and go to state 113
     CTEFLOAT        shift and go to state 114
-    CTECHAR         shift and go to state 115
+    CTESTRING       shift and go to state 115
     ID              shift and go to state 101
 
     funCall2                       shift and go to state 265
@@ -4828,7 +4828,7 @@ state 240
     openP                          shift and go to state 106
     cte_int                        shift and go to state 107
     cte_float                      shift and go to state 108
-    cte_char                       shift and go to state 109
+    cte_string                     shift and go to state 109
     id                             shift and go to state 110
     funCall                        shift and go to state 111
 
@@ -4904,20 +4904,20 @@ state 246
     (151) factor -> . openP expression closeP
     (36) vcte -> . cte_int
     (37) vcte -> . cte_float
-    (38) vcte -> . cte_char
+    (38) vcte -> . cte_string
     (39) vcte -> . id vcte1
     (40) vcte -> . funCall
     (144) openP -> . OPENPAREN
     (75) cte_int -> . CTEINT
     (76) cte_float -> . CTEFLOAT
-    (77) cte_char -> . CTECHAR
+    (77) cte_string -> . CTESTRING
     (67) id -> . ID
     (68) funCall -> . ID iniciaFunCall funCall2 terminaFunCall
 
     OPENPAREN       shift and go to state 112
     CTEINT          shift and go to state 113
     CTEFLOAT        shift and go to state 114
-    CTECHAR         shift and go to state 115
+    CTESTRING       shift and go to state 115
     ID              shift and go to state 101
 
     exp                            shift and go to state 266
@@ -4927,7 +4927,7 @@ state 246
     openP                          shift and go to state 106
     cte_int                        shift and go to state 107
     cte_float                      shift and go to state 108
-    cte_char                       shift and go to state 109
+    cte_string                     shift and go to state 109
     id                             shift and go to state 110
     funCall                        shift and go to state 111
 
@@ -4949,20 +4949,20 @@ state 248
     (151) factor -> . openP expression closeP
     (36) vcte -> . cte_int
     (37) vcte -> . cte_float
-    (38) vcte -> . cte_char
+    (38) vcte -> . cte_string
     (39) vcte -> . id vcte1
     (40) vcte -> . funCall
     (144) openP -> . OPENPAREN
     (75) cte_int -> . CTEINT
     (76) cte_float -> . CTEFLOAT
-    (77) cte_char -> . CTECHAR
+    (77) cte_string -> . CTESTRING
     (67) id -> . ID
     (68) funCall -> . ID iniciaFunCall funCall2 terminaFunCall
 
     OPENPAREN       shift and go to state 112
     CTEINT          shift and go to state 113
     CTEFLOAT        shift and go to state 114
-    CTECHAR         shift and go to state 115
+    CTESTRING       shift and go to state 115
     ID              shift and go to state 101
 
     exp                            shift and go to state 267
@@ -4972,7 +4972,7 @@ state 248
     openP                          shift and go to state 106
     cte_int                        shift and go to state 107
     cte_float                      shift and go to state 108
-    cte_char                       shift and go to state 109
+    cte_string                     shift and go to state 109
     id                             shift and go to state 110
     funCall                        shift and go to state 111
 
@@ -5277,20 +5277,20 @@ state 268
     (151) factor -> . openP expression closeP
     (36) vcte -> . cte_int
     (37) vcte -> . cte_float
-    (38) vcte -> . cte_char
+    (38) vcte -> . cte_string
     (39) vcte -> . id vcte1
     (40) vcte -> . funCall
     (144) openP -> . OPENPAREN
     (75) cte_int -> . CTEINT
     (76) cte_float -> . CTEFLOAT
-    (77) cte_char -> . CTECHAR
+    (77) cte_string -> . CTESTRING
     (67) id -> . ID
     (68) funCall -> . ID iniciaFunCall funCall2 terminaFunCall
 
     OPENPAREN       shift and go to state 112
     CTEINT          shift and go to state 113
     CTEFLOAT        shift and go to state 114
-    CTECHAR         shift and go to state 115
+    CTESTRING       shift and go to state 115
     ID              shift and go to state 101
 
     exp                            shift and go to state 279
@@ -5300,7 +5300,7 @@ state 268
     openP                          shift and go to state 106
     cte_int                        shift and go to state 107
     cte_float                      shift and go to state 108
-    cte_char                       shift and go to state 109
+    cte_string                     shift and go to state 109
     id                             shift and go to state 110
     funCall                        shift and go to state 111
 
@@ -5532,20 +5532,20 @@ state 281
     (151) factor -> . openP expression closeP
     (36) vcte -> . cte_int
     (37) vcte -> . cte_float
-    (38) vcte -> . cte_char
+    (38) vcte -> . cte_string
     (39) vcte -> . id vcte1
     (40) vcte -> . funCall
     (144) openP -> . OPENPAREN
     (75) cte_int -> . CTEINT
     (76) cte_float -> . CTEFLOAT
-    (77) cte_char -> . CTECHAR
+    (77) cte_string -> . CTESTRING
     (67) id -> . ID
     (68) funCall -> . ID iniciaFunCall funCall2 terminaFunCall
 
     OPENPAREN       shift and go to state 112
     CTEINT          shift and go to state 113
     CTEFLOAT        shift and go to state 114
-    CTECHAR         shift and go to state 115
+    CTESTRING       shift and go to state 115
     ID              shift and go to state 101
 
     exp                            shift and go to state 283
@@ -5555,7 +5555,7 @@ state 281
     openP                          shift and go to state 106
     cte_int                        shift and go to state 107
     cte_float                      shift and go to state 108
-    cte_char                       shift and go to state 109
+    cte_string                     shift and go to state 109
     id                             shift and go to state 110
     funCall                        shift and go to state 111
 

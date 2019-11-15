@@ -11,6 +11,9 @@ def genera_arch(program,varst,quads,consts):
     '''
     Genera el archivo con los cuádruplos, tablas de funciones y constantes del programa
     '''
+
+    
+    print(consts)
     archivo = {
         "Quads" : quads,
         "FunDir" : varst,
