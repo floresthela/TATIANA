@@ -1,9 +1,14 @@
-# TATIANA
-# Flor Esthela Barbosa & Laura Santacruz
+'''
+TATIANA
+Archivo parser del lenguaje que contiene las reglas gramaticales
 
+Flor Esthela Barbosa y Laura Santacruz
+'''
 # PARSER
 import sys
 import ply.yacc as yacc
+import json
+import genera_comp
 from lexer import tokens
 from functools import reduce
 from vars_table import VarsTable
@@ -15,21 +20,19 @@ cg = Intermediate_CodeGeneration()
 # k = 0
 
 # IMPORTANTE: descomentar el vars_t de remove a las funciones para eliminarlas
+
 # PROGRAM
 def p_program(p):
     '''
     program : PROGRAM ID SEMICOLON declara_vars program_modules
     '''
-    conta = 1
-    # print(cg.Quads)
-    for q in cg.Quads:
-        print(conta,q)
-        conta += 1
-
     p[0] = "PROGRAM COMPILED"
     vars_t.delete_vars('global')
-    print(vars_t.table)
+    
+    f_quads = cg.format_quads()
+    f_constantes = cg.format_constantes()
 
+    genera_comp.genera_arch(p[2],vars_t.table, f_quads, f_constantes)
 
 def p_program_modules(p):
     '''
@@ -61,6 +64,7 @@ def p_starI(p):
     '''
     starI : star_sign OPENBRACES
     '''
+    cg.reset_locales()
     vars_t.FunDirectory('star', 'star',p[1])
 
 def p_star_sign(p):
@@ -84,6 +88,7 @@ def p_declara_vars(p):
     declara_vars : vars declara_vars
           | empty
     '''
+
     if len(p) == 3:
         p[0] = p[1:]
         p[0] = flatten(p[0])
@@ -95,27 +100,31 @@ def p_vars(p):
     '''
     p[0] = (p[1], p[2])
 
+    if not vars_t.initialized:
+        vars_t.FunDirectory('global', 'np',None)
+        dir = cg.direccion_mem('global',p[1],)
+        vars_t.insert_var(p[2],p[1],dir)
+
+    else:
+        dir = cg.direccion_mem('local',p[1])
+        vars_t.insert_var(p[2],p[1],dir)
+
     if len(p) == 7:
-        cg.PilaO.append(p[2])
+        cg.PilaO.append(dir)
         cg.PTypes.append(p[1])
         if cg.POper and cg.POper[-1] in '=':
             cg.generate_quad()
-    if not vars_t.initialized:
-        vars_t.FunDirectory('global', 'np',None)
-        vars_t.insert_var(p[2],p[1])
-    else:
-        vars_t.insert_var(p[2],p[1])
-
-
 
 # TODO: una regla para arreglos y usarla siempre que necesitemos [] , [][]
+
+# VECTOR
 def p_vars1(p):
     '''
     vars1 : OPENBRACKET CTEINT CLOSEBRACKET vars3
         | empty
     '''
 
-# matrix
+# MATRIXXX
 def p_vars3(p):
     '''
     vars3 : OPENBRACKET CTEINT CLOSEBRACKET
@@ -210,6 +219,7 @@ def p_functionI(p):
     #cg.generate_ERA(p[2])
     p[0] = p[2]
 
+    cg.reset_locales()
     beginFun = len(cg.Quads) + 1
     vars_t.FunDirectory(p[2],p[1],beginFun)
     # mete las funciones como variables globales...
@@ -223,7 +233,7 @@ def p_function(p):
     '''
     function : FUN functionI function2 inicia_fun declara_vars function4 termina_fun
     '''
-    if p[7] != None:
+    if p[7] is not None:
         vars = p[7]
         vars = vars[:-1]
         p[0] = vars
@@ -255,7 +265,7 @@ def p_function3(p):
     if p[1] is not None:
         p[0] = [p[1]]
         p[0].append(p[2])
-        # print('hey',p[0])
+        
 
 
 
@@ -344,7 +354,7 @@ def p_id(p):
 
     t = vars_t.search_var(p[1])
     if t:
-        cg.PilaO.append(p[1])
+        cg.PilaO.append(t['dir'])
         cg.PTypes.append(t['type'])
 
 
@@ -409,15 +419,19 @@ def p_cte_int(p):
     '''
     cte_int : CTEINT
     '''
-    p[0] = p[1]
+
+    dir = cg.direccion_mem('constantes','int',p[1])
+    p[0] = dir
     cg.PTypes.append('int')
+
 
 
 def p_cte_float(p):
     '''
     cte_float : CTEFLOAT
     '''
-    p[0] = p[1]
+    dir = cg.direccion_mem('constantes','float',p[1])
+    p[0] = dir
     cg.PTypes.append('float')
 
 
@@ -425,7 +439,9 @@ def p_cte_char(p):
     '''
     cte_char : CTECHAR
     '''
-    p[0] = p[1]
+
+    cg.direccion_mem('constantes','char',p[1])
+    p[0] = dir
     cg.PTypes.append('char')
 
 
@@ -851,8 +867,6 @@ def p_factor(p):
         t = cg.generate_quad()
         vars_t.insert_temp(t,vars_t.current_scope)
 
-
-
 # def p_factor1(p):
 #     '''
 #     factor1 : factor2 vcte
@@ -868,9 +882,6 @@ def p_factor(p):
 #     p[0] = p[1]
 #     cg.POper.append(p[0])
 
-
-
-
 def p_empty(p):
     '''empty :'''
     p[0] = None
@@ -878,25 +889,10 @@ def p_empty(p):
 
 
 def p_error(p):
-    print("ERROR {}".format(p))
+    
+    if p is not None:
+        err = f"{p.value} en la linea {p.lineno}"
+    
+    raise TypeError(f"Error de sintaxis: {err}")
 
-
-yacc.yacc()
-
-# hay que ver CÓMO ponemos que hay errores en la sintaxis pero más específicos o algo asi
-if __name__ == '__main__':
-    try:
-        nombreArchivo = 'pruebas/prueba2.tati'
-
-        arch = open(nombreArchivo, 'r')
-        print("Archivo a leer: " + nombreArchivo)
-        info = arch.read()
-        # print(info)
-        arch.close()
-        if(yacc.parse(info, tracking=True) == 'PROGRAM COMPILED'):
-            print("SINTAXIS VALIDA :) ")
-        else:
-            print("ERRORES EN LA SINTAXIS :( ")
-
-    except EOFError:
-        print(EOFError)
+parser = yacc.yacc(start='program')

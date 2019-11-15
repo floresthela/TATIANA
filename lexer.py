@@ -1,8 +1,9 @@
+'''
+TATIANA
+Archivo lexer del lenguaje que contiene el léxico del lenguaje
 
-# TATIANA
-# Flor Esthela Barbosa & Laura Santacruz
-
-# LEXER
+Flor Esthela Barbosa y Laura Santacruz
+'''
 
 import sys
 import ply.lex as lex

@@ -1,0 +1,10 @@
+program prueba8;
+int g1 = 4 + 5;
+
+* {
+  int hola = 1;
+  int adios = 44;
+  int jelou = 69;
+
+  hola = jelou + g1 * 6;
+}

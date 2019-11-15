@@ -1,8 +1,9 @@
+'''
+TATIANA
+Archivo del cubo semántico del lenguaje con las operaciones permitadas de acuerdo a los tipos y sus operadores
 
-# TATIANA
-# Flor Esthela Barbosa & Laura Santacruz
-
-# SEMANTIC CUBE of operations
+Flor Esthela Barbosa y Laura Santacruz
+'''
 
 import sys
 from enum import Enum

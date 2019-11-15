@@ -1,11 +1,11 @@
-# TATIANA
-# Flor Esthela Barbosa & Laura Santacruz
+'''
+TATIANA
+Archivo para la generación de código intermedio, los cuádruplos
 
-# INTERMEDIATE-CODE GENERATION
-# CUÁDRUPLOS
+Flor Esthela Barbosa y Laura Santacruz
+'''
 
 from semantic_cube import Operators, SemanticCube
-
 
 class Quadruple:
     def __init__(self, operator,left_op, right_op, result):
@@ -19,14 +19,14 @@ class Quadruple:
 
     def __repr__(self):
         return f"\t{self.operator}\t{self.left_op}\t{self.right_op}\t{self.result}\n"
-
+    
     def __str__(self):
-        return f"{self.operator},{self.left_op},{self.right_op},{self.result}\n"
+        return f"\t{self.operator},{self.left_op},{self.right_op},{self.result}\n"
 
     def cambia_res(self,res):
         '''
         Cambia el resultado del cuádruplo (posición 4)
-        :param result: el resultado nuevo
+        :param result: Nuevo resultado
         '''
         self.result = res
 
@@ -44,19 +44,90 @@ class Intermediate_CodeGeneration:
 
         self.inicia_star = None
         self.era = None
+
         # contadores
-        self.c_temps = 0
+        # self.c_temps = [0,0,0]
         self.c_params = 0
+        self.c_global = [0,0,0]
+        self.c_local = [0,0,0]
+        self.c_constantes = [0,0,0]
 
         self.Quads = [] # lista de cuádruplos que llevamos
         self.contador = 1 # creo que este no lo necesitamos
         self.cubo = SemanticCube()
 
+        # Tabla de constantes [valor,dir]
+        self.constantes = {}
 
+        # bases para memoria
+        self.base_global = 1000
+
+        # temporales locales a los módulos
+        self.base_local = 16000
+        self.base_constantes = 31000
+
+        self.b_int = 0
+        self.b_float = 5000
+        self.b_char = 10000
+
+    def reset_locales(self):
+        '''
+        Resetea el contador de las variables locales
+        '''
+        self.c_local = [0,0,0]
+
+    def direccion_mem(self, mem, type, val = None, size = 1):
+        '''
+        Ingresa variable en memoria y regresa la dirección
+        :param mem: tipo de memoria en la que se encuentra
+        :param type: tipo de variable
+        '''
+
+        if type == 'int':
+            # para checar al rato que no nos pasemos
+            t_inicia = self.b_int
+            t_fin = self.b_float - 1
+            indice = 0
+        elif type == 'float':
+            t_inicia = self.b_float
+            t_fin = self.b_char - 1
+            indice = 1
+        elif type == 'char':
+            t_inicia = self.b_char
+            t_fin = 14999
+            indice = 2
+        else:
+            raise TypeError(f"Tipo '{type}' desconocido")
+
+        if mem == 'global':
+            dir = self.base_global + t_inicia + self.c_global[indice]
+            self.c_global[indice] += size
+
+            # falta checar que no nos pasemos de los rangos vvv
+        elif mem == 'local':
+            dir = self.base_local + t_inicia + self.c_local[indice]
+            self.c_local[indice] += size
+        
+        elif mem == 'constantes':
+
+            if val is None:
+                raise TypeError(f"Valor de constante no especificado")
+
+            elif val in self.constantes.values():
+               return [x for x, y in self.constantes.items() if y == val].pop()
+            dir = self.base_constantes + t_inicia + self.c_constantes[indice]
+            
+            self.c_constantes[indice] += size
+            self.constantes[dir] = val
+
+        
+        else:
+            raise TypeError(f"Tipo de memoria '{mem}' desconocida")
+
+        print(dir)
+        return dir
 
     def generate_quad(self):
-        # print(self.PilaO)
-        # print(self.POper)
         right_op = self.PilaO.pop()
         right_type = self.PTypes.pop()
 
@@ -70,9 +141,8 @@ class Intermediate_CodeGeneration:
 
         if result_type:
             if operator != '=':
-                temp_actual = "t" + str(self.c_temps)
-                self.c_temps += 1
-                result = temp_actual
+                # se genera temporal
+                result = self.direccion_mem('local',result_type)
                 quadruple = Quadruple(operator, left_op, right_op, result)
                 self.PilaO.append(result)
                 self.PTypes.append(result_type)
@@ -98,11 +168,14 @@ class Intermediate_CodeGeneration:
         '''
         Generar cuádruplo para stmt read
         '''
-        result = self.PilaO.pop()
-        self.PTypes.pop()
+        result = self.direccion_mem('local','string')
+
         operator = self.POper.pop()
         quadruple = Quadruple(operator, None, None, result)
+
         self.Quads.append(quadruple)
+        self.POper.append(result)
+        self.PTypes.append('string')
 
     def generate_GOTOF(self):
         '''
@@ -133,8 +206,8 @@ class Intermediate_CodeGeneration:
 
     def check_type(self, var):
         '''
-        Checks if the id is an int or a float, used in 'for'
-        param: the variable (id) to append to the stack of operands
+        Checa que el tipo de la variable (id) 
+        param: Variable (id) que se agrega a PilaO
         '''
         tipo = self.PTypes.pop()
         if tipo != 'int' or tipo != 'float':
@@ -283,3 +356,9 @@ class Intermediate_CodeGeneration:
         '''
         quadruple = Quadruple('gosub', None, None, funcName)
         self.Quads.append(quadruple)
+
+    def format_quads(self):
+        return [(quad.operator, quad.left_op, quad.right_op, quad.result) for quad in self.Quads]
+   
+    def format_constantes(self):
+        return [(x,y) for x,y in self.constantes.items()]

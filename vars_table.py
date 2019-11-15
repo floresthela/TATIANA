@@ -1,7 +1,9 @@
-# TATIANA
-# Flor Esthela Barbosa & Laura Santacruz
+'''
+TATIANA
+Archivo para el diseño del directorio de funciones y sus tablas de variables
 
-# VARS AND PROCEDURES TABLES
+Flor Esthela Barbosa y Laura Santacruz
+'''
 
 
 class VarsTable:
@@ -62,7 +64,7 @@ class VarsTable:
         self.initialized = True
 
 
-    def insert_var(self, var_id, var_type):
+    def insert_var(self, var_id, var_type, dir):
         scope = self.current_scope
 
         # Función declarada por el usuario
@@ -70,6 +72,7 @@ class VarsTable:
             new_var = {
                 'id': var_id,
                 'type': var_type,
+                'dir': dir
             }
             self.table[scope]['vars'][var_id] = new_var
 
@@ -78,6 +81,7 @@ class VarsTable:
             new_var = {
                 'id': var_id,
                 'type': var_type,
+                'dir': dir
             }
             self.table[scope]['vars'][var_id] = new_var
 
@@ -135,7 +139,7 @@ class VarsTable:
                 self.table[scope]['temps']['f']+= 1
             elif type == 'char':
                 self.table[scope]['temps']['c'] += 1
-                
+
     def search_var(self, var_id):
         '''
         Search of variables function to detect multiple declaration of same id on a specific scope
