@@ -28,7 +28,7 @@ def p_program(p):
     '''
     p[0] = "PROGRAM COMPILED"
     vars_t.delete_vars('global')
-    
+
     f_quads = cg.format_quads()
     f_constantes = cg.format_constantes()
 
@@ -265,7 +265,7 @@ def p_function3(p):
     if p[1] is not None:
         p[0] = [p[1]]
         p[0].append(p[2])
-        
+
 
 
 
@@ -369,9 +369,14 @@ def p_funCall(p):
         # print(p[0])
 
         init = vars_t.table[p[0]]['begin']
-        print("INIT")
-        print(init)
-        cg.fill_ERA(p[1])
+        parametros = vars_t.table['params']
+        print("PARAMETROSS")
+        print(parametros)
+        # print("INIT")
+        # print(init)
+        cg.fill_ERA(init)
+        print("PRUEBAAA")
+        print(p[3])
 
         cg.generate_goSub(p[1])
     else:
@@ -402,7 +407,23 @@ def p_funCall2(p):
     funCall2 : exp funCall3
              | empty
     '''
+    if len(p) == 3:
+        p[0] = p[1]
+        print("FUNCALL2")
+        print(p[0])
     # k+=1
+    #k = 0
+    # if len(p) == 3:
+    #     k = 0
+    #     cg.generate_paramQuad(k)
+
+    k = 0
+    # print("PRUEBA")
+    # print(p[1])
+    # while p[1] is not None:
+    #     cg.generate_paramQuad(k)
+    #     k += 1
+
 
     # cg.generate_paramQuad(p[1], arg2)
 
@@ -889,10 +910,10 @@ def p_empty(p):
 
 
 def p_error(p):
-    
+
     if p is not None:
         err = f"{p.value} en la linea {p.lineno}"
-    
+
     raise TypeError(f"Error de sintaxis: {err}")
 
 parser = yacc.yacc(start='program')

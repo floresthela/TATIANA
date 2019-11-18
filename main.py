@@ -18,20 +18,20 @@ cg = Intermediate_CodeGeneration()
 if __name__ == '__main__':
     try:
         path = 'pruebas/'
-        nombreArchivo = 'prueba7.tati'
+        nombreArchivo = 'prueba2.tati'
         path += nombreArchivo
         arch = open(path, 'r')
         print(f"Leyendo archivo {nombreArchivo}...")
         info = arch.read()
         arch.close()
-        
+
         if(parser.yacc.parse(info, tracking=True) == 'PROGRAM COMPILED'):
             print("SINTAXIS VALIDA :) ")
         else:
             print("ERRORES EN LA SINTAXIS :( ")
 
-        
-        
+
+
 
     except EOFError:
         print(EOFError)

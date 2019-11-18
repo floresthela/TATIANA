@@ -341,13 +341,13 @@ class Intermediate_CodeGeneration:
         if self.era is not None:
             self.Quads[self.era].cambia_res(funcName)
 
-    # def generate_paramQuad(self, arg1, arg2):
-    #     '''
-    #     Generate params quad
-    #     '''
-    #     resp = self.PilaO.pop()
-    #     tipo = self.PTypes.pop()
-    #     quadruple = ('param', resp, None,  )
+    def generate_paramQuad(self, numDeParam):
+        '''
+        Generate params quad
+        '''
+        resp = self.PilaO.pop()
+        quadruple = ('param', resp, None, numDeParam)
+        self.Quads.append(quadruple)
 
     def generate_goSub(self, funcName):
         '''
