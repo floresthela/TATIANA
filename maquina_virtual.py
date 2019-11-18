@@ -99,22 +99,6 @@ class MaquinaVirtual:
             self.haz_quads(quads,fun_dir,i)
             print(self.memoria.mem_global)
         
-        '''
-        GLOBAL
-        i [1000  -  5999]
-        f [6000  -  9999]
-        s [11000 - 15999]
-        
-
-        LOCAL
-        i [16000 - 20999]
-        f [21000 - 25999]
-        s [26000 - 30999]
-        
-        CONSTANTES
-        c [31000 - 40999]
-
-        '''
     def haz_constantes(self, t):
         '''
         Genera tabla de constantes
@@ -128,24 +112,44 @@ class MaquinaVirtual:
     def dame_memorias(self, op_i, op_d, res):
         return self.dame_mem(op_i) , self.dame_mem(op_d), self.dame_mem(res)
 
+
+        '''
+        GLOBAL
+        i [1000  -  5999]
+        f [6000  - 10999]
+        s [11000 - 15999]
+        b [16000 - 20999]
+        
+
+        LOCAL
+        i [21000 - 25999]
+        f [26000 - 30999]
+        s [31000 - 35999]
+        b [36000 - 40999]
+        
+        CONSTANTES
+        c [41000 - 51999]
+
+        '''
+
     def dame_mem(self, dir):
         
         if dir is None:
             return None
-        elif 1000 <= dir < 16000:
+        elif 1000 <= dir < 21000:
             return self.memoria.mem_global
-        elif 16000 <= dir < 31000:
+        elif 21000 <= dir < 41000:
             # hay que poner la activa
             return self.memoria.mem_local
         else:
             return self.memoria.mem_constantes
     
     def dame_tipo(self,dir):
-        if 1000 <= dir < 6000 or 16000 <= dir < 21000:
+        if 1000 <= dir < 6000 or 21000 <= dir < 26000:
             return int
-        elif 6000 <= dir < 11000 or 21000 <= dir < 26000:
+        elif 6000 <= dir < 11000 or 26000 <= dir < 31000:
             return float
-        elif 11000 <= dir < 16000 or 26000 <= dir < 31000:
+        elif 11000 <= dir < 16000 or 31000 <= dir < 36000:
             return str
         else:
             return bool
