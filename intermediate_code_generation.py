@@ -7,6 +7,7 @@ Flor Esthela Barbosa y Laura Santacruz
 
 from semantic_cube import Operators, SemanticCube
 import json
+from vars_table import VarsTable
 
 class Quadruple:
     def __init__(self, operator,left_op, right_op, result):
@@ -52,9 +53,9 @@ class Intermediate_CodeGeneration:
         self.temps = 0
 
         self.c_params = 0
-        self.c_global = [0,0,0]
-        self.c_local = [0,0,0]
-        self.c_constantes = [0,0,0]
+        self.c_global = [0,0,0,0]
+        self.c_local = [0,0,0,0]
+        self.c_constantes = [0,0,0,0]
 
         self.Quads = [] # lista de cuádruplos que llevamos
         self.contador = 1 # creo que este no lo necesitamos
@@ -76,29 +77,30 @@ class Intermediate_CodeGeneration:
         i [1000  -  5999]
         f [6000  -  9999]
         s [11000 - 15999]
-        t [16000 - 20999]
+        b [16000 - 20999]
+        
 
         LOCAL
         i [21000 - 25999]
         f [26000 - 30999]
         s [31000 - 35999]
-        t [36000 - 40999]
-
+        b [36000 - 40999]
+        
         CONSTANTES
-        c [41000 - 50999]
+        c [41000 - 51999]
 
         '''
 
         self.b_int = 0
         self.b_float = 5000
         self.b_string = 10000
-        self.b_temps = 15000
+        self.b_bool = 15000
 
     def reset_locales(self):
         '''
-        Resetea el contador de las variables locales
+        Resetea el contador de las variables locales, temps
         '''
-        self.c_local = [0,0,0]
+        self.c_local = [0,0,0,0]
 
     def direccion_mem(self, mem, type, size = 1, val = None):
         '''
@@ -106,6 +108,8 @@ class Intermediate_CodeGeneration:
         :param mem: tipo de memoria en la que se encuentra
         :param type: tipo de variable
         '''
+
+        # size es para arreglos 
 
         if type == 'int':
             # para checar al rato que no nos pasemos
@@ -118,9 +122,12 @@ class Intermediate_CodeGeneration:
             indice = 1
         elif type == 'string':
             t_inicia = self.b_string
-            t_fin = 14999
+            t_fin = self.b_bool
             indice = 2
-            
+        elif type == 'bool':
+            t_inicia = self.b_bool
+            t_fin = self.base_constantes
+            indice = 3 
         else:
             raise TypeError(f"Tipo '{type}' desconocido")
 
@@ -128,13 +135,17 @@ class Intermediate_CodeGeneration:
             dir = self.base_global + t_inicia + self.c_global[indice]
             self.c_global[indice] += size
 
-            # falta checar que no nos pasemos de los rangos vvv
+            if dir + size > self.base_global + t_fin:
+                raise TypeError(f"Stack Overflow: {mem} no tiene espacio para {type}")
+        
+
         elif mem == 'local':
             dir = self.base_local + t_inicia + self.c_local[indice]
             self.c_local[indice] += size
+            if dir + size > self.base_local + t_fin:
+                raise TypeError(f"Stack Overflow: {mem} no tiene espacio para {type}")
         
         elif mem == 'constantes':
-
             if val is None:
                 raise TypeError(f"Valor de constante no especificado")
 
@@ -142,20 +153,21 @@ class Intermediate_CodeGeneration:
                return [x for x, y in self.constantes.items() if y == val].pop()
             dir = self.base_constantes + t_inicia + self.c_constantes[indice]
             
+            if dir + size > self.base_constantes + t_fin:
+                raise TypeError(f"Stack Overflow: {mem} no tiene espacio para {type}")
+
             if indice == 2:
                 val = val.strip('"')
 
             self.constantes[dir] = val
             self.c_constantes[indice] += size
             
-
-        
         else:
             raise TypeError(f"Tipo de memoria '{mem}' desconocida")
 
         return dir
 
-    def generate_quad(self):
+    def generate_quad(self,scope):
         right_op = self.PilaO.pop()
         right_type = self.PTypes.pop()
 
@@ -169,15 +181,20 @@ class Intermediate_CodeGeneration:
 
         if result_type:
             if operator != '=':
+
                 # se genera temporal
-                # result = self.direccion_mem('local',result_type)
+                if scope == 'global': 
+                    result = self.direccion_mem('global',result_type)
+                else : 
+                    result = self.direccion_mem('local',result_type)
+
                 quadruple = Quadruple(operator, left_op, right_op, result)
                 self.PilaO.append(result)
                 self.PTypes.append(result_type)
 
             else:
                 result = left_op
-                quadruple = Quadruple(operator, right_op, None, result)
+                quadruple = Quadruple(operator, result, None, right_op)
         self.Quads.append(quadruple)
         return result_type
 
@@ -231,6 +248,14 @@ class Intermediate_CodeGeneration:
             quadruple = Quadruple('GotoV', cond, None, None)
             self.Quads.append(quadruple)
             self.PJumps.append(len(self.Quads)-1)
+
+
+    def generate_END(self):
+        '''
+        Genera cuádruplo de END para determinar el fin del archivo
+        '''
+        quadruple = Quadruple('END',None,None,None)
+        self.Quads.append(quadruple)
 
     def check_type(self, var):
         '''

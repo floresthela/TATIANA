@@ -1,0 +1,13 @@
+program prueba9;
+int a = 4;
+int b = 10 + 4 / 2;
+
+* {
+    int c = 4 * 5 + a;
+
+    if(a != 666){
+        b = 1;
+    } else {
+        b = 69;
+    }
+}

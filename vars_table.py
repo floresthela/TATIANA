@@ -17,14 +17,14 @@ class VarsTable:
                 'program': '',
                 'vars': {},
                 # [vars,temps]
-                'size': {'i':[0,0],'f':[0,0],'s':[0,0]},
+                'size': {'i':[0,0],'f':[0,0],'s':[0,0],'b':[0,0]},
             },
             'star': {
                 'type': 'void',
                 'vars': {},
                 'begin': None,
                 # [vars,temps]
-                'size': {'i':[0,0],'f':[0,0],'s':[0,0]},
+                'size': {'i':[0,0],'f':[0,0],'s':[0,0],'b':[0,0]},
             }
         }
         self.current_type = ''
@@ -56,7 +56,7 @@ class VarsTable:
                 'params': {},
                 'begin': start,
                 # [vars,params,temps]
-                'size': {'i':[0,0,0],'f':[0,0,0],'s':[0,0,0]}
+                'size': {'i':[0,0,0],'f':[0,0,0],'s':[0,0,0],'b':[0,0,0]}
             }
             self.current_scope = fun_id
             self.current_type = type
@@ -97,6 +97,8 @@ class VarsTable:
             self.table[scope]['size']['f'][0] += 1
         elif var_type == 'string':
             self.table[scope]['size']['s'][0] += 1
+        elif var_type == 'bool':
+            self.table[scope]['size']['b'][0] += 1
 
     def insert_param(self,param_id,param_type):
         scope = self.current_scope
@@ -114,6 +116,8 @@ class VarsTable:
                 self.table[scope]['size']['f'][1] += 1
             elif param_type == 'string':
                 self.table[scope]['size']['s'][1] += 1
+            elif param_type == 'bool':
+                self.table[scope]['size']['b'][0] += 1
         else:
             raise TypeError(f'Parameter {param_id} already declared')
 
@@ -131,6 +135,8 @@ class VarsTable:
             self.table[scope]['size']['f'][index] += 1
         elif type == 'string':
             self.table[scope]['size']['s'][index] += 1
+        elif type == 'bool':
+            self.table[scope]['size']['b'][index] += 1
 
 
     def search_var(self, var_id):

@@ -13,14 +13,21 @@ class Memoria:
 
     def __init__(self):
         
-        # = [[ints],[floats],[strings]]
+        # mejor usamos diccionarios, más rápido
+        # GLOBAL
+        # = {1000 : val, }
+
+        # LOCAL
+
+
+
         # = [type] = [[dir,val]...]
+        
+        self.mem_global = {}
+        self.mem_local = {}
 
-        self.mem_global = [[],[],[]]
-        self.mem_local = [[],[],[]]
-
-        # = [[dir,val]...]
-        self.mem_constantes = []
+        # = [[dir + 41000,val]...]
+        self.mem_constantes = {}
 
     
     # def record_activacion(self, scope):

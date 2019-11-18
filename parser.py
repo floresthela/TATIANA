@@ -61,6 +61,7 @@ def p_star(p):
     cg.fill_goto_star(star)
 
     vars_t.delete_vars('star')
+    cg.generate_END()
 
 
 def p_starI(p):
@@ -116,7 +117,7 @@ def p_vars(p):
         cg.PilaO.append(dir)
         cg.PTypes.append(p[1])
         if cg.POper and cg.POper[-1] in '=':
-            result = cg.generate_quad()
+            result = cg.generate_quad(vars_t.current_scope)
 
 
 # TODO: una regla para arreglos y usarla siempre que necesitemos [] , [][]
@@ -184,7 +185,7 @@ def p_assignment3(p):
     '''
     p[0] = p[1]
     if cg.POper[-1] == '=':
-        cg.generate_quad();
+        cg.generate_quad(vars_t.current_scope);
 
 
 # VAR_CTE
@@ -807,7 +808,7 @@ def p_exp(p):
         p[0] = p[1:]
 
     if cg.POper and cg.POper[-1] in ['>','<','==','!=']:
-        cg.generate_quad()
+        cg.generate_quad(vars_t.current_scope)
 
 def p_exp_o(p):
     '''
@@ -843,7 +844,7 @@ def p_term(p):
         p[0] = p[1:]
 
     if cg.POper and cg.POper[-1] in ['+', '-']:
-        t = cg.generate_quad()
+        t = cg.generate_quad(vars_t.current_scope)
 
         vars_t.insert_temp(t,vars_t.current_scope)
 
@@ -868,7 +869,7 @@ def p_factor(p):
         p[0] = p[1:]
 
     if cg.POper and cg.POper[-1] in ['*', '/']:
-        t = cg.generate_quad()
+        t = cg.generate_quad(vars_t.current_scope)
         vars_t.insert_temp(t,vars_t.current_scope)
 
 # def p_factor1(p):

@@ -1,7 +1,7 @@
 program prueba7;
-int gi1 = 4 + 5;
-int gi2;
-int gi3 = 1;
+int gi1 = 4 + 666;
+int gi2 = 5 * 34 / 456;
+int gi3 = 1 - 45;
 string c1 = "hola";
 fun int function1(int aa, int ai, string cc){
   float x;
