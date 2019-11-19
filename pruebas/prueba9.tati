@@ -2,8 +2,15 @@ program prueba9;
 int a = 4;
 int b = 10 + 4 / 2;
 
+fun int funcion(int i, int j, float f, string s){
+    print(a);
+}
+
 * {
+    
     int c = 4 * 5 + a;
+
+    print("hola mundo");
 
     if(a != 666){
         b = 1;
