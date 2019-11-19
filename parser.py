@@ -43,12 +43,13 @@ def p_program_modules(p):
     '''
     program_modules : program_fun star
     '''
+    cg.generate_GOTO_star()
 
 def p_programp(p):
     '''
     programp : PROGRAM
     '''
-    cg.generate_GOTO_star()
+    
 
 def p_program_fun(p):
     '''
@@ -160,7 +161,6 @@ def p_stmt(p):
         | loop
         | read
         | graphstmt
-        | graphr
         | funCall SEMICOLON
         | return
     '''
@@ -336,7 +336,6 @@ def p_print(p):
     cg.generate_quad_print()
 
 # READ
-# qué pedo con el read?
 def p_read(p):
     '''
     read : READ OPENPAREN id read1 CLOSEPAREN SEMICOLON
@@ -752,34 +751,34 @@ def p_graphmove2(p):
 # pensaba hacer un tipo while pero en lugar de gotof, ir restando al número asignado de veces que se repetirá... idk
 
 # GRAPH_REPEAT
-def p_graphr(p):
-    '''
-    graphr : repeat rep OPENBRACES graphstmt graphr1 CLOSEBRACES
-    '''
-    end = cg.PJumps.pop()
-    r_return = cg.PJumps.pop()
-    # esto no lo sé
-    cg.generate_GOTO()
-    cg.fill_goto(r_return)
-    cg.fill_quad(end)
+# def p_graphr(p):
+#     '''
+#     graphr : repeat rep OPENBRACES graphstmt graphr1 CLOSEBRACES
+#     '''
+#     end = cg.PJumps.pop()
+#     r_return = cg.PJumps.pop()
+#     # esto no lo sé
+#     cg.generate_GOTO()
+#     cg.fill_goto(r_return)
+#     cg.fill_quad(end)
 
-def p_graphr1(p):
-    '''
-    graphr1 : graphstmt graphr1
-            | empty
-    '''
+# def p_graphr1(p):
+#     '''
+#     graphr1 : graphstmt graphr1
+#             | empty
+#     '''
 
-def p_rep(p):
-    '''
-    rep : OPENPAREN exp CLOSEPAREN
-    '''
-    cg.generate_quad_repeat()
+# def p_rep(p):
+#     '''
+#     rep : OPENPAREN exp CLOSEPAREN
+#     '''
+#     cg.generate_quad_repeat()
 
-def p_repeat(p):
-    '''
-    repeat : REPEAT
-    '''
-    cg.PJumps.append(len(cg.Quads) + 1)
+# def p_repeat(p):
+#     '''
+#     repeat : REPEAT
+#     '''
+#     cg.PJumps.append(len(cg.Quads) + 1)
 
 # GRAPH_VIEW
 def p_graphview(p):

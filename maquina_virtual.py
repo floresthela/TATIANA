@@ -111,21 +111,64 @@ class MaquinaVirtual:
                 sig +=1
 
             elif operador == 'print':
-                mem_r = self.dame_mem(res)
-                print(mem_r[res])
+                mem = self.dame_mem(res)
+                print(mem[res])
                 sig +=1
                 break
+            elif operador == 'read':
+                mem = self.dame_mem(res)
+                mem[res] = input()
+                sig += 1
+
+            elif operador == 'GotoF':
+
+                # memoria de valor booleano
+                mem_b = self.dame_mem(op_izq)
+                print('bool',mem_b)
+                if mem_b:
+                    sig += 1
+                else:
+                    sig = int(res) - 1 
+                print('sig',sig)
+
+
+            
+            # TODO: 
+            # circle
+            # square
+            # triangle
+            # rectangle
+            # hand_down
+            # hand_up
+            # go
+            # left 
+            # right
+            # back
+            # arc
+            # hide_star
+            # show_star
+            # setXY
+            # color_star
+            # size_star
+            # goto
+            # gotof
+            # gotov
+            # goto_main
+            
+            
 
             elif operador == 'Goto_main':
-                jump = res -1
+                jump = int(res) -1
                 sig = jump
+                
                 # activamos memoria star
 
             elif operador == 'END':
                 break
 
 
-
+            print(self.memoria.mem_global)
+            print(self.memoria.mem_local)
 
     def haz_constantes(self, t):
         '''

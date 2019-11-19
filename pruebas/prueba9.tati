@@ -12,8 +12,7 @@ fun int fun1(int x, float d){
     int c = 4 * 5 + a;
     int x=1;
     float y = 3.5;
-
-    fun1(x, y);
+    
     if(a != 666){
         b = 1;
     } else {

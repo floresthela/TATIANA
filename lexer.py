@@ -30,7 +30,6 @@ reserved = {
     'right': 'RIGHT',
     'back': 'BACK',
     'arc': 'ARC',
-    'repeat': 'REPEAT',
     'hide_star': 'HIDE_STAR',
     'show_star': 'SHOW_STAR',
     'setXY': 'SETXY',

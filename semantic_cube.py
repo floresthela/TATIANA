@@ -197,7 +197,7 @@ class SemanticCube:
         :param right_type: type of right variable of operation
         :param operator: operator given for the operation
         '''
-        if self.semantic_cube[operator][left_type][right_type] is not 'err':
+        if self.semantic_cube[operator][left_type][right_type] != 'err':
             return self.semantic_cube[operator][left_type][right_type]
         raise TypeError("Unable to apply operator {} to types {} and {}".format(
             operator, left_type, right_type))
