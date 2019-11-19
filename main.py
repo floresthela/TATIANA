@@ -12,13 +12,14 @@ from vars_table import VarsTable
 from intermediate_code_generation import Intermediate_CodeGeneration
 
 
+
 vars_t = VarsTable()
 cg = Intermediate_CodeGeneration()
 
 if __name__ == '__main__':
     try:
         path = 'pruebas/'
-        nombreArchivo = 'prueba2.tati'
+        nombreArchivo = 'prueba9.tati'
         path += nombreArchivo
         arch = open(path, 'r')
         print(f"Leyendo archivo {nombreArchivo}...")

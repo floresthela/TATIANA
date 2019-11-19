@@ -6,11 +6,12 @@ Flor Esthela Barbosa y Laura Santacruz
 '''
 # PARSER
 import sys
-import ply.yacc as yacc
+from ply import yacc
 import json
 import genera_comp
-from lexer import tokens
+
 from functools import reduce
+from lexer import tokens
 from vars_table import VarsTable
 from intermediate_code_generation import Intermediate_CodeGeneration
 
@@ -31,8 +32,8 @@ def p_program(p):
 
     f_quads = cg.format_quads()
     f_constantes = cg.format_constantes()
-
     genera_comp.genera_arch(p[2],vars_t.table, f_quads, f_constantes)
+
 
 def p_program_modules(p):
     '''
@@ -58,6 +59,7 @@ def p_star(p):
     cg.fill_goto_star(star)
 
     vars_t.delete_vars('star')
+    cg.generate_END()
 
 
 def p_starI(p):
@@ -102,7 +104,7 @@ def p_vars(p):
 
     if not vars_t.initialized:
         vars_t.FunDirectory('global', 'np',None)
-        dir = cg.direccion_mem('global',p[1],)
+        dir = cg.direccion_mem('global',p[1])
         vars_t.insert_var(p[2],p[1],dir)
 
     else:
@@ -113,7 +115,8 @@ def p_vars(p):
         cg.PilaO.append(dir)
         cg.PTypes.append(p[1])
         if cg.POper and cg.POper[-1] in '=':
-            cg.generate_quad()
+            result = cg.generate_quad(vars_t.current_scope)
+
 
 # TODO: una regla para arreglos y usarla siempre que necesitemos [] , [][]
 
@@ -180,7 +183,7 @@ def p_assignment3(p):
     '''
     p[0] = p[1]
     if cg.POper[-1] == '=':
-        cg.generate_quad();
+        cg.generate_quad(vars_t.current_scope);
 
 
 # VAR_CTE
@@ -188,10 +191,11 @@ def p_vcte(p):
     '''
     vcte : cte_int
          | cte_float
-         | cte_char
+         | cte_string
          | id vcte1
          | funCall
     '''
+    p[0] = p[1]
     # 1. PilaO.Push(id.name)
     if len(p) == 2:
         cg.PilaO.append(p[1])
@@ -239,7 +243,7 @@ def p_function(p):
         p[0] = vars
 
 
-    vars_t.delete_vars(p[2])
+    # vars_t.delete_vars(p[2])
 
 def p_inicia_fun(p):
     '''
@@ -293,7 +297,10 @@ def p_funParam(p):
     funParam : type ID
     '''
     p[0] = (p[1],p[2])
-    vars_t.insert_param(p[2],p[1])
+
+    dir = cg.direccion_mem('local', p[1])
+    print('fun',vars_t.current_scope)
+    vars_t.insert_var(p[2], p[1], dir)
 
 
 # VARS
@@ -307,7 +314,7 @@ def p_type(p):
     '''
     type : INT
          | FLOAT
-         | CHAR
+         | STRING
     '''
     p[0] = p[1]
 
@@ -369,14 +376,17 @@ def p_funCall(p):
         # print(p[0])
 
         init = vars_t.table[p[0]]['begin']
-        parametros = vars_t.table['params']
-        print("PARAMETROSS")
-        print(parametros)
-        # print("INIT")
+        #print("Direccion", vars_t.table[p[3]]['dir'])
+        # busca = vars_t.search_var(p[1])
+        # print("ABER", busca)
+        # parametros = vars_t.table[p[1]]['params']
+        # print("PARAMETROSS DE LA vars table")
+        # print(parametros)
+        # # print("INIT")
         # print(init)
         cg.fill_ERA(init)
-        print("PRUEBAAA")
-        print(p[3])
+        # print("PRUEBAAA")
+        # print(p[3])
 
         cg.generate_goSub(p[1])
     else:
@@ -404,35 +414,29 @@ def p_terminaFunCall(p):
 
 def p_funCall2(p):
     '''
-    funCall2 : exp funCall3
+    funCall2 : funCallParam funCall3
              | empty
     '''
-    if len(p) == 3:
-        p[0] = p[1]
-        print("FUNCALL2")
-        print(p[0])
-    # k+=1
-    #k = 0
     # if len(p) == 3:
-    #     k = 0
-    #     cg.generate_paramQuad(k)
-
-    k = 0
-    # print("PRUEBA")
-    # print(p[1])
-    # while p[1] is not None:
-    #     cg.generate_paramQuad(k)
-    #     k += 1
-
-
-    # cg.generate_paramQuad(p[1], arg2)
+    #     print("AQUI ESTAA??",p[1])
 
 
 def p_funCall3(p):
     '''
-    funCall3 : COMMA funCall2
+    funCall3 : COMMA funCallParam funCall3
              | empty
     '''
+
+
+def p_funCallParam(p):
+    '''
+    funCallParam : exp
+    '''
+    print('FUNCALLPARAMS', p[1])
+    vt = vars_t.search_var(p[1])
+    dir = vt['dir']
+    print("Direcccion",dir)
+    cg.generate_paramQuad(dir)
 
 
 # CTE
@@ -441,7 +445,7 @@ def p_cte_int(p):
     cte_int : CTEINT
     '''
 
-    dir = cg.direccion_mem('constantes','int',p[1])
+    dir = cg.direccion_mem('constantes','int',1, p[1])
     p[0] = dir
     cg.PTypes.append('int')
 
@@ -451,19 +455,19 @@ def p_cte_float(p):
     '''
     cte_float : CTEFLOAT
     '''
-    dir = cg.direccion_mem('constantes','float',p[1])
+    dir = cg.direccion_mem('constantes','float',1, p[1])
     p[0] = dir
     cg.PTypes.append('float')
 
 
-def p_cte_char(p):
+def p_cte_string(p):
     '''
-    cte_char : CTECHAR
+    cte_string : CTESTRING
     '''
-
-    cg.direccion_mem('constantes','char',p[1])
+    dir = cg.direccion_mem('constantes','string', 1, p[1])
     p[0] = dir
-    cg.PTypes.append('char')
+
+    cg.PTypes.append('string')
 
 
 # RETURN
@@ -824,7 +828,7 @@ def p_exp(p):
         p[0] = p[1:]
 
     if cg.POper and cg.POper[-1] in ['>','<','==','!=']:
-        cg.generate_quad()
+        cg.generate_quad(vars_t.current_scope)
 
 def p_exp_o(p):
     '''
@@ -860,7 +864,7 @@ def p_term(p):
         p[0] = p[1:]
 
     if cg.POper and cg.POper[-1] in ['+', '-']:
-        t = cg.generate_quad()
+        t = cg.generate_quad(vars_t.current_scope)
 
         vars_t.insert_temp(t,vars_t.current_scope)
 
@@ -885,7 +889,7 @@ def p_factor(p):
         p[0] = p[1:]
 
     if cg.POper and cg.POper[-1] in ['*', '/']:
-        t = cg.generate_quad()
+        t = cg.generate_quad(vars_t.current_scope)
         vars_t.insert_temp(t,vars_t.current_scope)
 
 # def p_factor1(p):

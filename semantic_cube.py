@@ -34,51 +34,51 @@ class SemanticCube:
                 'int': {
                     'int': 'int',
                     'float': 'float',
-                    'char': 'err'
+                    'string': 'err'
                 },
                 'float': {
                     'int': 'float',
                     'float': 'float',
-                    'char': 'err'
+                    'string': 'err'
                 },
-                'char': {
+                'string': {
                     'int': 'err',
                     'float': 'err',
-                    'char': 'err'
+                    'string': 'err'
                 }
             },
             Operators.SUBSTRACTION: {
                 'int': {
                     'int': 'int',
                     'float': 'float',
-                    'char': 'err'
+                    'string': 'err'
                 },
                 'float': {
                     'int': 'float',
                     'float': 'float',
-                    'char': 'err'
+                    'string': 'err'
                 },
-                'char': {
+                'string': {
                     'int': 'err',
                     'float': 'err',
-                    'char': 'err'
+                    'string': 'err'
                 }
             },
             Operators.MULTIPLICATION: {
                 'int': {
                     'int': 'int',
                     'float': 'float',
-                    'char': 'err'
+                    'string': 'err'
                 },
                 'float': {
                     'int': 'float',
                     'float': 'float',
-                    'char': 'err'
+                    'string': 'err'
                 },
-                'char': {
+                'string': {
                     'int': 'err',
                     'float': 'err',
-                    'char': 'err'
+                    'string': 'err'
                 }
             },
 
@@ -86,17 +86,17 @@ class SemanticCube:
                 'int': {
                     'int': 'int',
                     'float': 'float',
-                    'char': 'err'
+                    'string': 'err'
                 },
                 'float': {
                     'int': 'float',
                     'float': 'float',
-                    'char': 'err'
+                    'string': 'err'
                 },
-                'char': {
+                'string': {
                     'int': 'err',
                     'float': 'err',
-                    'char': 'err'
+                    'string': 'err'
                 }
             },
             # agregamos bool como tipo entonces ???? EVIDENTEMENTE lo necesitamos...
@@ -104,17 +104,17 @@ class SemanticCube:
                 'int': {
                     'int': 'bool',
                     'float': 'bool',
-                    'char': 'err'
+                    'string': 'err'
                 },
                 'float': {
                     'int': 'bool',
                     'float': 'bool',
-                    'char': 'err'
+                    'string': 'err'
                 },
-                'char': {
+                'string': {
                     'int': 'err',
                     'float': 'err',
-                    'char': 'err'
+                    'string': 'err'
                 }
             },
 
@@ -122,17 +122,17 @@ class SemanticCube:
                 'int': {
                     'int': 'bool',
                     'float': 'bool',
-                    'char': 'err'
+                    'string': 'err'
                 },
                 'float': {
                     'int': 'bool',
                     'float': 'bool',
-                    'char': 'err'
+                    'string': 'err'
                 },
-                'char': {
+                'string': {
                     'int': 'err',
                     'float': 'err',
-                    'char': 'err'
+                    'string': 'err'
                 }
             },
 
@@ -140,51 +140,51 @@ class SemanticCube:
                 'int': {
                     'int': 'bool',
                     'float': 'bool',
-                    'char': 'err'
+                    'string': 'err'
                 },
                 'float': {
                     'int': 'bool',
                     'float': 'bool',
-                    'char': 'err'
+                    'string': 'err'
                 },
-                'char': {
+                'string': {
                     'int': 'err',
                     'float': 'err',
-                    'char': 'err'
+                    'string': 'err'
                 }
             },
             Operators.NOT_EQUAL: {
                 'int': {
                     'int': 'bool',
                     'float': 'err',
-                    'char': 'err'
+                    'string': 'err'
                 },
                 'float': {
                     'int': 'err',
                     'float': 'bool',
-                    'char': 'err'
+                    'string': 'err'
                 },
-                'char': {
+                'string': {
                     'int': 'err',
                     'float': 'err',
-                    'char': 'bool'
+                    'string': 'bool'
                 }
             },
             Operators.EQUAL: {
                 'int': {
                     'int': 'int',
                     'float': 'int',
-                    'char': 'err'
+                    'string': 'err'
                 },
                 'float': {
                     'int': 'float',
                     'float': 'float',
-                    'char': 'err'
+                    'string': 'err'
                 },
-                'char': {
+                'string': {
                     'int': 'err',
                     'float': 'err',
-                    'char': 'char'
+                    'string': 'string'
                 }
             }
 
