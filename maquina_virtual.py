@@ -12,10 +12,11 @@ from memoria import Memoria
 
 class MaquinaVirtual:
     def __init__(self):
+        self.programa = None
         self.memoria = Memoria()
-        self.estrella = Turtle()
-        self.screen = Screen()
-
+        self.estrella = None
+        self.screen = None
+        self.turtle_activa = False
 
     def agarra_ta(self,program):
         '''
@@ -25,8 +26,8 @@ class MaquinaVirtual:
         arch = f"pruebas/{program}.ta"
         archivo = open(arch, 'r')
         todito = json.load(archivo)
-
-        self.estrella.screen.title(program)
+        self.programa = program
+        
         # fundir
         fun_dir = todito["FunDir"]
         # print(fun_dir)
@@ -44,12 +45,7 @@ class MaquinaVirtual:
         :param fun_dir: Directorio de funciones
         :param sig: Apuntador al siguiente cuádruplo
         '''
-        s = Turtle()
-        screen = Screen()
-        self.dibuja_estrella(s)
-        screen.clear()
-
-        self.star = Turtle(shape="estrella")
+        
 
         while True:
             operador = quads[sig][0]
@@ -114,7 +110,8 @@ class MaquinaVirtual:
                 mem = self.dame_mem(res)
                 print(mem[res])
                 sig +=1
-                break
+                
+
             elif operador == 'read':
                 mem = self.dame_mem(res)
                 mem[res] = input()
@@ -124,51 +121,101 @@ class MaquinaVirtual:
 
                 # memoria de valor booleano
                 mem_b = self.dame_mem(op_izq)
-                print('bool',mem_b)
                 if mem_b:
                     sig += 1
                 else:
                     sig = int(res) - 1 
-                print('sig',sig)
-
-
             
-            # TODO: 
-            # circle
-            # square
-            # triangle
-            # rectangle
-            # hand_down
-            # hand_up
-            # go
-            # left 
-            # right
-            # back
-            # arc
-            # hide_star
-            # show_star
-            # setXY
-            # color_star
-            # size_star
-            # goto
-            # gotof
-            # gotov
-            # goto_main
-            
-            
+            elif operador == 'GotoV':
+                mem_b = self.dame_mem(op_izq)
+                if mem_b:
+                    sig = int(res) - 1
+                else:
+                    sig += 1
 
-            elif operador == 'Goto_main':
-                jump = int(res) -1
-                sig = jump
-                
+            elif operador == 'Goto_main' or operador == 'Goto':
+                sig = int(res) - 1
                 # activamos memoria star
 
             elif operador == 'END':
                 break
 
+            # GRAPH STATEMENTS
+            # 0 exp
+            elif operador == 'hand_down':
+                if not self.turtle_activa:
+                    self.activa_tortuga
+                self.estrella.pd()
+
+            elif operador == 'hand_up':
+                if not self.turtle_activa:
+                    self.activa_tortuga
+                self.estrella.pu()
+
+            # 1 exp
+            elif operador == 'circle':
+                mem = self.dame_mem(op_izq)
+                if not self.turtle_activa:
+                    self.activa_tortuga
+
+                self.estrella.circle(mem)
+            
+            elif operador == 'left':
+                mem = self.dame_mem(op_izq)
+                angle = float(mem)
+                if not self.turtle_activa:
+                    self.activa_tortuga
+                if angle > 360:
+                    raise TypeError(f"Valor no debe exceder 360 grados")
+                self.estrella.lt(angle)
+
+            elif operador == 'right':
+                mem = self.dame_mem(op_izq)
+                angle = float(mem)
+                if not self.turtle_activa:
+                    self.activa_tortuga
+                if angle > 360:
+                    raise TypeError(f"Valor no debe exceder 360 grados")
+                self.estrella.rt(angle)
+            
+            elif operador == 'back':
+                mem = self.dame_mem(op_izq)
+                if not self.turtle_activa:
+                    self.activa_tortuga
+                self.estrella.bk(mem)
+
+            elif operador == 'go':
+                mem = self.dame_mem(op_izq)
+                if not self.turtle_activa:
+                    self.activa_tortuga
+                self.estrella.fd(mem)
+            
+            # 2 exp
+            # TODO: maybe cambiar el nombre a set_position
+            elif operador == 'setXY':
+                mem1 = self.dame_mem(op_izq)
+                mem2 = self.dame_mem(op_der)
+
+                if not self.turtle_activa:
+                    self.activa_tortuga
+                
+                self.estrella.setpos(mem1,mem2)
+
 
             print(self.memoria.mem_global)
             print(self.memoria.mem_local)
+            # TODO: 
+            # square
+            # triangle
+            # rectangle            
+            # arc
+            # hide_star
+            # show_star
+            # color_star
+            # size_star
+            # era
+            # params
+            # ARREGLOS
 
     def haz_constantes(self, t):
         '''
@@ -199,7 +246,15 @@ class MaquinaVirtual:
 
         '''
 
+
     def dame_memorias(self, op_i, op_d, res):
+        '''
+        Regresa las direcciones de memoria a las que pertenecen los elementos de un cuádruplo a excepción del operador
+        :param op_i: Operador izquierdo del quad
+        :param op_d: Operador derecho del quad
+        :param res: Resultado del quad
+        :return
+        '''
         return self.dame_mem(op_i) , self.dame_mem(op_d), self.dame_mem(res)
 
     def dame_mem(self, dir):
@@ -230,6 +285,19 @@ class MaquinaVirtual:
             return str
         else:
             return bool
+
+    def activa_tortuga(self):
+        s = Turtle()
+        
+        self.estrella = Turtle()
+        self.screen = Screen()
+        
+        self.dibuja_estrella(s)
+        
+        self.star = Turtle(shape="estrella")
+        self.estrella.screen.title(self.programa)
+        self.screen.clear()
+        self.screen.mainloop()
 
     def dibuja_estrella(self,lapiz):
         '''
