@@ -8,7 +8,7 @@ Flor Esthela Barbosa y Laura Santacruz
 
 class VarsTable:
     '''
-    Class for the variables table which contains all functions for creating and manipulating functions and its variables inside the corresponding table and main directory (FunDirectory)
+    Clase para la generación del directorio de funciones con la tabla de variables de cada una así como las funciones asociadas para la manipulación del directorio correspondiente
     '''
 
     def __init__(self):
@@ -16,14 +16,15 @@ class VarsTable:
             'global': {
                 'program': '',
                 'vars': {},
-                'temps':{'i':0,'f':0,'c':0}
+                # [vars,temps]
+                'size': {'i':[0,0],'f':[0,0],'s':[0,0],'b':[0,0]},
             },
             'star': {
                 'type': 'void',
                 'vars': {},
                 'begin': None,
                 # [vars,temps]
-                'size': {'i':[0,0],'f':[0,0],'c':[0,0]},
+                'size': {'i':[0,0],'f':[0,0],'s':[0,0],'b':[0,0]},
             }
         }
         self.current_type = ''
@@ -52,15 +53,15 @@ class VarsTable:
             self.table[fun_id] = {
                 'type': type,
                 'vars': {},
-                'params': {},
+                'params': [],
                 'begin': start,
                 # [vars,params,temps]
-                'size': {'i':[0,0,0],'f':[0,0,0],'c':[0,0,0]}
+                'size': {'i':[0,0,0],'f':[0,0,0],'s':[0,0,0],'b':[0,0,0]},
             }
             self.current_scope = fun_id
             self.current_type = type
         else:
-            raise TypeError(f'Function {fun_id} already declared')
+            raise TypeError(f'Función {fun_id} ya fue declarada')
         self.initialized = True
 
 
@@ -68,7 +69,7 @@ class VarsTable:
         scope = self.current_scope
 
         # Función declarada por el usuario
-        if var_id not in self.table[scope]['vars'] and var_id not in self.table['global']['vars'] and scope is not 'global' and scope is not 'star' and var_id not in self.table[scope]['params']:
+        if var_id not in self.table[scope]['vars'] and var_id not in self.table['global']['vars'] and scope != 'global' and scope != 'star' and var_id not in self.table[scope]['params']:
             new_var = {
                 'id': var_id,
                 'type': var_type,
@@ -77,7 +78,7 @@ class VarsTable:
             self.table[scope]['vars'][var_id] = new_var
 
         # Global o main
-        elif var_id not in self.table[scope]['vars'] and var_id not in self.table['global']['vars'] and (scope is 'global' or scope is 'star'):
+        elif var_id not in self.table[scope]['vars'] and var_id not in self.table['global']['vars'] and (scope == 'global' or scope == 'star'):
             new_var = {
                 'id': var_id,
                 'type': var_type,
@@ -86,59 +87,47 @@ class VarsTable:
             self.table[scope]['vars'][var_id] = new_var
 
         else:
-            raise TypeError(f'Variable {var_id} already declared')
+            raise TypeError(f'Variable {var_id} ya fue declarada')
 
         # metemos a size (vars)
-        if scope is not 'global':
-            if var_type == 'int':
-                self.table[scope]['size']['i'][0] += 1
-            elif var_type == 'float':
-                self.table[scope]['size']['f'][0] += 1
-            elif var_type == 'char':
-                self.table[scope]['size']['c'][0] += 1
+        # if scope is not 'global':
+        if var_type == 'int':
+            self.table[scope]['size']['i'][0] += 1
+        elif var_type == 'float':
+            self.table[scope]['size']['f'][0] += 1
+        elif var_type == 'string':
+            self.table[scope]['size']['s'][0] += 1
+        elif var_type == 'bool':
+            self.table[scope]['size']['b'][0] += 1
 
     def insert_param(self,param_id,param_type):
         scope = self.current_scope
         if param_id not in self.table[scope]['params'] and param_id not in self.table['global']['vars']:
-            new_param = {
-                'id': param_id,
-                'type' : param_type
-            }
-            self.table[scope]['params'][param_id] = new_param
-
-            # metemos a size (params)
-            if param_type == 'int':
-                self.table[scope]['size']['i'][1] += 1
-            elif param_type == 'float':
-                self.table[scope]['size']['f'][1] += 1
-            elif param_type == 'char':
-                self.table[scope]['size']['c'][1] += 1
+            # new_param = {
+            #     'id': param_id,
+            #     'type' : param_type
+            # }
+            self.table[scope]['params'].append(param_type)
         else:
             raise TypeError(f'Parameter {param_id} already declared')
 
     def insert_temp(self,type,scope):
-
+        print(type,scope)
         # metemos a size (temps)
         index = -1
-        if scope == 'star':
-            index = 1
-        elif scope is not 'global':
-            index = 2
+        if scope == 'global' or scope == 'star': index = 0
+        # if scope == 'star': index = 1
+        else: index = 2
 
-        if index > 0:
-            if type == 'int':
-                self.table[scope]['size']['i'][index] += 1
-            elif type == 'float':
-                self.table[scope]['size']['f'][index] += 1
-            elif type == 'char':
-                self.table[scope]['size']['c'][index] += 1
-        else:
-            if type == 'int':
-                self.table[scope]['temps']['i'] += 1
-            elif type == 'float':
-                self.table[scope]['temps']['f']+= 1
-            elif type == 'char':
-                self.table[scope]['temps']['c'] += 1
+        if type == 'int':
+            self.table[scope]['size']['i'][index] += 1
+        elif type == 'float':
+            self.table[scope]['size']['f'][index] += 1
+        elif type == 'string':
+            self.table[scope]['size']['s'][index] += 1
+        elif type == 'bool':
+            self.table[scope]['size']['b'][index] += 1
+
 
     def search_var(self, var_id):
         '''

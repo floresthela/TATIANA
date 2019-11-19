@@ -6,11 +6,12 @@ Flor Esthela Barbosa y Laura Santacruz
 '''
 # PARSER
 import sys
-import ply.yacc as yacc
+from ply import yacc
 import json
 import genera_comp
-from lexer import tokens
+
 from functools import reduce
+from lexer import tokens
 from vars_table import VarsTable
 from intermediate_code_generation import Intermediate_CodeGeneration
 
@@ -24,21 +25,31 @@ cg = Intermediate_CodeGeneration()
 # PROGRAM
 def p_program(p):
     '''
-    program : PROGRAM ID SEMICOLON declara_vars program_modules
+    program : programp ID SEMICOLON declara_vars program_modules
     '''
+    
     p[0] = "PROGRAM COMPILED"
     vars_t.delete_vars('global')
+    print(vars_t.table)
+    print(cg.Quads)
+    print(cg.constantes)
+    
     
     f_quads = cg.format_quads()
     f_constantes = cg.format_constantes()
-
     genera_comp.genera_arch(p[2],vars_t.table, f_quads, f_constantes)
+    
 
 def p_program_modules(p):
     '''
     program_modules : program_fun star
     '''
-
+    
+def p_programp(p):
+    '''
+    programp : PROGRAM
+    '''
+    cg.generate_GOTO_star()
 
 def p_program_fun(p):
     '''
@@ -58,6 +69,7 @@ def p_star(p):
     cg.fill_goto_star(star)
 
     vars_t.delete_vars('star')
+    cg.generate_END()
 
 
 def p_starI(p):
@@ -102,7 +114,7 @@ def p_vars(p):
 
     if not vars_t.initialized:
         vars_t.FunDirectory('global', 'np',None)
-        dir = cg.direccion_mem('global',p[1],)
+        dir = cg.direccion_mem('global',p[1])
         vars_t.insert_var(p[2],p[1],dir)
 
     else:
@@ -113,7 +125,8 @@ def p_vars(p):
         cg.PilaO.append(dir)
         cg.PTypes.append(p[1])
         if cg.POper and cg.POper[-1] in '=':
-            cg.generate_quad()
+            result = cg.generate_quad(vars_t.current_scope)
+
 
 # TODO: una regla para arreglos y usarla siempre que necesitemos [] , [][]
 
@@ -180,7 +193,7 @@ def p_assignment3(p):
     '''
     p[0] = p[1]
     if cg.POper[-1] == '=':
-        cg.generate_quad();
+        cg.generate_quad(vars_t.current_scope);
 
 
 # VAR_CTE
@@ -188,7 +201,7 @@ def p_vcte(p):
     '''
     vcte : cte_int
          | cte_float
-         | cte_char
+         | cte_string
          | id vcte1
          | funCall
     '''
@@ -225,8 +238,7 @@ def p_functionI(p):
     # mete las funciones como variables globales...
     vars_t.table['global']['vars'][p[0]] = { 'id': p[0], 'type':p[1]}
 
-    if len(vars_t.table) == 3:
-        cg.generate_GOTO_star()
+    
 
 
 def p_function(p):
@@ -307,7 +319,7 @@ def p_type(p):
     '''
     type : INT
          | FLOAT
-         | CHAR
+         | STRING
     '''
     p[0] = p[1]
 
@@ -420,7 +432,7 @@ def p_cte_int(p):
     cte_int : CTEINT
     '''
 
-    dir = cg.direccion_mem('constantes','int',p[1])
+    dir = cg.direccion_mem('constantes','int',1, p[1])
     p[0] = dir
     cg.PTypes.append('int')
 
@@ -430,19 +442,19 @@ def p_cte_float(p):
     '''
     cte_float : CTEFLOAT
     '''
-    dir = cg.direccion_mem('constantes','float',p[1])
+    dir = cg.direccion_mem('constantes','float',1, p[1])
     p[0] = dir
     cg.PTypes.append('float')
 
 
-def p_cte_char(p):
+def p_cte_string(p):
     '''
-    cte_char : CTECHAR
+    cte_string : CTESTRING
     '''
-
-    cg.direccion_mem('constantes','char',p[1])
+    dir = cg.direccion_mem('constantes','string', 1, p[1])
     p[0] = dir
-    cg.PTypes.append('char')
+   
+    cg.PTypes.append('string')
 
 
 # RETURN
@@ -803,7 +815,7 @@ def p_exp(p):
         p[0] = p[1:]
 
     if cg.POper and cg.POper[-1] in ['>','<','==','!=']:
-        cg.generate_quad()
+        cg.generate_quad(vars_t.current_scope)
 
 def p_exp_o(p):
     '''
@@ -839,7 +851,7 @@ def p_term(p):
         p[0] = p[1:]
 
     if cg.POper and cg.POper[-1] in ['+', '-']:
-        t = cg.generate_quad()
+        t = cg.generate_quad(vars_t.current_scope)
 
         vars_t.insert_temp(t,vars_t.current_scope)
 
@@ -864,7 +876,7 @@ def p_factor(p):
         p[0] = p[1:]
 
     if cg.POper and cg.POper[-1] in ['*', '/']:
-        t = cg.generate_quad()
+        t = cg.generate_quad(vars_t.current_scope)
         vars_t.insert_temp(t,vars_t.current_scope)
 
 # def p_factor1(p):
@@ -891,7 +903,7 @@ def p_empty(p):
 def p_error(p):
     
     if p is not None:
-        err = f"{p.value} en la linea {p.lineno}"
+        err = f"token {p.value} en la linea {p.lineno}"
     
     raise TypeError(f"Error de sintaxis: {err}")
 

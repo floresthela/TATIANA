@@ -4,9 +4,7 @@ Archivo lexer del lenguaje que contiene el léxico del lenguaje
 
 Flor Esthela Barbosa y Laura Santacruz
 '''
-
-import sys
-import ply.lex as lex
+from ply import lex
 
 # list of reserved words
 reserved = {
@@ -15,10 +13,9 @@ reserved = {
     'elseif' : 'ELSEIF',
     'print' : 'PRINT',
     'program' : 'PROGRAM',
-    # 'vars' : 'VARS',
     'int': 'INT',
     'float' : 'FLOAT',
-    'char' : 'CHAR',
+    'string' : 'STRING',
     'fun' : 'FUN',
     'read' : 'READ',
     'while' : 'WHILE',
@@ -50,7 +47,7 @@ tokens = [
     'OPENPAREN', 'CLOSEPAREN', 'TWODOTS',
     'MULTIPLICATION', 'OPENBRACES', 'CLOSEBRACES',
     'ADDITION', 'SUBSTRACTION', 'DIVISION', 'CTEINT', 'CTEFLOAT',
-    'CTECHAR', 'GREATER', 'LESS', 'NOTEQUAL', 'SEMICOLON',
+    'CTESTRING', 'GREATER', 'LESS', 'NOTEQUAL', 'SEMICOLON',
     'OPENBRACKET', 'CLOSEBRACKET', 'ISEQUAL'
 ] + list(reserved.values())
 
@@ -75,6 +72,8 @@ t_OPENBRACKET = r'\['
 t_CLOSEBRACKET = r'\]'
 t_ISEQUAL = r'\=='
 
+t_CTESTRING = r'".*"'
+
 t_ignore = r' '
 
 
@@ -90,10 +89,10 @@ def t_CTEINT(t):
     return t
 
 
-def t_CTECHAR(t):
-    r'^\w{1}$'
-    t.value = str(t.value)
-    return t
+# def t_CTECHAR(t):
+#     r'(L)?\'([^\\\n]|(\\.))*?\''
+#     t.value = str(t.value)
+#     return t
 
 
 def t_ID(t):
