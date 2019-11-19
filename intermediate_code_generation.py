@@ -21,7 +21,7 @@ class Quadruple:
 
     def __repr__(self):
         return f"\t{self.operator}\t{self.left_op}\t{self.right_op}\t{self.result}\n"
-    
+
     def __str__(self):
         return f"\t{self.operator},{self.left_op},{self.right_op},{self.result}\n"
 
@@ -71,21 +71,21 @@ class Intermediate_CodeGeneration:
         # temporales locales a los módulos
         self.base_local = 21000
         self.base_constantes = 41000
-        
+
         '''
         GLOBAL
         i [1000  -  5999]
         f [6000  -  9999]
         s [11000 - 15999]
         b [16000 - 20999]
-        
+
 
         LOCAL
         i [21000 - 25999]
         f [26000 - 30999]
         s [31000 - 35999]
         b [36000 - 40999]
-        
+
         CONSTANTES
         c [41000 - 51999]
 
@@ -109,7 +109,7 @@ class Intermediate_CodeGeneration:
         :param type: tipo de variable
         '''
 
-        # size es para arreglos 
+        # size es para arreglos
 
         if type == 'int':
             # para checar al rato que no nos pasemos
@@ -127,7 +127,7 @@ class Intermediate_CodeGeneration:
         elif type == 'bool':
             t_inicia = self.b_bool
             t_fin = self.base_constantes
-            indice = 3 
+            indice = 3
         else:
             raise TypeError(f"Tipo '{type}' desconocido")
 
@@ -137,14 +137,14 @@ class Intermediate_CodeGeneration:
 
             if dir + size > self.base_global + t_fin:
                 raise TypeError(f"Stack Overflow: {mem} no tiene espacio para {type}")
-        
+
 
         elif mem == 'local':
             dir = self.base_local + t_inicia + self.c_local[indice]
             self.c_local[indice] += size
             if dir + size > self.base_local + t_fin:
                 raise TypeError(f"Stack Overflow: {mem} no tiene espacio para {type}")
-        
+
         elif mem == 'constantes':
             if val is None:
                 raise TypeError(f"Valor de constante no especificado")
@@ -152,7 +152,7 @@ class Intermediate_CodeGeneration:
             elif val in self.constantes.values():
                return [x for x, y in self.constantes.items() if y == val].pop()
             dir = self.base_constantes + t_inicia + self.c_constantes[indice]
-            
+
             if dir + size > self.base_constantes + t_fin:
                 raise TypeError(f"Stack Overflow: {mem} no tiene espacio para {type}")
 
@@ -161,7 +161,7 @@ class Intermediate_CodeGeneration:
 
             self.constantes[dir] = val
             self.c_constantes[indice] += size
-            
+
         else:
             raise TypeError(f"Tipo de memoria '{mem}' desconocida")
 
@@ -183,9 +183,9 @@ class Intermediate_CodeGeneration:
             if operator != '=':
 
                 # se genera temporal
-                if scope == 'global': 
+                if scope == 'global':
                     result = self.direccion_mem('global',result_type)
-                else : 
+                else :
                     result = self.direccion_mem('local',result_type)
 
                 quadruple = Quadruple(operator, left_op, right_op, result)
@@ -259,7 +259,7 @@ class Intermediate_CodeGeneration:
 
     def check_type(self, var):
         '''
-        Checa que el tipo de la variable (id) 
+        Checa que el tipo de la variable (id)
         param: Variable (id) que se agrega a PilaO
         '''
         tipo = self.PTypes.pop()
@@ -394,13 +394,12 @@ class Intermediate_CodeGeneration:
         if self.era is not None:
             self.Quads[self.era].cambia_res(funcName)
 
-    # def generate_paramQuad(self, arg1, arg2):
-    #     '''
-    #     Generate params quad
-    #     '''
-    #     resp = self.PilaO.pop()
-    #     tipo = self.PTypes.pop()
-    #     quadruple = ('param', resp, None,  )
+    def generate_paramQuad(self, direccion):
+        '''
+        Generate params quad
+        '''
+        quadruple = Quadruple('param', None, None, direccion)
+        self.Quads.append(quadruple)
 
     def generate_goSub(self, funcName):
         '''
@@ -411,6 +410,7 @@ class Intermediate_CodeGeneration:
         self.Quads.append(quadruple)
 
     def format_quads(self):
+        print(self.Quads)
         return [(quad.operator, quad.left_op, quad.right_op, quad.result) for quad in self.Quads]
 
     def format_constantes(self):

@@ -27,24 +27,23 @@ def p_program(p):
     '''
     program : programp ID SEMICOLON declara_vars program_modules
     '''
-    
+
     p[0] = "PROGRAM COMPILED"
     vars_t.delete_vars('global')
+
     print(vars_t.table)
     print(cg.Quads)
     print(cg.constantes)
-    
-    
     f_quads = cg.format_quads()
     f_constantes = cg.format_constantes()
     genera_comp.genera_arch(p[2],vars_t.table, f_quads, f_constantes)
-    
+
 
 def p_program_modules(p):
     '''
     program_modules : program_fun star
     '''
-    
+
 def p_programp(p):
     '''
     programp : PROGRAM
@@ -205,6 +204,7 @@ def p_vcte(p):
          | id vcte1
          | funCall
     '''
+    p[0] = p[1]
     # 1. PilaO.Push(id.name)
     if len(p) == 2:
         cg.PilaO.append(p[1])
@@ -238,7 +238,7 @@ def p_functionI(p):
     # mete las funciones como variables globales...
     vars_t.table['global']['vars'][p[0]] = { 'id': p[0], 'type':p[1]}
 
-    
+
 
 
 def p_function(p):
@@ -251,7 +251,7 @@ def p_function(p):
         p[0] = vars
 
 
-    vars_t.delete_vars(p[2])
+    # vars_t.delete_vars(p[2])
 
 def p_inicia_fun(p):
     '''
@@ -277,7 +277,7 @@ def p_function3(p):
     if p[1] is not None:
         p[0] = [p[1]]
         p[0].append(p[2])
-        
+
 
 
 
@@ -305,7 +305,10 @@ def p_funParam(p):
     funParam : type ID
     '''
     p[0] = (p[1],p[2])
-    vars_t.insert_param(p[2],p[1])
+
+    dir = cg.direccion_mem('local', p[1])
+    print('fun',vars_t.current_scope)
+    vars_t.insert_var(p[2], p[1], dir)
 
 
 # VARS
@@ -381,9 +384,17 @@ def p_funCall(p):
         # print(p[0])
 
         init = vars_t.table[p[0]]['begin']
-        print("INIT")
-        print(init)
-        cg.fill_ERA(p[1])
+        #print("Direccion", vars_t.table[p[3]]['dir'])
+        # busca = vars_t.search_var(p[1])
+        # print("ABER", busca)
+        # parametros = vars_t.table[p[1]]['params']
+        # print("PARAMETROSS DE LA vars table")
+        # print(parametros)
+        # # print("INIT")
+        # print(init)
+        cg.fill_ERA(init)
+        # print("PRUEBAAA")
+        # print(p[3])
 
         cg.generate_goSub(p[1])
     else:
@@ -411,19 +422,29 @@ def p_terminaFunCall(p):
 
 def p_funCall2(p):
     '''
-    funCall2 : exp funCall3
+    funCall2 : funCallParam funCall3
              | empty
     '''
-    # k+=1
-
-    # cg.generate_paramQuad(p[1], arg2)
+    # if len(p) == 3:
+    #     print("AQUI ESTAA??",p[1])
 
 
 def p_funCall3(p):
     '''
-    funCall3 : COMMA funCall2
+    funCall3 : COMMA funCallParam funCall3
              | empty
     '''
+
+
+def p_funCallParam(p):
+    '''
+    funCallParam : exp
+    '''
+    print('FUNCALLPARAMS', p[1])
+    vt = vars_t.search_var(p[1])
+    dir = vt['dir']
+    print("Direcccion",dir)
+    cg.generate_paramQuad(dir)
 
 
 # CTE
@@ -453,7 +474,7 @@ def p_cte_string(p):
     '''
     dir = cg.direccion_mem('constantes','string', 1, p[1])
     p[0] = dir
-   
+
     cg.PTypes.append('string')
 
 
@@ -901,10 +922,10 @@ def p_empty(p):
 
 
 def p_error(p):
-    
+
     if p is not None:
-        err = f"token {p.value} en la linea {p.lineno}"
-    
+        err = f"{p.value} en la linea {p.lineno}"
+
     raise TypeError(f"Error de sintaxis: {err}")
 
 parser = yacc.yacc(start='program')

@@ -32,6 +32,7 @@ class VarsTable:
         self.initialized = False
 
     def FunDirectory(self, fun_id, type, start):
+        print(self.table)
         '''
         Create main directory to store all functions created on a program, current scope is global
         : param fun_id: Nombre del programa, función creada por usuario o star (main)
@@ -112,7 +113,7 @@ class VarsTable:
             raise TypeError(f'Parameter {param_id} already declared')
 
     def insert_temp(self,type,scope):
-        print(type,scope)
+        #print(type,scope)
         # metemos a size (temps)
         index = -1
         if scope == 'global' or scope == 'star': index = 0
@@ -151,5 +152,6 @@ class VarsTable:
             del self.table[table_id]['vars']
         else:
             raise TypeError(f"Table of variables for {table_id} wasn't found")
+
 
     # también borramos los parametros o qué pedo ???

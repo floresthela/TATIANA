@@ -2,16 +2,18 @@ program prueba9;
 int a = 4;
 int b = 10 + 4 / 2;
 
-fun int funcion(int i, int j, float f, string s){
-    print(a);
-}
+fun int fun1(int x, float d){
+ print("HOLA MUNDO");
+ }
+
 
 * {
-    
+
     int c = 4 * 5 + a;
+    int x=1;
+    float y = 3.5;
 
-    print("hola mundo");
-
+    fun1(x, y);
     if(a != 666){
         b = 1;
     } else {

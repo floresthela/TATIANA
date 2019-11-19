@@ -25,14 +25,14 @@ if __name__ == '__main__':
         print(f"Leyendo archivo {nombreArchivo}...")
         info = arch.read()
         arch.close()
-        
+
         if(parser.yacc.parse(info, tracking=True) == 'PROGRAM COMPILED'):
             print("SINTAXIS VALIDA :) ")
         else:
             print("ERRORES EN LA SINTAXIS :( ")
 
-        
-        
+
+
 
     except EOFError:
         print(EOFError)

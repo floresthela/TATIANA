@@ -15,7 +15,7 @@ class MaquinaVirtual:
         self.memoria = Memoria()
         self.estrella = Turtle()
         self.screen = Screen()
-        
+
 
     def agarra_ta(self,program):
         '''
@@ -48,7 +48,7 @@ class MaquinaVirtual:
         screen = Screen()
         self.dibuja_estrella(s)
         screen.clear()
-        
+
         self.star = Turtle(shape="estrella")
 
         while True:
@@ -56,60 +56,60 @@ class MaquinaVirtual:
             op_izq = quads[sig][1]
             op_der = quads[sig][2]
             res = quads[sig][3]
-            
+
             if operador == '=':
                 mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
                 tipo_res = self.dame_tipo(res)
                 mem_r[res] = tipo_res(mem1[op_izq])
                 sig += 1
-        
+
             elif operador == '+':
                 mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
                 mem_r[res] = mem1[op_izq] + mem2[op_der]
                 sig += 1
-          
+
             elif operador == '-':
                 mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
                 mem_r[res] = mem1[op_izq] - mem2[op_der]
                 sig += 1
-            
+
             elif operador == '*':
                 mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
                 mem_r[res] = mem1[op_izq] * mem2[op_der]
                 sig += 1
-            
+
             elif operador == '/':
                 mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
                 tipo_res = self.dame_tipo(res)
-                
+
                 if mem2[op_der] == 0:
                     raise TypeError(f"Error: No se puede dividir entre 0")
-                
+
                 mem_r[res] = tipo_res(mem1[op_izq] / mem2[op_der])
                 sig += 1
-            
-            elif operador == '>': 
+
+            elif operador == '>':
                 mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
                 mem_r[res] = mem1[op_izq] > mem2[op_der]
                 sig +=1
-            
+
             elif operador == '<':
                 mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
                 mem_r[res] = mem1[op_izq] < mem2[op_der]
                 sig +=1
-            
+
             elif operador == '!=':
                 mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
                 mem_r[res] = mem1[op_izq] != mem2[op_der]
-                
+
                 sig +=1
-            
+
             elif operador == '==':
                 mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
                 mem_r[res] = mem1[op_izq] != mem2[op_der]
-                
+
                 sig +=1
-            
+
             elif operador == 'print':
                 mem_r = self.dame_mem(res)
                 print(mem_r[res])
@@ -120,13 +120,13 @@ class MaquinaVirtual:
                 jump = res -1
                 sig = jump
                 # activamos memoria star
-            
+
             elif operador == 'END':
                 break
-            
 
-            
-        
+
+
+
     def haz_constantes(self, t):
         '''
         Genera tabla de constantes
@@ -143,14 +143,14 @@ class MaquinaVirtual:
         f [6000  - 10999]
         s [11000 - 15999]
         b [16000 - 20999]
-        
+
 
         LOCAL
         i [21000 - 25999]
         f [26000 - 30999]
         s [31000 - 35999]
         b [36000 - 40999]
-        
+
         CONSTANTES
         c [41000 - 51999]
 
@@ -173,7 +173,7 @@ class MaquinaVirtual:
             return self.memoria.mem_local
         else:
             return self.memoria.mem_constantes
-    
+
     def dame_tipo(self,dir):
         '''
         Regresa el tipo de variable
@@ -209,5 +209,5 @@ class MaquinaVirtual:
         lapiz.end_poly()
 
         fig.addcomponent(lapiz.get_poly(),"purple","purple")
-        screen.register_shape("estrella",fig)
+        self.screen.register_shape("estrella",fig)
         lapiz.reset()
