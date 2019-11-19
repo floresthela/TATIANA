@@ -18,7 +18,7 @@ def genera_arch(program,varst,quads,consts):
         "FunDir" : varst,
         "tConstantes": consts
     }
-    with open(f'pruebas/{program}.ta*', 'w') as nuevo_arch:
+    with open(f'pruebas/{program}.ta', 'w') as nuevo_arch:
         json.dump(archivo,nuevo_arch, separators = (',',':'))
     
     MaquinaVirtual().agarra_ta(program)

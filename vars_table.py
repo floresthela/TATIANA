@@ -8,7 +8,7 @@ Flor Esthela Barbosa y Laura Santacruz
 
 class VarsTable:
     '''
-    Class for the variables table which contains all functions for creating and manipulating functions and its variables inside the corresponding table and main directory (FunDirectory)
+    Clase para la generación del directorio de funciones con la tabla de variables de cada una así como las funciones asociadas para la manipulación del directorio correspondiente
     '''
 
     def __init__(self):
@@ -54,15 +54,15 @@ class VarsTable:
             self.table[fun_id] = {
                 'type': type,
                 'vars': {},
-                'params': {},
+                'params': [],
                 'begin': start,
                 # [vars,params,temps]
-                'size': {'i':[0,0,0],'f':[0,0,0],'s':[0,0,0],'b':[0,0,0]}
+                'size': {'i':[0,0,0],'f':[0,0,0],'s':[0,0,0],'b':[0,0,0]},
             }
             self.current_scope = fun_id
             self.current_type = type
         else:
-            raise TypeError(f'Function {fun_id} already declared')
+            raise TypeError(f'Función {fun_id} ya fue declarada')
         self.initialized = True
 
 
@@ -88,7 +88,7 @@ class VarsTable:
             self.table[scope]['vars'][var_id] = new_var
 
         else:
-            raise TypeError(f'Variable {var_id} already declared')
+            raise TypeError(f'Variable {var_id} ya fue declarada')
 
         # metemos a size (vars)
         # if scope is not 'global':
@@ -104,21 +104,11 @@ class VarsTable:
     def insert_param(self,param_id,param_type):
         scope = self.current_scope
         if param_id not in self.table[scope]['params'] and param_id not in self.table['global']['vars']:
-            new_param = {
-                'id': param_id,
-                'type' : param_type
-            }
-            self.table[scope]['params'][param_id] = new_param
-
-            # metemos a size (params)
-            if param_type == 'int':
-                self.table[scope]['size']['i'][1] += 1
-            elif param_type == 'float':
-                self.table[scope]['size']['f'][1] += 1
-            elif param_type == 'string':
-                self.table[scope]['size']['s'][1] += 1
-            elif param_type == 'bool':
-                self.table[scope]['size']['b'][0] += 1
+            # new_param = {
+            #     'id': param_id,
+            #     'type' : param_type
+            # }
+            self.table[scope]['params'].append(param_type)
         else:
             raise TypeError(f'Parameter {param_id} already declared')
 

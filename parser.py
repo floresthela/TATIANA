@@ -25,11 +25,15 @@ cg = Intermediate_CodeGeneration()
 # PROGRAM
 def p_program(p):
     '''
-    program : PROGRAM ID SEMICOLON declara_vars program_modules
+    program : programp ID SEMICOLON declara_vars program_modules
     '''
+
     p[0] = "PROGRAM COMPILED"
     vars_t.delete_vars('global')
 
+    print(vars_t.table)
+    print(cg.Quads)
+    print(cg.constantes)
     f_quads = cg.format_quads()
     f_constantes = cg.format_constantes()
     genera_comp.genera_arch(p[2],vars_t.table, f_quads, f_constantes)
@@ -40,6 +44,11 @@ def p_program_modules(p):
     program_modules : program_fun star
     '''
 
+def p_programp(p):
+    '''
+    programp : PROGRAM
+    '''
+    cg.generate_GOTO_star()
 
 def p_program_fun(p):
     '''
@@ -229,8 +238,7 @@ def p_functionI(p):
     # mete las funciones como variables globales...
     vars_t.table['global']['vars'][p[0]] = { 'id': p[0], 'type':p[1]}
 
-    if len(vars_t.table) == 3:
-        cg.generate_GOTO_star()
+
 
 
 def p_function(p):
