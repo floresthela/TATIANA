@@ -1,0 +1,5 @@
+program prueba10;
+int arr[4];
+* {
+    int radius = 50;
+}

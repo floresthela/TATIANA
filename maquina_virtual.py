@@ -121,7 +121,7 @@ class MaquinaVirtual:
 
                 # memoria de valor booleano
                 mem_b = self.dame_mem(op_izq)
-                if mem_b:
+                if mem_b[op_izq]:
                     sig += 1
                 else:
                     sig = int(res) - 1 
@@ -144,51 +144,65 @@ class MaquinaVirtual:
             # 0 exp
             elif operador == 'hand_down':
                 if not self.turtle_activa:
-                    self.activa_tortuga
+                    self.activa_tortuga()
+                    self.turtle_active = True
                 self.estrella.pd()
+                sig += 1
 
             elif operador == 'hand_up':
                 if not self.turtle_activa:
-                    self.activa_tortuga
+                    self.activa_tortuga()
+                    self.turtle_active = True
                 self.estrella.pu()
+                sig += 1
 
             # 1 exp
             elif operador == 'circle':
                 mem = self.dame_mem(op_izq)
                 if not self.turtle_activa:
-                    self.activa_tortuga
+                    self.activa_tortuga()
+                    self.turtle_active = True
 
-                self.estrella.circle(mem)
+                self.estrella.circle(mem[op_izq])
+                sig += 1
             
             elif operador == 'left':
                 mem = self.dame_mem(op_izq)
-                angle = float(mem)
+                angle = float(mem[op_izq])
                 if not self.turtle_activa:
-                    self.activa_tortuga
+                    self.activa_tortuga()
+                    self.turtle_active = True
                 if angle > 360:
                     raise TypeError(f"Valor no debe exceder 360 grados")
                 self.estrella.lt(angle)
+                sig += 1
 
             elif operador == 'right':
                 mem = self.dame_mem(op_izq)
-                angle = float(mem)
+                angle = float(mem[op_izq])
                 if not self.turtle_activa:
-                    self.activa_tortuga
+                    self.activa_tortuga()
+                    self.turtle_active = True
                 if angle > 360:
                     raise TypeError(f"Valor no debe exceder 360 grados")
                 self.estrella.rt(angle)
+                sig += 1
             
             elif operador == 'back':
                 mem = self.dame_mem(op_izq)
                 if not self.turtle_activa:
-                    self.activa_tortuga
-                self.estrella.bk(mem)
+                    self.activa_tortuga()
+                    self.turtle_active = True
+                self.estrella.bk(mem[op_izq])
+                sig += 1
 
             elif operador == 'go':
                 mem = self.dame_mem(op_izq)
                 if not self.turtle_activa:
-                    self.activa_tortuga
-                self.estrella.fd(mem)
+                    self.activa_tortuga()
+                    self.turtle_active = True
+                self.estrella.fd(mem[op_izq])
+                sig += 1
             
             # 2 exp
             # TODO: maybe cambiar el nombre a set_position
@@ -197,14 +211,33 @@ class MaquinaVirtual:
                 mem2 = self.dame_mem(op_der)
 
                 if not self.turtle_activa:
-                    self.activa_tortuga
+                    self.activa_tortuga()
+                    self.turtle_active = True
+                sig += 1
                 
-                self.estrella.setpos(mem1,mem2)
+                self.estrella.setpos(mem1[op_izq],mem2[op_der])
+
+            elif operador == 'arc':
+                # arc(angulo,radio)
+                mem1 = self.dame_mem(op_izq)
+                mem2 = self.dame_mem(op_der)
+                print('1', mem1[op_izq])
+                print('2', mem2[op_der])
+                if not self.turtle_activa:
+                    self.activa_tortuga()
+                    self.turtle_active = True
+                
+                self.estrella.circle(mem2[op_der],mem1[op_izq])
+                sig += 1
+                
+
+                
 
 
             print(self.memoria.mem_global)
             print(self.memoria.mem_local)
             # TODO: 
+            # agregar clear
             # square
             # triangle
             # rectangle            
@@ -288,14 +321,16 @@ class MaquinaVirtual:
 
     def activa_tortuga(self):
         s = Turtle()
-        
         self.estrella = Turtle()
         self.screen = Screen()
-        
         self.dibuja_estrella(s)
         
-        self.star = Turtle(shape="estrella")
+        
+        
+        
+        # self.star = Turtle(shape="estrella")
         self.estrella.screen.title(self.programa)
+        self.estrella = Turtle(shape="estrella")
         self.screen.clear()
         self.screen.mainloop()
 

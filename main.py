@@ -6,7 +6,6 @@ Flor Esthela Barbosa y Laura Santacruz
 '''
 import sys
 import parser
-import genera_comp
 import json
 from vars_table import VarsTable
 from intermediate_code_generation import Intermediate_CodeGeneration
@@ -19,7 +18,7 @@ cg = Intermediate_CodeGeneration()
 if __name__ == '__main__':
     try:
         path = 'pruebas/'
-        nombreArchivo = 'prueba9.tati'
+        nombreArchivo = 'prueba10.tati'
         path += nombreArchivo
         arch = open(path, 'r')
         print(f"Leyendo archivo {nombreArchivo}...")

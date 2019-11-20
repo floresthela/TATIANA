@@ -107,8 +107,8 @@ def p_declara_vars(p):
 
 def p_vars(p):
     '''
-    vars : type ID vars1 equals exp SEMICOLON
-         | type ID vars1 SEMICOLON
+    vars : type ID dimensionada equals exp SEMICOLON
+         | type ID dimensionada SEMICOLON
     '''
     p[0] = (p[1], p[2])
 
@@ -127,22 +127,27 @@ def p_vars(p):
         if cg.POper and cg.POper[-1] in '=':
             result = cg.generate_quad(vars_t.current_scope)
 
+    # variables dimensionadas
+    if p[3] is not None:
+        print('jola')
+        
 
-# TODO: una regla para arreglos y usarla siempre que necesitemos [] , [][]
-
-# VECTOR
-def p_vars1(p):
+# variable dimensionada o no..
+def p_dimensionada(p):
     '''
-    vars1 : OPENBRACKET CTEINT CLOSEBRACKET vars3
-        | empty
+    dimensionada : OPENBRACKET CTEINT CLOSEBRACKET
+           | OPENBRACKET CTEINT CLOSEBRACKET OPENBRACKET CTEINT CLOSEBRACKET
+           | empty
     '''
-
-# MATRIXXX
-def p_vars3(p):
-    '''
-    vars3 : OPENBRACKET CTEINT CLOSEBRACKET
-        | empty
-    '''
+    if len(p) == 2:
+        p[0] = None
+    
+    # si es variable dimensionada mandamos parriba las dimensiones [0...CTEINT]
+        
+    if len(p) == 4:
+        p[0] = int(p[2])
+    else:
+        p[0] = (int(2),int(5))
 
 # LOOP
 def p_loop(p):
@@ -747,8 +752,6 @@ def p_graphmove2(p):
     p[0] = p[1]
     cg.generate_quad_graph2(p[0])
 
-# SUPER DUDA: QUADS CON VARIOS PARAMETROS ?¿?¿ CÓMO HACEMOS EL REPEAT
-# pensaba hacer un tipo while pero en lugar de gotof, ir restando al número asignado de veces que se repetirá... idk
 
 # GRAPH_REPEAT
 # def p_graphr(p):
