@@ -414,7 +414,6 @@ class Intermediate_CodeGeneration:
         self.Quads.append(ver1)
         self.Quads.append(ver2)
 
-        print('verifica ', ren, c, 'y ', col, r)
         # Genera cuádruplos para función s1 * m1 + s2 + base
         # Cuádruplos para * aux mdim T
         auxmdim = self.direccion_mem('local','int')
