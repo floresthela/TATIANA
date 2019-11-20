@@ -21,8 +21,9 @@ if __name__ == '__main__':
         nombreArchivo = 'prueba10.tati'
         path += nombreArchivo
         arch = open(path, 'r')
-        print(f"Leyendo archivo {nombreArchivo}...")
+        print(f"Leyendo archivo {nombreArchivo}...\n")
         info = arch.read()
+        print(info,'\n')
         arch.close()
 
         if(parser.yacc.parse(info, tracking=True) == 'PROGRAM COMPILED'):

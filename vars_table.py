@@ -66,7 +66,15 @@ class VarsTable:
         self.initialized = True
 
 
-    def insert_var(self, var_id, var_type, dir):
+    def insert_var(self, var_id, var_type, dir, b_dim, dim):
+        '''
+        Agrega nueva variable a la tabla de variables del scope actual.
+        :param var_id: Nombre de variable
+        :param var_type: Tipo de la variable
+        :param dir: Dirección asignada a la variable
+        :param b_dim: Booleano si es dimensionada
+        :param dim: Tamaño de la variable dimensionada
+        '''
         scope = self.current_scope
 
         # Función declarada por el usuario
@@ -74,7 +82,9 @@ class VarsTable:
             new_var = {
                 'id': var_id,
                 'type': var_type,
-                'dir': dir
+                'dir': dir,
+                'esdimensionada': b_dim,
+                'var_dim':dim
             }
             self.table[scope]['vars'][var_id] = new_var
 
