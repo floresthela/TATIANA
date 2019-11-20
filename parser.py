@@ -32,7 +32,6 @@ def p_program(p):
     vars_t.delete_vars('global')
 
     print(vars_t.table)
-    print(cg.Quads)
     print(cg.constantes)
     f_quads = cg.format_quads()
     f_constantes = cg.format_constantes()
@@ -443,7 +442,7 @@ def p_id(p):
     '''
 
     t = vars_t.search_var(p[1])
-    print('var',p[2])
+    print('var' ,p[1],p[2])
     if t:
         if t['esdimensionada']:
             # es dimensionada y no le asignaron indices
@@ -463,6 +462,7 @@ def p_id(p):
                     raise TypeError(f"Variable dimensionada {p[1]} debe llevar dos dimensiones [[],[]]")
                 lim2 = cg.PilaO.pop()
                 cg.PTypes.pop()
+                print('lim',lim1,lim2)
                 dir = cg.genera_matrices(base,lim1,lim2,var_dim)
             
             # regresamos (dir) para cuadruplos después...
@@ -898,7 +898,7 @@ def p_exp(p):
     if len(p) == 2:
         p[0] = p[1]
     else:
-        p[0] = p[1:]
+        p[0] = p[1]
 
     if cg.POper and cg.POper[-1] in ['>','<','==','!=']:
         cg.generate_quad(vars_t.current_scope)

@@ -21,5 +21,5 @@ def genera_arch(program,varst,quads,consts):
         json.dump(archivo,nuevo_arch, separators = (',',':'))
     
     # manda datos a máquina virtual
-    MaquinaVirtual().agarra_ta(program)
+    # MaquinaVirtual().agarra_ta(program)
 

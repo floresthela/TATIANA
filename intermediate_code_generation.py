@@ -402,7 +402,7 @@ class Intermediate_CodeGeneration:
         :param var_dim: Variable dimensionada
         '''
 
-        # base = self.direccion_mem('constantes','int',val= base)
+        base = self.direccion_mem('constantes','int',val= base)
         ren = self.direccion_mem('constantes','int',val=var_dim[0])
         col = self.direccion_mem('constantes','int',val= var_dim[1])
         lim_inf = self.direccion_mem('constantes','int',val = 0)
@@ -414,11 +414,12 @@ class Intermediate_CodeGeneration:
         self.Quads.append(ver1)
         self.Quads.append(ver2)
 
+        print('verifica ', ren, c, 'y ', col, r)
         # Genera cuádruplos para función s1 * m1 + s2 + base
         # Cuádruplos para * aux mdim T
         auxmdim = self.direccion_mem('local','int')
         
-        q_auxmdim = Quadruple('*',c,col,auxmdim)
+        q_auxmdim = Quadruple('*',c,ren,auxmdim)
         self.Quads.append(q_auxmdim)
 
         # Cuádruplos para + aux1 aux2 T
@@ -428,7 +429,7 @@ class Intermediate_CodeGeneration:
 
         # Cuádruplos para + T BASE T
         sumabase = self.direccion_mem('local','int')
-        q_sumabase = Quadruple('+',base, sumaux, sumabase)
+        q_sumabase = Quadruple('+',sumaux, base, sumabase)
         self.Quads.append(q_sumabase)
         print('mat',sumabase)
         return sumabase
