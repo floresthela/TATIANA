@@ -93,7 +93,9 @@ class VarsTable:
             new_var = {
                 'id': var_id,
                 'type': var_type,
-                'dir': dir
+                'dir': dir,
+                'esdimensionada':b_dim,
+                'var_dim':dim
             }
             self.table[scope]['vars'][var_id] = new_var
 
@@ -151,7 +153,7 @@ class VarsTable:
         elif var_id in self.table['global']['vars']:
             return self.table['global']['vars'][var_id]
         else:
-            raise TypeError(f"Variable {var_id} has not been declared")
+            raise TypeError(f"Variable {var_id} no ha sido declarada")
 
     def delete_vars(self, table_id):
         '''

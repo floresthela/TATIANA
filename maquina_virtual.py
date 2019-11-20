@@ -221,8 +221,7 @@ class MaquinaVirtual:
                 # arc(angulo,radio)
                 mem1 = self.dame_mem(op_izq)
                 mem2 = self.dame_mem(op_der)
-                print('1', mem1[op_izq])
-                print('2', mem2[op_der])
+            
                 if not self.turtle_activa:
                     self.activa_tortuga()
                     self.turtle_active = True
@@ -230,12 +229,6 @@ class MaquinaVirtual:
                 self.estrella.circle(mem2[op_der],mem1[op_izq])
                 sig += 1
                 
-
-                
-
-
-            print(self.memoria.mem_global)
-            print(self.memoria.mem_local)
             # TODO: 
             # agregar clear
             # square

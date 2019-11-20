@@ -215,7 +215,18 @@ def p_assignment(p):
     '''
     assignment : id equals assignment3 SEMICOLON
     '''
-    # c = a + b; -> mete c a pilao
+    t = vars_t.search_var(p[1][0])
+    if t:
+        if t['esdimensionada']:
+            dir = f"({p[1][1]})"
+            print(dir)
+        else:
+            dir = t['dir']
+        cg.PilaO.append(dir)
+        cg.PTypes.append(t['type'])
+    
+    if cg.POper and cg.POper[-1] in ['=']:
+        cg.generate_quad(vars_t.current_scope);
 
 def p_assignment3(p):
     '''
@@ -223,8 +234,6 @@ def p_assignment3(p):
                 | read
     '''
     p[0] = p[1]
-    if cg.POper[-1] == '=':
-        cg.generate_quad(vars_t.current_scope);
 
 
 # VAR_CTE
@@ -405,8 +414,8 @@ def p_read(p):
 def p_read1(p):
     '''
     read1 : OPENBRACKET exp CLOSEBRACKET OPENBRACKET exp CLOSEBRACKET
-              | OPENBRACKET exp CLOSEBRACKET
-              | empty
+          | OPENBRACKET exp CLOSEBRACKET
+          | empty
     '''
 
 def p_equals(p):
@@ -415,19 +424,55 @@ def p_equals(p):
     '''
     cg.POper.append(p[1])
 
-
 # ASSIGNMENT
+def p_indice_dimensionada(p):
+    '''
+    indice_dimensionada : OPENBRACKET exp CLOSEBRACKET OPENBRACKET exp CLOSEBRACKET
+                        | OPENBRACKET exp CLOSEBRACKET
+                        | empty
+
+    '''
+    if len(p) == 4:
+        p[0] = (0,p[2])
+    elif len(p) == 7:
+        p[0] = (p[2],p[5])
 
 def p_id(p):
     '''
-    id : ID vectormatriz
+    id : ID indice_dimensionada
     '''
-    p[0] = p[1]
-    cg.PilaO.append(p[1])
+
     t = vars_t.search_var(p[1])
+    print('var',p[2])
     if t:
-        cg.PilaO.append(t['dir'])
-        cg.PTypes.append(t['type'])
+        if t['esdimensionada']:
+            # es dimensionada y no le asignaron indices
+            if p[2] is None:
+                raise TypeError(f"Variable dimensionada {p[1]} debe llevar sus indices")
+            base = t['dir']
+            var_dim = t['var_dim']
+            
+            lim1 = cg.PilaO.pop()
+            cg.PTypes.pop()
+            
+            # arreglo
+            if var_dim[0] == 1:
+                dir = cg.genera_arreglos(base, lim1, var_dim)
+            else:
+                if len(cg.PilaO) == 0:
+                    raise TypeError(f"Variable dimensionada {p[1]} debe llevar dos dimensiones [[],[]]")
+                lim2 = cg.PilaO.pop()
+                cg.PTypes.pop()
+                dir = cg.genera_matrices(base,lim1,lim2,var_dim)
+            
+            # regresamos (dir) para cuadruplos después...
+            cg.PilaO.append(f"({dir})")
+            cg.PTypes.append(t['type'])
+            p[0] = p[1] , dir
+        else:
+            cg.PilaO.append(t['dir'])
+            cg.PTypes.append(t['type'])
+            p[0] = p[1] , 0
 
 # FUN_CALL
 def p_funCall(p):
