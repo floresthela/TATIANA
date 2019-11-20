@@ -12,46 +12,58 @@ from memoria import Memoria
 
 class MaquinaVirtual:
     def __init__(self):
+
         self.programa = None
         self.memoria = Memoria()
         self.estrella = None
         self.screen = None
         self.turtle_activa = False
 
+
+
     def agarra_ta(self,program):
         '''
-        Recibe archivo .ta con todo { Quads:, FunDir:, tConstantes: }
-        :param program: Nombre del archivo
+        Recibe archivos con cuádruplos y el directorio de funciones y constantes
+        :param program: Nombre del programa compilado
         '''
-        arch = f"pruebas/{program}.ta"
-        archivo = open(arch, 'r')
-        todito = json.load(archivo)
-        self.programa = program
+        quads = f"pruebas/c_{program}.q"
+        directorio = f"pruebas/c_{program}.d"
+
+        arch_quads = open(quads, 'r')
+        arch_fundir = open(directorio, 'r')
         
-        # fundir
-        fun_dir = todito["FunDir"]
-        # print(fun_dir)
-        # creamos memoria de constantelapiz...
-        self.haz_constantes(todito['tConstantes'])
+        q = json.load(arch_quads)
+        d = json.load(arch_fundir)
+        
+        self.programa = program
+        fun_dir = d["FunDir"]
 
-
-        self.haz_quads(todito['Quads'],fun_dir)
+        self.haz_constantes(d['tConstantes'])
+        self.haz_quads(q['Quads'],fun_dir)
 
     # dnb
     def haz_quads(self,quads,fun_dir,sig=0):
         '''
-        Procesar cada cuadruplo de la lista de Quads recibida
+        Procesar cada cuadruplo de la lista de Quads recibida hasta que encuentre END
         :param quads: Lista con todos los quads
         :param fun_dir: Directorio de funciones
         :param sig: Apuntador al siguiente cuádruplo
         '''
-        
+
 
         while True:
+            
             operador = quads[sig][0]
             op_izq = quads[sig][1]
             op_der = quads[sig][2]
             res = quads[sig][3]
+
+            if isinstance(op_izq,str) and op_izq[0] == '(':
+                op_izq = self.dame_contenido(op_izq)
+            if isinstance(op_der,str) and op_der[0] == '(': 
+                op_der = self.dame_contenido(op_der)
+            if isinstance(res,str) and res[0] == '(':
+                res = self.dame_contenido(res)
 
             if operador == '=':
                 mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
@@ -228,7 +240,17 @@ class MaquinaVirtual:
                 
                 self.estrella.circle(mem2[op_der],mem1[op_izq])
                 sig += 1
+            
+
+            elif operador == 'VER':
+                mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
                 
+                if not(mem1[op_izq] <= mem2[op_der] < mem_r[res]):
+                    raise TypeError(f"Out of bouuunddsss")
+                
+                sig += 1
+
+
             # TODO: 
             # agregar clear
             # square
@@ -241,7 +263,7 @@ class MaquinaVirtual:
             # size_star
             # era
             # params
-            # ARREGLOS
+            # VER
 
     def haz_constantes(self, t):
         '''
@@ -318,9 +340,6 @@ class MaquinaVirtual:
         self.screen = Screen()
         self.dibuja_estrella(s)
         
-        
-        
-        
         # self.star = Turtle(shape="estrella")
         self.estrella.screen.title(self.programa)
         self.estrella = Turtle(shape="estrella")
@@ -350,3 +369,10 @@ class MaquinaVirtual:
         fig.addcomponent(lapiz.get_poly(),"purple","purple")
         self.screen.register_shape("estrella",fig)
         lapiz.reset()
+
+    def dame_contenido(self, dir):
+        # my_list = my_list[1:-1]
+        dir_aux = int(dir[1:-1])
+        dir_mem = self.dame_mem(dir_aux)
+        return dir_mem[dir_aux]
+ 

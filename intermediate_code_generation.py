@@ -52,6 +52,7 @@ class Intermediate_CodeGeneration:
 
         self.temps = 0
 
+        # son 4 pero es solo para guardar booleanos, nunca los usamos
         self.c_params = 0
         self.c_global = [0,0,0,0]
         self.c_local = [0,0,0,0]
