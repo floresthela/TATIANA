@@ -409,6 +409,37 @@ class Intermediate_CodeGeneration:
         quadruple = Quadruple('gosub', None, None, funcName)
         self.Quads.append(quadruple)
 
+    def genera_matrices(self, base, r, c, var_dim):
+        '''
+        Generación de cuádruplos correspondientes para el acceso a una matriz
+        :param base: Dirección base
+        :param r: Renglón
+        :param c: Columna
+        :param var_dim: Variable dimensionada
+        '''
+
+        base = self.direccion_mem('constantes','int',val=base)
+        ren = self.direccion_mem('constantes','int',val=var_dim[0])
+        col = self.direccion_mem('constantes','int',val= var_dim[1])
+        lim_inf = self.direccion_mem('constantes','int',val = 0)
+        
+        # Genera cuádruplos para función s1 * m1 + s2 + base
+        
+        # Cuádruplos para verificar rangos
+        ver1 = Quadruple('VER', lim_inf, r, ren)
+        ver2 = Quadruple('VER', lim_inf, c, col)
+
+        self.Quads.append(ver1)
+        self.Quads.append(ver2)
+
+        # Cuádruplos para * aux mdim T
+
+        
+
+        # Cuádruplos para + T BASE T
+
+
+
     def format_quads(self):
         print(self.Quads)
         return [(quad.operator, quad.left_op, quad.right_op, quad.result) for quad in self.Quads]

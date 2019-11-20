@@ -25,7 +25,7 @@ cg = Intermediate_CodeGeneration()
 # PROGRAM
 def p_program(p):
     '''
-    program : programp ID SEMICOLON declara_vars program_modules
+    program : PROGRAM ID SEMICOLON declara_vars program_fun star
     '''
 
     p[0] = "PROGRAM COMPILED"
@@ -38,25 +38,12 @@ def p_program(p):
     f_constantes = cg.format_constantes()
     genera_comp.genera_arch(p[2],vars_t.table, f_quads, f_constantes)
 
-
-def p_program_modules(p):
-    '''
-    program_modules : program_fun star
-    '''
-    cg.generate_GOTO_star()
-
-def p_programp(p):
-    '''
-    programp : PROGRAM
-    '''
-    
-
 def p_program_fun(p):
     '''
     program_fun : function program_fun
                 | empty
     '''
-
+    cg.generate_GOTO_star()
 
 # STAR
 def p_star(p):
@@ -117,23 +104,24 @@ def p_vars(p):
     if isinstance(p[3], tuple):
         dimensionada = True
         var_dim = p[3]
-        tam = var_dim[0] * var_dim[1]
+        dim = var_dim[0] * var_dim[1]
 
     else:
         dimensionada = False
         var_dim = None
-        tam = 1
-    print(tam)
+        dim = 1
+    print(dim)
 
     if not vars_t.initialized:
         vars_t.FunDirectory('global', 'np',None)
     
     if vars_t.current_scope == 'global':
-        dir = cg.direccion_mem('global',p[1],tam)
+        dir = cg.direccion_mem('global',p[1],dim)
     
     else:
-        dir = cg.direccion_mem('local',p[1],tam)
-    # def insert_var(var_id, var_type, dir, b_dim, dim):
+        dir = cg.direccion_mem('local',p[1],dim)
+    # 1.- guardar id y su tipo en tabla de variables
+    # 2.- indicar que esa variable es dimensionada
     
     vars_t.insert_var(p[2],p[1],dir,dimensionada,var_dim)
 
@@ -144,7 +132,7 @@ def p_vars(p):
             if var_dim == p[5]:
                 cg.POper.pop()
                 # asignamos direcciones
-                for i in range(tam-1,-1,-1):
+                for i in range(dim-1,-1,-1):
                     cg.POper.append('=')
                     cg.PilaO.append(dir + i)
                     cg.PTypes.append(p[1])
@@ -165,7 +153,7 @@ def p_vars(p):
             
             blanco = cg.direccion_mem('constantes',p[1],val=blanco)
 
-            for i in range(tam -1,-1,-1):
+            for i in range(dim - 1,-1,-1):
                 cg.PilaO.append(blanco)
                 cg.POper.append('=')
                 cg.PilaO.append(dir + i)
