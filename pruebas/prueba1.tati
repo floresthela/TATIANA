@@ -1,6 +1,17 @@
 program prueba1;
 int v = 10;
 int  e = 4;
+
+fun int fun1(float s){
+    print("hola");
+}
+
+fun int fun2(int a, string s){
+    v = 4 + 5 - v;
+}
+
 * {
+    float f1;
     circle(v);
+    fun1(f1);
 }

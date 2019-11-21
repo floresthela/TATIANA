@@ -495,11 +495,17 @@ def p_funCall(p):
         # print("HOLAA")
         # print(p[0])
         init = vars_t.table[p[0]]['begin']
-        params = vars_t.table[p[0]]['params']
+        params_declarados = vars_t.table[p[0]]['params']
         cg.fill_ERA(p[1])
         cg.generate_GOSUB(init)
 
-        cg.checa_Tipo_Params(params,p[3])
+        # si no se mandaron parametros manda lista vacía para checar
+        if p[3] is not None:
+            params_mandados = p[3]
+        else:
+            params_mandados = []
+
+        cg.checa_Tipo_Params(params_declarados,params_mandados)
 
     else:
         raise TypeError(f"Function '{p[1]}' not declared")

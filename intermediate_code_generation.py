@@ -402,8 +402,12 @@ class Intermediate_CodeGeneration:
         para checar si los parametros de la llamada a la funcion
         son del mismo tipo que cuando se declara
         '''
+        print('hola',params_dec,params_fun)
+
         len1 = len(params_dec)
         len2 = len(params_fun)
+
+        
 
         if len(params_fun) != len(params_dec):
             raise TypeError("ERROR: Expected "+str(len1)+" params, got "+str(len2)+" instead")
