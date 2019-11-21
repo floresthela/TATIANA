@@ -61,6 +61,7 @@ class Intermediate_CodeGeneration:
         self.Quads = [] # lista de cuádruplos que llevamos
         self.contador = 1 # creo que este no lo necesitamos
         self.cubo = SemanticCube()
+        self.PTemp = []  # solo la use para los params para meter el tipo de dato de cuando defines una funcion
 
         # Tabla de constantes [valor,dir]
         # un diccionario para buscar, si hacemos un arreglo creo que sería más tardado (for loop)
@@ -367,7 +368,7 @@ class Intermediate_CodeGeneration:
     def generate_ERA(self):
         '''
         Genera cuadruplo de ERA (llamada a funcion)
-        :param fun_id: el nombre de la funcion
+        :param fun: el nombre de la funcion
         '''
         quadruple = Quadruple('ERA', None, None, None)
         self.Quads.append(quadruple)
@@ -388,13 +389,26 @@ class Intermediate_CodeGeneration:
         quadruple = Quadruple('param', None, None, direccion)
         self.Quads.append(quadruple)
 
-    def generate_goSub(self, funcName):
+    def generate_GOSUB(self, begin):
         '''
         Generate goSub quadruple
-        Param: the function name
         '''
-        quadruple = Quadruple('gosub', None, None, funcName)
+        quadruple = Quadruple('GOSUB', None, None, begin)
         self.Quads.append(quadruple)
+
+
+    def checa_Tipo_Params(self, params_dec, params_fun):
+        '''
+        para checar si los parametros de la llamada a la funcion
+        son del mismo tipo que cuando se declara
+        '''
+        len1 = len(params_dec)
+        len2 = len(params_fun)
+
+        if len(params_fun) != len(params_dec):
+            raise TypeError("ERROR: Expected "+str(len1)+" params, got "+str(len2)+" instead")
+        elif params_dec != params_fun:
+            raise TypeError("ERROR: Type mismatch in parameters")
 
     def genera_matrices(self, base, r, c, var_dim):
         '''
@@ -406,7 +420,7 @@ class Intermediate_CodeGeneration:
         base = self.direccion_mem('constantes','int',val= base)
         ren = self.direccion_mem('constantes','int',val=var_dim[0])
         col = self.direccion_mem('constantes','int',val= var_dim[1])
-     
+
         # Cuádruplos para verificar rangos
         ver1 = Quadruple('VER', c, ren, None)
         ver2 = Quadruple('VER', r, col, None)
@@ -417,7 +431,7 @@ class Intermediate_CodeGeneration:
         # Genera cuádruplos para función s1 * m1 + s2 + base
         # Cuádruplos para * aux mdim T
         auxmdim = self.direccion_mem('local','int')
-        
+
         q_auxmdim = Quadruple('*',c,ren,auxmdim)
         self.Quads.append(q_auxmdim)
 
@@ -449,15 +463,16 @@ class Intermediate_CodeGeneration:
         self.Quads.append(ver)
 
         # Sumar base
-        
+
         sumabase = self.direccion_mem('local','int')
         q_sumabase = Quadruple('+',tam, base, sumabase)
         self.Quads.append(q_sumabase)
         print('arr',sumabase)
         return sumabase
 
+
     def format_quads(self):
-        print(self.Quads)
+        # print(self.Quads)
         return [(quad.operator, quad.left_op, quad.right_op, quad.result) for quad in self.Quads]
 
     def format_constantes(self):

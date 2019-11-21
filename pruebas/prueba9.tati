@@ -2,7 +2,7 @@ program prueba9;
 int a = 4;
 int b = 10 + 4 / 2;
 
-fun int fun1(int x, float d){
+fun int fun1(int x, float d, int v){
  print("HOLA MUNDO");
  }
 
@@ -10,9 +10,12 @@ fun int fun1(int x, float d){
 * {
 
     int c = 4 * 5 + a;
-    int x=1;
+    int x=1+11;
     float y = 3.5;
-    
+    int var1 = 1;
+
+    fun1(x,y, var1);
+
     if(a != 666){
         b = 1;
     } else {

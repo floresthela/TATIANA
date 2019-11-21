@@ -20,6 +20,7 @@ cg = Intermediate_CodeGeneration()
 #contador para la llamada de funcion
 # k = 0
 
+
 # IMPORTANTE: descomentar el vars_t de remove a las funciones para eliminarlas
 
 # PROGRAM
@@ -33,17 +34,22 @@ def p_program(p):
 
     print(vars_t.table)
     print(cg.constantes)
+    print(cg.Quads)
     f_quads = cg.format_quads()
     f_constantes = cg.format_constantes()
     genera_comp.genera_arch(p[2],vars_t.table, f_quads, f_constantes)
-
+  
 def p_program_fun(p):
     '''
-    program_fun : function program_fun
-                | empty
+    program_fun : funs
     '''
     cg.generate_GOTO_star()
 
+def p_funs(p):
+    '''
+    funs : function funs
+         | empty
+    '''
 # STAR
 def p_star(p):
     '''
@@ -306,6 +312,7 @@ def p_functionI(p):
     vars_t.FunDirectory(p[2],p[1],beginFun)
     # mete las funciones como variables globales...
     vars_t.table['global']['vars'][p[0]] = { 'id': p[0], 'type':p[1]}
+    print(vars_t.table[p[2]])
 
 
 
@@ -318,7 +325,7 @@ def p_function(p):
         vars = p[7]
         vars = vars[:-1]
         p[0] = vars
-
+    
 
     # vars_t.delete_vars(p[2])
 
@@ -376,8 +383,11 @@ def p_funParam(p):
     p[0] = (p[1],p[2])
 
     dir = cg.direccion_mem('local', p[1])
-    print('fun',vars_t.current_scope)
-    vars_t.insert_var(p[2], p[1], dir)
+    # print('fun',vars_t.current_scope)
+    vars_t.insert_var(p[2], p[1], dir, False,None)
+    # cg.PTemp.append(p[1])
+    vars_t.insert_param(p[2],p[1])
+    cg.PTemp.append(p[1])
 
 
 # VARS
@@ -484,21 +494,13 @@ def p_funCall(p):
         p[0] = p[1]
         # print("HOLAA")
         # print(p[0])
-
         init = vars_t.table[p[0]]['begin']
-        #print("Direccion", vars_t.table[p[3]]['dir'])
-        # busca = vars_t.search_var(p[1])
-        # print("ABER", busca)
-        # parametros = vars_t.table[p[1]]['params']
-        # print("PARAMETROSS DE LA vars table")
-        # print(parametros)
-        # # print("INIT")
-        # print(init)
-        cg.fill_ERA(init)
-        # print("PRUEBAAA")
-        # print(p[3])
+        params = vars_t.table[p[0]]['params']
+        cg.fill_ERA(p[1])
+        cg.generate_GOSUB(init)
 
-        cg.generate_goSub(p[1])
+        cg.checa_Tipo_Params(params,p[3])
+
     else:
         raise TypeError(f"Function '{p[1]}' not declared")
 
@@ -527,8 +529,15 @@ def p_funCall2(p):
     funCall2 : funCallParam funCall3
              | empty
     '''
-    # if len(p) == 3:
-    #     print("AQUI ESTAA??",p[1])
+    types = []
+    if len(p) == 3:
+        types.append(p[1])
+        types.append(p[2:])
+        
+        types = flatten(types)
+        types = types[:-1]
+        
+        p[0] = types
 
 
 def p_funCall3(p):
@@ -537,15 +546,25 @@ def p_funCall3(p):
              | empty
     '''
 
+    if len(p) == 4:
+        p[0] = p[2:]
+        
+
 
 def p_funCallParam(p):
     '''
     funCallParam : exp
     '''
-    print('FUNCALLPARAMS', p[1])
-    vt = vars_t.search_var(p[1])
+    # p[0] = p[1]
+    print('FUNCALLPARAMS', p[1][0])
+    vt = vars_t.search_var(p[1][0])
+    print('vt',vt)
+    # cg.checa_Tipo_Params(p[1][0])
+    
     dir = vt['dir']
-    print("Direcccion",dir)
+    type = vt['type']
+    p[0] = type
+
     cg.generate_paramQuad(dir)
 
 
@@ -939,7 +958,7 @@ def p_term(p):
     if cg.POper and cg.POper[-1] in ['+', '-']:
         t = cg.generate_quad(vars_t.current_scope)
 
-        vars_t.insert_temp(t,vars_t.current_scope)
+        vars_t.insert_temp(t, vars_t.current_scope)
 
 
 def p_term_o(p):
