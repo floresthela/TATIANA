@@ -159,14 +159,14 @@ class MaquinaVirtual:
             elif operador == 'hand_down':
                 if not self.turtle_activa:
                     self.activa_tortuga()
-                    self.turtle_active = True
+                    
                 self.estrella.pd()
                 sig += 1
 
             elif operador == 'hand_up':
                 if not self.turtle_activa:
                     self.activa_tortuga()
-                    self.turtle_active = True
+                    
                 self.estrella.pu()
                 sig += 1
 
@@ -175,7 +175,7 @@ class MaquinaVirtual:
                 mem = self.dame_mem(op_izq)
                 if not self.turtle_activa:
                     self.activa_tortuga()
-                    self.turtle_active = True
+                    
                 print('hola',mem[op_izq])
                 self.estrella.circle(mem[op_izq])
                 sig += 1
@@ -185,7 +185,7 @@ class MaquinaVirtual:
                 angle = float(mem[op_izq])
                 if not self.turtle_activa:
                     self.activa_tortuga()
-                    self.turtle_active = True
+                    
                 if angle > 360:
                     raise TypeError(f"Valor no debe exceder 360 grados")
                 self.estrella.lt(angle)
@@ -196,7 +196,7 @@ class MaquinaVirtual:
                 angle = float(mem[op_izq])
                 if not self.turtle_activa:
                     self.activa_tortuga()
-                    self.turtle_active = True
+                    
                 if angle > 360:
                     raise TypeError(f"Valor no debe exceder 360 grados")
                 self.estrella.rt(angle)
@@ -206,7 +206,7 @@ class MaquinaVirtual:
                 mem = self.dame_mem(op_izq)
                 if not self.turtle_activa:
                     self.activa_tortuga()
-                    self.turtle_active = True
+                    
                 self.estrella.bk(mem[op_izq])
                 sig += 1
 
@@ -214,10 +214,24 @@ class MaquinaVirtual:
                 mem = self.dame_mem(op_izq)
                 if not self.turtle_activa:
                     self.activa_tortuga()
-                    self.turtle_active = True
+                    
                 self.estrella.fd(mem[op_izq])
                 sig += 1
             
+            elif operador == 'square':
+                mem = self.dame_mem(op_izq)
+
+                # grafica cuadrado
+                self.estrella.forward(mem[op_izq])
+                self.estrella.left(90) 
+                self.estrella.forward(mem[op_izq])
+                self.estrella.left(90)
+                self.estrella.forward(mem[op_izq])
+                self.estrella.left(90)
+                self.estrella.forward(mem[op_izq])
+                self.estrella.left(90)
+                sig += 1
+
             # 2 exp
             # TODO: maybe cambiar el nombre a set_position
             elif operador == 'setXY':
@@ -226,7 +240,7 @@ class MaquinaVirtual:
 
                 if not self.turtle_activa:
                     self.activa_tortuga()
-                    self.turtle_active = True
+                    
                 sig += 1
                 
                 self.estrella.setpos(mem1[op_izq],mem2[op_der])
@@ -239,7 +253,7 @@ class MaquinaVirtual:
             
                 if not self.turtle_activa:
                     self.activa_tortuga()
-                    self.turtle_active = True
+                    
                 
                 self.estrella.circle(mem2[op_der],mem1[op_izq])
                 sig += 1
@@ -346,25 +360,22 @@ class MaquinaVirtual:
             return bool
 
     def activa_tortuga(self):
+        self.turtle_active = True
         s = Turtle()
-
-        self.estrella = Turtle()
         self.screen = Screen()
         self.dibuja_estrella(s)
         
         # self.star = Turtle(shape="estrella")
 
-        self.estrella.screen.title(self.programa)
+        self.screen.title(self.programa)
         self.estrella = Turtle(shape="estrella")
         # self.screen.clear()
-        self.screen.exitonclick()
+        # self.screen.exitonclick()
 
     def dibuja_estrella(self,lapiz):
         '''
         Define una figura de estrella como el lapiz que dibujará
         '''
-
-        s_temp = Screen()
 
         fig = Shape("compound")
         lapiz.setx(0)
@@ -383,7 +394,7 @@ class MaquinaVirtual:
         lapiz.end_poly()
 
         fig.addcomponent(lapiz.get_poly(),"purple","purple")
-        s_temp.register_shape("estrella",fig)
+        self.screen.register_shape("estrella",fig)
         lapiz.reset()
 
     def dame_contenido(self, dir):

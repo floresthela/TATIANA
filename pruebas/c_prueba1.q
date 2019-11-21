@@ -1,1 +1,1 @@
-{"Quads":[["=",41000,null,1000],["=",41001,null,1001],["print",null,null,51000],["+",41001,41002,21001],["-",21001,1000,21002],["=",21002,null,1000],["Goto_main",null,null,8],["circle",1000,null,null],["ERA",null,null,"fun1"],["param",null,null,26000],["GOSUB",null,null,3],["END",null,null,null]]}
+{"Quads":[["=",41000,null,1000],["=",41001,null,1001],["Goto_main",null,null,4],["circle",1000,null,null],["square",41002,null,null],["END",null,null,null]]}

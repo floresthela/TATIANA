@@ -43,13 +43,14 @@ def p_program_fun(p):
     '''
     program_fun : funs
     '''
-    cg.generate_GOTO_star()
+    
 
 def p_funs(p):
     '''
     funs : function funs
          | empty
     '''
+    
 # STAR
 def p_star(p):
     '''
@@ -92,7 +93,11 @@ def p_declara_vars(p):
     declara_vars : vars declara_vars
           | empty
     '''
-
+    scope = vars_t.current_scope
+    if scope == 'global' and not cg.gen_star:
+        cg.generate_GOTO_star()
+        cg.gen_star = True
+        
     if len(p) == 3:
         p[0] = p[1:]
         p[0] = flatten(p[0])
@@ -305,6 +310,7 @@ def p_functionI(p):
         '''
     #vars_t.FunDirectory(p[2], p[1])
     #cg.generate_ERA(p[2])
+    
     p[0] = p[2]
 
     cg.reset_locales()

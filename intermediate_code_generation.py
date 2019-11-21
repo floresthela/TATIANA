@@ -45,6 +45,7 @@ class Intermediate_CodeGeneration:
         self.PJumps = []
 
         self.inicia_star = None
+        self.gen_star = False
         self.era = None
 
         # contadores

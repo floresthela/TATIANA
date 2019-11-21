@@ -1,9 +1,9 @@
 program prueba1;
-int v = 10;
+int v = 50;
 int  e = 4;
 
 fun int fun1(float s){
-    print("hola");
+    print("jelou");
 }
 
 fun int fun2(int a, string s){
@@ -13,5 +13,5 @@ fun int fun2(int a, string s){
 * {
     float f1;
     circle(v);
-    fun1(f1);
+    square(100);
 }
