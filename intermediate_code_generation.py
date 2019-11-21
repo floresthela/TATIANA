@@ -402,8 +402,6 @@ class Intermediate_CodeGeneration:
         para checar si los parametros de la llamada a la funcion
         son del mismo tipo que cuando se declara
         '''
-        # print(params_fun)
-        # print(params_dec)
         len1 = len(params_dec)
         len2 = len(params_fun)
 
