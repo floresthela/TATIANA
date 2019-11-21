@@ -52,6 +52,7 @@ class Intermediate_CodeGeneration:
 
         self.temps = 0
 
+        # son 4 pero es solo para guardar booleanos, nunca los usamos
         self.c_params = 0
         self.c_global = [0,0,0,0]
         self.c_local = [0,0,0,0]
@@ -363,20 +364,6 @@ class Intermediate_CodeGeneration:
             quadruple = Quadruple(type, exp_2, exp_1, None)
             self.Quads.append(quadruple)
 
-    def generate_quad_repeat(self):
-        '''
-        Cuádruplo para graph stmt REPEAT
-        '''
-        exp_type = self.PTypes.pop()
-        if exp_type != 'int':
-            raise TypeError("ERROR: Type-mismatch")
-        else:
-            # supongo que esto terminará siendo parecido a un FOR
-            result = self.PilaO.pop()
-            quadruple = Quadruple('Repeat', None, None, None)
-            self.Quads.append(quadruple)
-            self.PJumps.append(len(self.Quads)-1)
-
     def generate_ERA(self):
         '''
         Genera cuadruplo de ERA (llamada a funcion)
@@ -408,6 +395,66 @@ class Intermediate_CodeGeneration:
         '''
         quadruple = Quadruple('gosub', None, None, funcName)
         self.Quads.append(quadruple)
+
+    def genera_matrices(self, base, r, c, var_dim):
+        '''
+        Generación de cuádruplos correspondientes para el acceso a una matriz
+        :param base: Dirección base
+        :param var_dim: Variable dimensionada
+        '''
+
+        base = self.direccion_mem('constantes','int',val= base)
+        ren = self.direccion_mem('constantes','int',val=var_dim[0])
+        col = self.direccion_mem('constantes','int',val= var_dim[1])
+     
+        # Cuádruplos para verificar rangos
+        ver1 = Quadruple('VER', c, ren, None)
+        ver2 = Quadruple('VER', r, col, None)
+
+        self.Quads.append(ver1)
+        self.Quads.append(ver2)
+
+        # Genera cuádruplos para función s1 * m1 + s2 + base
+        # Cuádruplos para * aux mdim T
+        auxmdim = self.direccion_mem('local','int')
+        
+        q_auxmdim = Quadruple('*',c,ren,auxmdim)
+        self.Quads.append(q_auxmdim)
+
+        # Cuádruplos para + aux1 aux2 T
+        sumaux = self.direccion_mem('local','int')
+        temp = Quadruple('+',auxmdim,r,sumaux)
+        self.Quads.append(temp)
+
+        # Cuádruplos para + T BASE T
+        sumabase = self.direccion_mem('local','int')
+        q_sumabase = Quadruple('+',sumaux, base, sumabase)
+        self.Quads.append(q_sumabase)
+        print('mat',sumabase)
+        return sumabase
+
+    def genera_arreglos(self,base,tam, var_dim):
+        '''
+        Generación de cuádruplos correspondientes para el acceso a un vetor
+        :param base: Dirección base
+        :param tam: Tamaño del arreglo
+        :param var_dim: Variable dimensionada
+        '''
+
+        base = self.direccion_mem('constantes','int',val=base)
+        tamano = self.direccion_mem('constantes','int',val= var_dim[1])
+
+        # Cuádruplo para verificar
+        ver = Quadruple('VER', tam, tamano, None)
+        self.Quads.append(ver)
+
+        # Sumar base
+        
+        sumabase = self.direccion_mem('local','int')
+        q_sumabase = Quadruple('+',tam, base, sumabase)
+        self.Quads.append(q_sumabase)
+        print('arr',sumabase)
+        return sumabase
 
     def format_quads(self):
         print(self.Quads)

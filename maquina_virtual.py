@@ -12,50 +12,59 @@ from memoria import Memoria
 
 class MaquinaVirtual:
     def __init__(self):
+
+        self.programa = None
         self.memoria = Memoria()
-        self.estrella = Turtle()
-        self.screen = Screen()
+        self.estrella = None
+        self.screen = None
+        self.turtle_activa = False
 
 
-    def agarra_ta(self,program):
+
+    def agarra_datos(self,program):
         '''
-        Recibe archivo .ta con todo { Quads:, FunDir:, tConstantes: }
-        :param program: Nombre del archivo
+        Recibe archivos con cuádruplos y el directorio de funciones y constantes
+        :param program: Nombre del programa compilado
         '''
-        arch = f"pruebas/{program}.ta"
-        archivo = open(arch, 'r')
-        todito = json.load(archivo)
+        quads = f"pruebas/c_{program}.q"
+        directorio = f"pruebas/c_{program}.d"
 
-        self.estrella.screen.title(program)
-        # fundir
-        fun_dir = todito["FunDir"]
-        # print(fun_dir)
-        # creamos memoria de constantelapiz...
-        self.haz_constantes(todito['tConstantes'])
+        arch_quads = open(quads, 'r')
+        arch_fundir = open(directorio, 'r')
+        
+        q = json.load(arch_quads)
+        d = json.load(arch_fundir)
+        
+        self.programa = program
+        fun_dir = d["FunDir"]
 
-
-        self.haz_quads(todito['Quads'],fun_dir)
+        self.haz_constantes(d['tConstantes'])
+        self.haz_quads(q['Quads'],fun_dir)
 
     # dnb
     def haz_quads(self,quads,fun_dir,sig=0):
         '''
-        Procesar cada cuadruplo de la lista de Quads recibida
+        Procesar cada cuadruplo de la lista de Quads recibida hasta que encuentre END
         :param quads: Lista con todos los quads
         :param fun_dir: Directorio de funciones
         :param sig: Apuntador al siguiente cuádruplo
         '''
-        s = Turtle()
-        screen = Screen()
-        self.dibuja_estrella(s)
-        screen.clear()
 
-        self.star = Turtle(shape="estrella")
 
         while True:
+            
             operador = quads[sig][0]
             op_izq = quads[sig][1]
             op_der = quads[sig][2]
             res = quads[sig][3]
+
+            # checamos que si traen ( ) y vamos por su valor
+            if isinstance(op_izq,str) and op_izq[0] == '(':
+                op_izq = self.dame_contenido(op_izq)
+            if isinstance(op_der,str) and op_der[0] == '(': 
+                op_der = self.dame_contenido(op_der)
+            if isinstance(res,str) and res[0] == '(':
+                res = self.dame_contenido(res)
 
             if operador == '=':
                 mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
@@ -111,21 +120,156 @@ class MaquinaVirtual:
                 sig +=1
 
             elif operador == 'print':
-                mem_r = self.dame_mem(res)
-                print(mem_r[res])
+                mem = self.dame_mem(res)
+                print(mem[res])
                 sig +=1
-                break
+                
 
-            elif operador == 'Goto_main':
-                jump = res -1
-                sig = jump
+            elif operador == 'read':
+                mem = self.dame_mem(res)
+                mem[res] = input()
+                sig += 1
+
+            elif operador == 'GotoF':
+                # memoria de valor booleano
+                mem_b = self.dame_mem(op_izq)
+                if mem_b[op_izq]:
+                    sig += 1
+                else:
+                    sig = int(res) - 1 
+            
+            elif operador == 'GotoV':
+                mem_b = self.dame_mem(op_izq)
+                if mem_b:
+                    sig = int(res) - 1
+                else:
+                    sig += 1
+
+            elif operador == 'Goto_main' or operador == 'Goto':
+                sig = int(res) - 1
                 # activamos memoria star
 
             elif operador == 'END':
                 break
 
+            #################################### GRAPH STATEMENTS ####################################
+            # 0 exp
+            elif operador == 'hand_down':
+                if not self.turtle_activa:
+                    self.activa_tortuga()
+                    self.turtle_active = True
+                self.estrella.pd()
+                sig += 1
 
+            elif operador == 'hand_up':
+                if not self.turtle_activa:
+                    self.activa_tortuga()
+                    self.turtle_active = True
+                self.estrella.pu()
+                sig += 1
 
+            # 1 exp
+            elif operador == 'circle':
+                mem = self.dame_mem(op_izq)
+                if not self.turtle_activa:
+                    self.activa_tortuga()
+                    self.turtle_active = True
+
+                print('hola',mem[op_izq])
+                self.estrella.circle(mem[op_izq])
+                sig += 1
+            
+            elif operador == 'left':
+                mem = self.dame_mem(op_izq)
+                angle = float(mem[op_izq])
+                if not self.turtle_activa:
+                    self.activa_tortuga()
+                    self.turtle_active = True
+                if angle > 360:
+                    raise TypeError(f"Valor no debe exceder 360 grados")
+                self.estrella.lt(angle)
+                sig += 1
+
+            elif operador == 'right':
+                mem = self.dame_mem(op_izq)
+                angle = float(mem[op_izq])
+                if not self.turtle_activa:
+                    self.activa_tortuga()
+                    self.turtle_active = True
+                if angle > 360:
+                    raise TypeError(f"Valor no debe exceder 360 grados")
+                self.estrella.rt(angle)
+                sig += 1
+            
+            elif operador == 'back':
+                mem = self.dame_mem(op_izq)
+                if not self.turtle_activa:
+                    self.activa_tortuga()
+                    self.turtle_active = True
+                self.estrella.bk(mem[op_izq])
+                sig += 1
+
+            elif operador == 'go':
+                mem = self.dame_mem(op_izq)
+                if not self.turtle_activa:
+                    self.activa_tortuga()
+                    self.turtle_active = True
+                self.estrella.fd(mem[op_izq])
+                sig += 1
+            
+            # 2 exp
+            # TODO: maybe cambiar el nombre a set_position
+            elif operador == 'setXY':
+                mem1 = self.dame_mem(op_izq)
+                mem2 = self.dame_mem(op_der)
+
+                if not self.turtle_activa:
+                    self.activa_tortuga()
+                    self.turtle_active = True
+                sig += 1
+                
+                self.estrella.setpos(mem1[op_izq],mem2[op_der])
+
+            elif operador == 'arc':
+                # arc(angulo,radio)
+                mem1 = self.dame_mem(op_izq)
+                mem2 = self.dame_mem(op_der)
+            
+                if not self.turtle_activa:
+                    self.activa_tortuga()
+                    self.turtle_active = True
+                
+                self.estrella.circle(mem2[op_der],mem1[op_izq])
+                sig += 1
+            
+            ##########################################################################################
+
+            elif operador == 'VER':
+                
+                mem1 = self.dame_mem(op_izq)
+                mem2 = self.dame_mem(op_der)
+        
+                if not(0 <= mem1[op_izq] < mem2[op_der]):
+                    raise TypeError(f"Out of bouuunddsss")
+                
+                sig += 1
+            ############ FUNCIONES ############
+
+            elif operador == 'ERA':
+                fun = fun_dir[op_izq]
+
+            # TODO: 
+            # agregar clear
+            # square
+            # triangle
+            # rectangle            
+            # arc
+            # hide_star
+            # show_star
+            # color_star
+            # size_star
+            # era
+            # params
 
     def haz_constantes(self, t):
         '''
@@ -156,7 +300,15 @@ class MaquinaVirtual:
 
         '''
 
+
     def dame_memorias(self, op_i, op_d, res):
+        '''
+        Regresa las direcciones de memoria a las que pertenecen los elementos de un cuádruplo a excepción del operador
+        :param op_i: Operador izquierdo del quad
+        :param op_d: Operador derecho del quad
+        :param res: Resultado del quad
+        :return: Memoria correspondiente
+        '''
         return self.dame_mem(op_i) , self.dame_mem(op_d), self.dame_mem(res)
 
     def dame_mem(self, dir):
@@ -188,10 +340,25 @@ class MaquinaVirtual:
         else:
             return bool
 
+    def activa_tortuga(self):
+        s = Turtle()
+        self.estrella = Turtle()
+        self.screen = Screen()
+        self.dibuja_estrella(s)
+        
+        # self.star = Turtle(shape="estrella")
+        self.estrella.screen.title(self.programa)
+        self.estrella = Turtle(shape="estrella")
+        # self.screen.clear()
+        self.screen.exitonclick()
+
     def dibuja_estrella(self,lapiz):
         '''
         Define una figura de estrella como el lapiz que dibujará
         '''
+
+        s_temp = Screen()
+
         fig = Shape("compound")
         lapiz.setx(0)
         lapiz.sety(4)
@@ -209,5 +376,12 @@ class MaquinaVirtual:
         lapiz.end_poly()
 
         fig.addcomponent(lapiz.get_poly(),"purple","purple")
-        self.screen.register_shape("estrella",fig)
+        s_temp.register_shape("estrella",fig)
         lapiz.reset()
+
+    def dame_contenido(self, dir):
+        # my_list = my_list[1:-1]
+        dir_aux = int(dir[1:-1])
+        dir_mem = self.dame_mem(dir_aux)
+        return dir_mem[dir_aux]
+ 
