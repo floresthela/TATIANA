@@ -397,17 +397,18 @@ class Intermediate_CodeGeneration:
         self.Quads.append(quadruple)
 
 
-    def checa_Tipo_Params(self, param):
+    def checa_Tipo_Params(self, params_fun, params_dec):
         '''
         para checar si los parametros de la llamada a la funcion
         son del mismo tipo que cuando se declara
         '''
-        compara1 = self.PTemp.pop(0)
-        compara2 = self.PTypes.pop(0)
+        print(params_fun)
+        print(params_dec)
+        # compara2 = 
         # print("compara1", compara1)
         # print("compara2", compara2)
-        if compara1 != compara2:
-            raise TypeError("ERROR: Type-mismatch in parameters")
+        # if compara1 != compara2:
+        #     raise TypeError("ERROR: Type-mismatch in parameters")
 
     def genera_matrices(self, base, r, c, var_dim):
         '''

@@ -325,7 +325,7 @@ def p_function(p):
         vars = p[7]
         vars = vars[:-1]
         p[0] = vars
-
+    
 
     # vars_t.delete_vars(p[2])
 
@@ -386,6 +386,7 @@ def p_funParam(p):
     # print('fun',vars_t.current_scope)
     vars_t.insert_var(p[2], p[1], dir, False,None)
     # cg.PTemp.append(p[1])
+    vars_t.insert_param(p[2],p[1])
     cg.PTemp.append(p[1])
 
 
@@ -494,8 +495,12 @@ def p_funCall(p):
         # print("HOLAA")
         # print(p[0])
         init = vars_t.table[p[0]]['begin']
+        params = vars_t.table[p[0]]['params']
         cg.fill_ERA(p[1])
         cg.generate_GOSUB(init)
+
+        cg.checa_Tipo_Params(params,p[3])
+
     else:
         raise TypeError(f"Function '{p[1]}' not declared")
 
@@ -524,8 +529,15 @@ def p_funCall2(p):
     funCall2 : funCallParam funCall3
              | empty
     '''
+    types = []
     if len(p) == 3:
-        p[0] = p[1]
+        types.append(p[1])
+        types.append(p[2:])
+        
+        types = flatten(types)
+        types = types[:-1]
+        
+        p[0] = types
 
 
 def p_funCall3(p):
@@ -533,20 +545,26 @@ def p_funCall3(p):
     funCall3 : COMMA funCallParam funCall3
              | empty
     '''
+
     if len(p) == 4:
-        p[0] = p[2]
+        p[0] = p[2:]
+        
 
 
 def p_funCallParam(p):
     '''
     funCallParam : exp
     '''
-    p[0] = p[1]
+    # p[0] = p[1]
     print('FUNCALLPARAMS', p[1][0])
     vt = vars_t.search_var(p[1][0])
-    cg.checa_Tipo_Params(p[1][0])
+    print('vt',vt)
+    # cg.checa_Tipo_Params(p[1][0])
+    
     dir = vt['dir']
-    # print("Direcccion",dir)
+    type = vt['type']
+    p[0] = type
+
     cg.generate_paramQuad(dir)
 
 
