@@ -258,7 +258,7 @@ class MaquinaVirtual:
             ############ FUNCIONES ############
 
             elif operador == 'ERA':
-                fun = fun_dir[op_izq]
+                fun = fun_dir[res]
 
 
 

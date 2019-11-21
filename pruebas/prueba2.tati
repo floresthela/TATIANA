@@ -8,12 +8,18 @@ fun void fun1(float b) {
 
 }
 
+fun void fun2(int a) {
+    print("hola");
+}
+
 *{
  float b = 3;
  print(b);
- fun1(b+1);
+ fun1(b+f1);
  b = g1 * 4 / 6 + 5;
  print(b);
- fun1(b);
+ 
+ fun2(g1);
+ 
  b = g1 * 4 / 6 + 5 - 40 * 4 + (9 + 5 * 6);
 }

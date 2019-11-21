@@ -368,7 +368,7 @@ class Intermediate_CodeGeneration:
     def generate_ERA(self):
         '''
         Genera cuadruplo de ERA (llamada a funcion)
-        :param fun_id: el nombre de la funcion
+        :param fun: el nombre de la funcion
         '''
         quadruple = Quadruple('ERA', None, None, None)
         self.Quads.append(quadruple)
@@ -389,12 +389,11 @@ class Intermediate_CodeGeneration:
         quadruple = Quadruple('param', None, None, direccion)
         self.Quads.append(quadruple)
 
-    def generate_goSub(self, funcName):
+    def generate_GOSUB(self, begin):
         '''
         Generate goSub quadruple
-        Param: the function name
         '''
-        quadruple = Quadruple('gosub', None, None, funcName)
+        quadruple = Quadruple('GOSUB', None, None, begin)
         self.Quads.append(quadruple)
 
 

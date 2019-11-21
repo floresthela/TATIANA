@@ -8,7 +8,7 @@ Flor Esthela Barbosa y Laura Santacruz
 import sys
 from ply import yacc
 import json
-#import genera_comp
+import genera_comp
 
 from functools import reduce
 from lexer import tokens
@@ -19,6 +19,7 @@ vars_t = VarsTable()
 cg = Intermediate_CodeGeneration()
 #contador para la llamada de funcion
 # k = 0
+
 
 # IMPORTANTE: descomentar el vars_t de remove a las funciones para eliminarlas
 
@@ -33,17 +34,22 @@ def p_program(p):
 
     print(vars_t.table)
     print(cg.constantes)
+    print(cg.Quads)
     f_quads = cg.format_quads()
     f_constantes = cg.format_constantes()
     genera_comp.genera_arch(p[2],vars_t.table, f_quads, f_constantes)
   
 def p_program_fun(p):
     '''
-    program_fun : function program_fun
-                | empty
+    program_fun : funs
     '''
     cg.generate_GOTO_star()
 
+def p_funs(p):
+    '''
+    funs : function funs
+         | empty
+    '''
 # STAR
 def p_star(p):
     '''
@@ -378,7 +384,7 @@ def p_funParam(p):
 
     dir = cg.direccion_mem('local', p[1])
     # print('fun',vars_t.current_scope)
-    vars_t.insert_var(p[2], p[1], dir)
+    vars_t.insert_var(p[2], p[1], dir, False,None)
     # cg.PTemp.append(p[1])
     cg.PTemp.append(p[1])
 
@@ -488,8 +494,8 @@ def p_funCall(p):
         # print("HOLAA")
         # print(p[0])
         init = vars_t.table[p[0]]['begin']
-        cg.fill_ERA(init)
-        cg.generate_goSub(p[1])
+        cg.fill_ERA(p[1])
+        cg.generate_GOSUB(init)
     else:
         raise TypeError(f"Function '{p[1]}' not declared")
 
@@ -536,9 +542,9 @@ def p_funCallParam(p):
     funCallParam : exp
     '''
     p[0] = p[1]
-    print('FUNCALLPARAMS', p[1])
-    vt = vars_t.search_var(p[1])
-    cg.checa_Tipo_Params(p[1])
+    print('FUNCALLPARAMS', p[1][0])
+    vt = vars_t.search_var(p[1][0])
+    cg.checa_Tipo_Params(p[1][0])
     dir = vt['dir']
     # print("Direcccion",dir)
     cg.generate_paramQuad(dir)
