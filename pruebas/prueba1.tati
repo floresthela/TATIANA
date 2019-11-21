@@ -1,6 +1,6 @@
 program prueba1;
-int v;
+int v = 10;
 int  e = 4;
-*{
-    int var1=3;
+* {
+    circle(v);
 }

@@ -125,7 +125,6 @@ class VarsTable:
             raise TypeError(f'Parameter {param_id} already declared')
 
     def insert_temp(self,type,scope):
-        #print(type,scope)
         # metemos a size (temps)
         index = -1
         if scope == 'global' or scope == 'star': index = 0
@@ -165,5 +164,3 @@ class VarsTable:
         else:
             raise TypeError(f"Table of variables for {table_id} wasn't found")
 
-
-    # también borramos los parametros o qué pedo ???

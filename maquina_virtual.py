@@ -21,7 +21,7 @@ class MaquinaVirtual:
 
 
 
-    def agarra_ta(self,program):
+    def agarra_datos(self,program):
         '''
         Recibe archivos con cuádruplos y el directorio de funciones y constantes
         :param program: Nombre del programa compilado
@@ -58,6 +58,7 @@ class MaquinaVirtual:
             op_der = quads[sig][2]
             res = quads[sig][3]
 
+            # checamos que si traen ( ) y vamos por su valor
             if isinstance(op_izq,str) and op_izq[0] == '(':
                 op_izq = self.dame_contenido(op_izq)
             if isinstance(op_der,str) and op_der[0] == '(': 
@@ -130,7 +131,6 @@ class MaquinaVirtual:
                 sig += 1
 
             elif operador == 'GotoF':
-
                 # memoria de valor booleano
                 mem_b = self.dame_mem(op_izq)
                 if mem_b[op_izq]:
@@ -152,7 +152,7 @@ class MaquinaVirtual:
             elif operador == 'END':
                 break
 
-            # GRAPH STATEMENTS
+            #################################### GRAPH STATEMENTS ####################################
             # 0 exp
             elif operador == 'hand_down':
                 if not self.turtle_activa:
@@ -175,6 +175,7 @@ class MaquinaVirtual:
                     self.activa_tortuga()
                     self.turtle_active = True
 
+                print('hola',mem[op_izq])
                 self.estrella.circle(mem[op_izq])
                 sig += 1
             
@@ -241,15 +242,21 @@ class MaquinaVirtual:
                 self.estrella.circle(mem2[op_der],mem1[op_izq])
                 sig += 1
             
+            ##########################################################################################
 
             elif operador == 'VER':
-                mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
                 
-                if not(mem1[op_izq] <= mem2[op_der] < mem_r[res]):
+                mem1 = self.dame_mem(op_izq)
+                mem2 = self.dame_mem(op_der)
+        
+                if not(0 <= mem1[op_izq] < mem2[op_der]):
                     raise TypeError(f"Out of bouuunddsss")
                 
                 sig += 1
+            ############ FUNCIONES ############
 
+            elif operador == 'ERA':
+                fun = fun_dir[op_izq]
 
             # TODO: 
             # agregar clear
@@ -263,7 +270,6 @@ class MaquinaVirtual:
             # size_star
             # era
             # params
-            # VER
 
     def haz_constantes(self, t):
         '''
@@ -301,7 +307,7 @@ class MaquinaVirtual:
         :param op_i: Operador izquierdo del quad
         :param op_d: Operador derecho del quad
         :param res: Resultado del quad
-        :return
+        :return: Memoria correspondiente
         '''
         return self.dame_mem(op_i) , self.dame_mem(op_d), self.dame_mem(res)
 
@@ -343,13 +349,16 @@ class MaquinaVirtual:
         # self.star = Turtle(shape="estrella")
         self.estrella.screen.title(self.programa)
         self.estrella = Turtle(shape="estrella")
-        self.screen.clear()
-        self.screen.mainloop()
+        # self.screen.clear()
+        self.screen.exitonclick()
 
     def dibuja_estrella(self,lapiz):
         '''
         Define una figura de estrella como el lapiz que dibujará
         '''
+
+        s_temp = Screen()
+
         fig = Shape("compound")
         lapiz.setx(0)
         lapiz.sety(4)
@@ -367,7 +376,7 @@ class MaquinaVirtual:
         lapiz.end_poly()
 
         fig.addcomponent(lapiz.get_poly(),"purple","purple")
-        self.screen.register_shape("estrella",fig)
+        s_temp.register_shape("estrella",fig)
         lapiz.reset()
 
     def dame_contenido(self, dir):

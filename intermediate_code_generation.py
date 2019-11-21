@@ -406,11 +406,10 @@ class Intermediate_CodeGeneration:
         base = self.direccion_mem('constantes','int',val= base)
         ren = self.direccion_mem('constantes','int',val=var_dim[0])
         col = self.direccion_mem('constantes','int',val= var_dim[1])
-        lim_inf = self.direccion_mem('constantes','int',val = 0)
      
         # Cuádruplos para verificar rangos
-        ver1 = Quadruple('VER', lim_inf, c, ren)
-        ver2 = Quadruple('VER', lim_inf, r, col)
+        ver1 = Quadruple('VER', c, ren, None)
+        ver2 = Quadruple('VER', r, col, None)
 
         self.Quads.append(ver1)
         self.Quads.append(ver2)
@@ -444,10 +443,9 @@ class Intermediate_CodeGeneration:
 
         base = self.direccion_mem('constantes','int',val=base)
         tamano = self.direccion_mem('constantes','int',val= var_dim[1])
-        lim_inf = self.direccion_mem('constantes','int',val = 0)
 
         # Cuádruplo para verificar
-        ver = Quadruple('VER', lim_inf, tam, tamano)
+        ver = Quadruple('VER', tam, tamano, None)
         self.Quads.append(ver)
 
         # Sumar base

@@ -29,5 +29,5 @@ def genera_arch(program,varst,quads,consts):
     
     
     # manda datos a máquina virtual
-    MaquinaVirtual().agarra_ta(program)
+    MaquinaVirtual().agarra_datos(program)
 
