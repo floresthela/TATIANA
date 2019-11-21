@@ -32,7 +32,7 @@ class VarsTable:
         self.initialized = False
 
     def FunDirectory(self, fun_id, type, start):
-        print(self.table)
+        # print(self.table)
         '''
         Create main directory to store all functions created on a program, current scope is global
         : param fun_id: Nombre del programa, función creada por usuario o star (main)

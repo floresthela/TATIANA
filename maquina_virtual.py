@@ -27,7 +27,7 @@ class MaquinaVirtual:
         archivo = open(arch, 'r')
         todito = json.load(archivo)
         self.programa = program
-        
+
         # fundir
         fun_dir = todito["FunDir"]
         # print(fun_dir)
@@ -45,7 +45,7 @@ class MaquinaVirtual:
         :param fun_dir: Directorio de funciones
         :param sig: Apuntador al siguiente cuádruplo
         '''
-        
+
 
         while True:
             operador = quads[sig][0]
@@ -110,7 +110,7 @@ class MaquinaVirtual:
                 mem = self.dame_mem(res)
                 print(mem[res])
                 sig +=1
-                
+
 
             elif operador == 'read':
                 mem = self.dame_mem(res)
@@ -124,8 +124,8 @@ class MaquinaVirtual:
                 if mem_b:
                     sig += 1
                 else:
-                    sig = int(res) - 1 
-            
+                    sig = int(res) - 1
+
             elif operador == 'GotoV':
                 mem_b = self.dame_mem(op_izq)
                 if mem_b:
@@ -159,7 +159,7 @@ class MaquinaVirtual:
                     self.activa_tortuga
 
                 self.estrella.circle(mem)
-            
+
             elif operador == 'left':
                 mem = self.dame_mem(op_izq)
                 angle = float(mem)
@@ -177,7 +177,7 @@ class MaquinaVirtual:
                 if angle > 360:
                     raise TypeError(f"Valor no debe exceder 360 grados")
                 self.estrella.rt(angle)
-            
+
             elif operador == 'back':
                 mem = self.dame_mem(op_izq)
                 if not self.turtle_activa:
@@ -189,7 +189,7 @@ class MaquinaVirtual:
                 if not self.turtle_activa:
                     self.activa_tortuga
                 self.estrella.fd(mem)
-            
+
             # 2 exp
             # TODO: maybe cambiar el nombre a set_position
             elif operador == 'setXY':
@@ -198,16 +198,16 @@ class MaquinaVirtual:
 
                 if not self.turtle_activa:
                     self.activa_tortuga
-                
+
                 self.estrella.setpos(mem1,mem2)
 
 
-            print(self.memoria.mem_global)
-            print(self.memoria.mem_local)
-            # TODO: 
+            # print(self.memoria.mem_global)
+            # print(self.memoria.mem_local)
+            # TODO:
             # square
             # triangle
-            # rectangle            
+            # rectangle
             # arc
             # hide_star
             # show_star
@@ -288,12 +288,12 @@ class MaquinaVirtual:
 
     def activa_tortuga(self):
         s = Turtle()
-        
+
         self.estrella = Turtle()
         self.screen = Screen()
-        
+
         self.dibuja_estrella(s)
-        
+
         self.star = Turtle(shape="estrella")
         self.estrella.screen.title(self.programa)
         self.screen.clear()
