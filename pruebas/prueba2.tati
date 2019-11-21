@@ -8,7 +8,7 @@ fun void fun1(float b) {
 
 }
 
-fun void fun2(int a, int aa, float bb, string s) {
+fun void fun2(int a, int aa, float bb) {
     print("hola");
 }
 
@@ -18,8 +18,8 @@ fun void fun2(int a, int aa, float bb, string s) {
  fun1(b+f1);
  b = g1 * 4 / 6 + 5;
  print(b);
- 
+
  fun2(g1, g1, f1);
- 
+
  b = g1 * 4 / 6 + 5 - 40 * 4 + (9 + 5 * 6);
 }

@@ -397,18 +397,18 @@ class Intermediate_CodeGeneration:
         self.Quads.append(quadruple)
 
 
-    def checa_Tipo_Params(self, params_fun, params_dec):
+    def checa_Tipo_Params(self, params_dec, params_fun):
         '''
         para checar si los parametros de la llamada a la funcion
         son del mismo tipo que cuando se declara
         '''
-        print(params_fun)
-        print(params_dec)
-        # compara2 = 
-        # print("compara1", compara1)
-        # print("compara2", compara2)
-        # if compara1 != compara2:
-        #     raise TypeError("ERROR: Type-mismatch in parameters")
+        len1 = len(params_dec)
+        len2 = len(params_fun)
+
+        if len(params_fun) != len(params_dec):
+            raise TypeError("ERROR: Expected "+str(len1)+" params, got "+str(len2)+" instead")
+        elif params_dec != params_fun:
+            raise TypeError("ERROR: Type mismatch in parameters")
 
     def genera_matrices(self, base, r, c, var_dim):
         '''
@@ -420,7 +420,7 @@ class Intermediate_CodeGeneration:
         base = self.direccion_mem('constantes','int',val= base)
         ren = self.direccion_mem('constantes','int',val=var_dim[0])
         col = self.direccion_mem('constantes','int',val= var_dim[1])
-     
+
         # Cuádruplos para verificar rangos
         ver1 = Quadruple('VER', c, ren, None)
         ver2 = Quadruple('VER', r, col, None)
@@ -431,7 +431,7 @@ class Intermediate_CodeGeneration:
         # Genera cuádruplos para función s1 * m1 + s2 + base
         # Cuádruplos para * aux mdim T
         auxmdim = self.direccion_mem('local','int')
-        
+
         q_auxmdim = Quadruple('*',c,ren,auxmdim)
         self.Quads.append(q_auxmdim)
 
@@ -463,7 +463,7 @@ class Intermediate_CodeGeneration:
         self.Quads.append(ver)
 
         # Sumar base
-        
+
         sumabase = self.direccion_mem('local','int')
         q_sumabase = Quadruple('+',tam, base, sumabase)
         self.Quads.append(q_sumabase)
