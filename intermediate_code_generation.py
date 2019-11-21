@@ -61,6 +61,7 @@ class Intermediate_CodeGeneration:
         self.Quads = [] # lista de cuádruplos que llevamos
         self.contador = 1 # creo que este no lo necesitamos
         self.cubo = SemanticCube()
+        self.PTemp = []  # solo la use para los params para meter el tipo de dato de cuando defines una funcion
 
         # Tabla de constantes [valor,dir]
         # un diccionario para buscar, si hacemos un arreglo creo que sería más tardado (for loop)
@@ -396,6 +397,19 @@ class Intermediate_CodeGeneration:
         quadruple = Quadruple('gosub', None, None, funcName)
         self.Quads.append(quadruple)
 
+
+    def checa_Tipo_Params(self, param):
+        '''
+        para checar si los parametros de la llamada a la funcion
+        son del mismo tipo que cuando se declara
+        '''
+        compara1 = self.PTemp.pop(0)
+        compara2 = self.PTypes.pop(0)
+        # print("compara1", compara1)
+        # print("compara2", compara2)
+        if compara1 != compara2:
+            raise TypeError("ERROR: Type-mismatch in parameters")
+
     def genera_matrices(self, base, r, c, var_dim):
         '''
         Generación de cuádruplos correspondientes para el acceso a una matriz
@@ -456,8 +470,9 @@ class Intermediate_CodeGeneration:
         print('arr',sumabase)
         return sumabase
 
+
     def format_quads(self):
-        print(self.Quads)
+        # print(self.Quads)
         return [(quad.operator, quad.left_op, quad.right_op, quad.result) for quad in self.Quads]
 
     def format_constantes(self):

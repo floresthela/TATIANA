@@ -26,8 +26,10 @@ class MaquinaVirtual:
         Recibe archivos con cuádruplos y el directorio de funciones y constantes
         :param program: Nombre del programa compilado
         '''
+
         quads = f"pruebas/c_{program}.q"
         directorio = f"pruebas/c_{program}.d"
+
 
         arch_quads = open(quads, 'r')
         arch_fundir = open(directorio, 'r')
@@ -123,7 +125,7 @@ class MaquinaVirtual:
                 mem = self.dame_mem(res)
                 print(mem[res])
                 sig +=1
-                
+
 
             elif operador == 'read':
                 mem = self.dame_mem(res)
@@ -136,8 +138,8 @@ class MaquinaVirtual:
                 if mem_b[op_izq]:
                     sig += 1
                 else:
-                    sig = int(res) - 1 
-            
+                    sig = int(res) - 1
+
             elif operador == 'GotoV':
                 mem_b = self.dame_mem(op_izq)
                 if mem_b:
@@ -174,7 +176,6 @@ class MaquinaVirtual:
                 if not self.turtle_activa:
                     self.activa_tortuga()
                     self.turtle_active = True
-
                 print('hola',mem[op_izq])
                 self.estrella.circle(mem[op_izq])
                 sig += 1
@@ -230,6 +231,7 @@ class MaquinaVirtual:
                 
                 self.estrella.setpos(mem1[op_izq],mem2[op_der])
 
+
             elif operador == 'arc':
                 # arc(angulo,radio)
                 mem1 = self.dame_mem(op_izq)
@@ -258,11 +260,14 @@ class MaquinaVirtual:
             elif operador == 'ERA':
                 fun = fun_dir[op_izq]
 
+
+
             # TODO: 
             # agregar clear
+
             # square
             # triangle
-            # rectangle            
+            # rectangle
             # arc
             # hide_star
             # show_star
@@ -342,11 +347,13 @@ class MaquinaVirtual:
 
     def activa_tortuga(self):
         s = Turtle()
+
         self.estrella = Turtle()
         self.screen = Screen()
         self.dibuja_estrella(s)
         
         # self.star = Turtle(shape="estrella")
+
         self.estrella.screen.title(self.programa)
         self.estrella = Turtle(shape="estrella")
         # self.screen.clear()
