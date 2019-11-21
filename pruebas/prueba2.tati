@@ -1,6 +1,7 @@
 program prueba2;
 int g1 = 5 + 3;
 float f1 = 5.4 + g1;
+
 fun void fun1(float b) {
  int a = 10;
  print(a + 5);

@@ -25,38 +25,24 @@ cg = Intermediate_CodeGeneration()
 # PROGRAM
 def p_program(p):
     '''
-    program : programp ID SEMICOLON declara_vars program_modules
+    program : PROGRAM ID SEMICOLON declara_vars program_fun star
     '''
 
     p[0] = "PROGRAM COMPILED"
     vars_t.delete_vars('global')
 
     print(vars_t.table)
-    print(cg.Quads)
     print(cg.constantes)
     f_quads = cg.format_quads()
     f_constantes = cg.format_constantes()
     genera_comp.genera_arch(p[2],vars_t.table, f_quads, f_constantes)
-
-
-def p_program_modules(p):
-    '''
-    program_modules : program_fun star
-    '''
-    cg.generate_GOTO_star()
-
-def p_programp(p):
-    '''
-    programp : PROGRAM
-    '''
-
-
+  
 def p_program_fun(p):
     '''
     program_fun : function program_fun
                 | empty
     '''
-
+    cg.generate_GOTO_star()
 
 # STAR
 def p_star(p):
@@ -107,42 +93,102 @@ def p_declara_vars(p):
 
 def p_vars(p):
     '''
-    vars : type ID vars1 equals exp SEMICOLON
-         | type ID vars1 SEMICOLON
+    vars : type ID dimensionada equals exp SEMICOLON
+         | type ID dimensionada SEMICOLON
     '''
     p[0] = (p[1], p[2])
 
-    if not vars_t.initialized:
-        vars_t.FunDirectory('global', 'np',None)
-        dir = cg.direccion_mem('global',p[1])
-        vars_t.insert_var(p[2],p[1],dir)
+    print(p[3])
+    # variables dimensionadas
+    if isinstance(p[3], tuple):
+        dimensionada = True
+        var_dim = p[3]
+        dim = var_dim[0] * var_dim[1]
 
     else:
-        dir = cg.direccion_mem('local',p[1])
-        vars_t.insert_var(p[2],p[1],dir)
+        dimensionada = False
+        var_dim = None
+        dim = 1
+    print(dim)
 
-    if len(p) == 7:
-        cg.PilaO.append(dir)
-        cg.PTypes.append(p[1])
-        if cg.POper and cg.POper[-1] in '=':
+    if not vars_t.initialized:
+        vars_t.FunDirectory('global', 'np',None)
+    
+    if vars_t.current_scope == 'global':
+        dir = cg.direccion_mem('global',p[1],dim)
+    
+    else:
+        dir = cg.direccion_mem('local',p[1],dim)
+    # 1.- guardar id y su tipo en tabla de variables
+    # 2.- indicar que esa variable es dimensionada
+    
+    vars_t.insert_var(p[2],p[1],dir,dimensionada,var_dim)
+
+    if dimensionada:
+        if cg.POper and cg.POper[-1] in ['=']:
+            
+            # checar que las tuplas con tamaños sean iguales
+            if var_dim == p[5]:
+                cg.POper.pop()
+                # asignamos direcciones
+                for i in range(dim-1,-1,-1):
+                    cg.POper.append('=')
+                    cg.PilaO.append(dir + i)
+                    cg.PTypes.append(p[1])
+
+                    cg.generate_quad(vars_t.current_scope)
+            else:
+                raise TypeError(f"Variable dimensionada {p[2]} debe ser de tamaño {var_dim}")
+        
+        
+        else:
+            # arreglo en blanco
+            if p[1] == 'int':
+                blanco = 0
+            elif p[1] == 'float':
+                blanco = 0.0
+            elif p[1] == 'string':
+                blanco = ""
+            
+            blanco = cg.direccion_mem('constantes',p[1],val=blanco)
+
+            for i in range(dim - 1,-1,-1):
+                cg.PilaO.append(blanco)
+                cg.POper.append('=')
+                cg.PilaO.append(dir + i)
+                
+                cg.PTypes.append(p[1])
+                cg.PTypes.append(p[1])
+
+                cg.generate_quad(vars_t.current_scope)
+ 
+    else:
+        # print('ok')
+        if cg.POper and cg.POper[-1] in ['=']:
+            cg.PilaO.append(dir)
+            cg.PTypes.append(p[1])
             result = cg.generate_quad(vars_t.current_scope)
 
 
-# TODO: una regla para arreglos y usarla siempre que necesitemos [] , [][]
 
-# VECTOR
-def p_vars1(p):
-    '''
-    vars1 : OPENBRACKET CTEINT CLOSEBRACKET vars3
-        | empty
-    '''
+        
 
-# MATRIXXX
-def p_vars3(p):
+# variable dimensionada o no..
+def p_dimensionada(p):
     '''
-    vars3 : OPENBRACKET CTEINT CLOSEBRACKET
-        | empty
+    dimensionada : OPENBRACKET CTEINT CLOSEBRACKET
+           | OPENBRACKET CTEINT CLOSEBRACKET OPENBRACKET CTEINT CLOSEBRACKET
+           | empty
     '''
+    if len(p) == 2:
+        p[0] = None
+    
+    # si es variable dimensionada mandamos parriba las dimensiones [0...CTEINT]
+    # (renglones,columnas)
+    elif len(p) == 4:
+        p[0] = (1, int(p[2]))
+    else:
+        p[0] = (int(p[2]),int(p[5]))
 
 # LOOP
 def p_loop(p):
@@ -150,7 +196,6 @@ def p_loop(p):
     loop : while
         | for
     '''
-
 
 # STMT
 def p_stmt(p):
@@ -167,23 +212,20 @@ def p_stmt(p):
 
 def p_assignment(p):
     '''
-    assignment : id assignment1 equals assignment3 SEMICOLON
+    assignment : id equals assignment3 SEMICOLON
     '''
-    # c = a + b; -> mete c a pilao
-
-def p_assignment1(p):
-    '''
-    assignment1 : assignment2
-                | assignment2 assignment1
-                | empty
-    '''
-
-
-def p_assignment2(p):
-    '''
-    assignment2 : OPENBRACKET exp CLOSEBRACKET
-    '''
-
+    t = vars_t.search_var(p[1][0])
+    if t:
+        if t['esdimensionada']:
+            dir = f"({p[1][1]})"
+            print(dir)
+        else:
+            dir = t['dir']
+        cg.PilaO.append(dir)
+        cg.PTypes.append(t['type'])
+    
+    if cg.POper and cg.POper[-1] in ['=']:
+        cg.generate_quad(vars_t.current_scope);
 
 def p_assignment3(p):
     '''
@@ -191,8 +233,6 @@ def p_assignment3(p):
                 | read
     '''
     p[0] = p[1]
-    if cg.POper[-1] == '=':
-        cg.generate_quad(vars_t.current_scope);
 
 
 # VAR_CTE
@@ -201,27 +241,56 @@ def p_vcte(p):
     vcte : cte_int
          | cte_float
          | cte_string
-         | id vcte1
+         | id
          | funCall
+         | vectormatriz
     '''
     p[0] = p[1]
     # 1. PilaO.Push(id.name)
-    if len(p) == 2:
-        cg.PilaO.append(p[1])
-
-def p_vcte1(p):
-    '''
-    vcte1 : OPENBRACKET exp CLOSEBRACKET vcte3
-          | empty
-    '''
+    # if len(p) == 2:
+    #     cg.PilaO.append(p[1])
+    
 
 
-def p_vcte3(p):
+# asignar valores a variable dimensionada
+# [1,2,3,4]
+# [[3,4,5],[5,6,7]]
+
+def p_vectormatriz(p):
     '''
-    vcte3 : OPENBRACKET exp CLOSEBRACKET
+    vectormatriz : OPENBRACKET vm1 CLOSEBRACKET
+                 | vm1
+    '''
+    if len(p) > 2:
+        p[0] = p[2]
+    else:
+        p[0] = p[1]
+
+def p_vm1(p):
+    '''
+    vm1 : OPENBRACKET vm2 CLOSEBRACKET COMMA vm1
+        | OPENBRACKET vm2 CLOSEBRACKET 
+    '''
+    if len(p) > 4:
+        if p[5][1] == p[2]:
+            p[0] = (p[5][0] + 1, p[2])
+        else:
+            raise TypeError(f"Las matrices deben tener arreglos del mismo tamaño")
+    else:
+        p[0] = (1,p[2])
+
+def p_vm2(p):
+    '''
+    vm2 : exp COMMA vm2
+        | exp
         | empty
-
     '''
+    if len(p) > 2:
+        p[0] = 1 + p[3]
+    else:
+        p[0] = 1
+
+
 # FUNCTION
 def p_functionI(p):
     '''
@@ -315,10 +384,7 @@ def p_funParam(p):
 
 
 # VARS
-# al final hay que actualizar diagramas
 
-def flatten(li):
-    return sum(([x] if not isinstance(x, list) else flatten(x) for x in li), [])
 
 # TYPE
 def p_type(p):
@@ -350,8 +416,8 @@ def p_read(p):
 def p_read1(p):
     '''
     read1 : OPENBRACKET exp CLOSEBRACKET OPENBRACKET exp CLOSEBRACKET
-              | OPENBRACKET exp CLOSEBRACKET
-              | empty
+          | OPENBRACKET exp CLOSEBRACKET
+          | empty
     '''
 
 def p_equals(p):
@@ -360,26 +426,63 @@ def p_equals(p):
     '''
     cg.POper.append(p[1])
 
-
 # ASSIGNMENT
+def p_indice_dimensionada(p):
+    '''
+    indice_dimensionada : OPENBRACKET exp CLOSEBRACKET OPENBRACKET exp CLOSEBRACKET
+                        | OPENBRACKET exp CLOSEBRACKET
+                        | empty
+
+    '''
+    if len(p) == 4:
+        p[0] = (0,p[2])
+    elif len(p) == 7:
+        p[0] = (p[2],p[5])
 
 def p_id(p):
     '''
-    id : ID
+    id : ID indice_dimensionada
     '''
-    p[0] = p[1]
 
     t = vars_t.search_var(p[1])
+    print('var' ,p[1],p[2])
     if t:
-        cg.PilaO.append(t['dir'])
-        cg.PTypes.append(t['type'])
-
+        if t['esdimensionada']:
+            # es dimensionada y no le asignaron indices
+            if p[2] is None:
+                raise TypeError(f"Variable dimensionada {p[1]} debe llevar sus indices")
+            base = t['dir']
+            var_dim = t['var_dim']
+            
+            lim1 = cg.PilaO.pop()
+            cg.PTypes.pop()
+            
+            # arreglo
+            if var_dim[0] == 1:
+                dir = cg.genera_arreglos(base, lim1, var_dim)
+            else:
+                if len(cg.PilaO) == 0:
+                    raise TypeError(f"Variable dimensionada {p[1]} debe llevar dos dimensiones [[],[]]")
+                lim2 = cg.PilaO.pop()
+                cg.PTypes.pop()
+                print('lim',lim1,lim2)
+                dir = cg.genera_matrices(base,lim1,lim2,var_dim)
+            
+            # regresamos (dir) para cuadruplos después...
+            cg.PilaO.append(f"({dir})")
+            cg.PTypes.append(t['type'])
+            p[0] = p[1] , dir
+        else:
+            cg.PilaO.append(t['dir'])
+            cg.PTypes.append(t['type'])
+            p[0] = p[1] , 0
 
 # FUN_CALL
 def p_funCall(p):
     '''
     funCall : ID iniciaFunCall funCall2 terminaFunCall
     '''
+    cg.PilaO.append(p[1])
     if p[1] in vars_t.table:
         p[0] = p[1]
         # print("HOLAA")
@@ -450,7 +553,7 @@ def p_cte_int(p):
     dir = cg.direccion_mem('constantes','int',1, p[1])
     p[0] = dir
     cg.PTypes.append('int')
-
+    cg.PilaO.append(dir)
 
 
 def p_cte_float(p):
@@ -460,7 +563,7 @@ def p_cte_float(p):
     dir = cg.direccion_mem('constantes','float',1, p[1])
     p[0] = dir
     cg.PTypes.append('float')
-
+    cg.PilaO.append(dir)
 
 def p_cte_string(p):
     '''
@@ -468,7 +571,7 @@ def p_cte_string(p):
     '''
     dir = cg.direccion_mem('constantes','string', 1, p[1])
     p[0] = dir
-
+    cg.PilaO.append(dir)
     cg.PTypes.append('string')
 
 
@@ -526,7 +629,6 @@ def p_elseif(p):
     elseif : ELSEIF
     '''
     cg.generate_else()
-    # cg.generate_elseif()
 
 
 def p_else(p):
@@ -651,7 +753,6 @@ def p_while1(p):
     cg.generate_GOTOF()
 
 
-# de tanto ver y escribir la palabra while siento que esta bien rara y la estoy escribiendo mal
 def p_while_w(p):
     '''
     while_w : WHILE
@@ -673,8 +774,6 @@ def p_unaExp(p):
     unaExp : OPENPAREN exp CLOSEPAREN
     '''
 
-
-# TODAS LAS EXP DE GRAPH STMTS DEBERÁN SER INTS ALV
 # GRAPH_STMT
 def p_graphstmt(p):
     '''
@@ -742,39 +841,6 @@ def p_graphmove2(p):
     p[0] = p[1]
     cg.generate_quad_graph2(p[0])
 
-# SUPER DUDA: QUADS CON VARIOS PARAMETROS ?¿?¿ CÓMO HACEMOS EL REPEAT
-# pensaba hacer un tipo while pero en lugar de gotof, ir restando al número asignado de veces que se repetirá... idk
-
-# GRAPH_REPEAT
-# def p_graphr(p):
-#     '''
-#     graphr : repeat rep OPENBRACES graphstmt graphr1 CLOSEBRACES
-#     '''
-#     end = cg.PJumps.pop()
-#     r_return = cg.PJumps.pop()
-#     # esto no lo sé
-#     cg.generate_GOTO()
-#     cg.fill_goto(r_return)
-#     cg.fill_quad(end)
-
-# def p_graphr1(p):
-#     '''
-#     graphr1 : graphstmt graphr1
-#             | empty
-#     '''
-
-# def p_rep(p):
-#     '''
-#     rep : OPENPAREN exp CLOSEPAREN
-#     '''
-#     cg.generate_quad_repeat()
-
-# def p_repeat(p):
-#     '''
-#     repeat : REPEAT
-#     '''
-#     cg.PJumps.append(len(cg.Quads) + 1)
-
 # GRAPH_VIEW
 def p_graphview(p):
     '''
@@ -827,7 +893,7 @@ def p_exp(p):
     if len(p) == 2:
         p[0] = p[1]
     else:
-        p[0] = p[1:]
+        p[0] = p[1]
 
     if cg.POper and cg.POper[-1] in ['>','<','==','!=']:
         cg.generate_quad(vars_t.current_scope)
@@ -921,5 +987,8 @@ def p_error(p):
         err = f"{p.value} en la linea {p.lineno}"
 
     raise TypeError(f"Error de sintaxis: {err}")
+
+def flatten(li):
+    return sum(([x] if not isinstance(x, list) else flatten(x) for x in li), [])
 
 parser = yacc.yacc(start='program')
