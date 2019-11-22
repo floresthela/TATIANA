@@ -239,19 +239,35 @@ class Intermediate_CodeGeneration:
             self.Quads.append(quadruple)
             self.PJumps.append(len(self.Quads)-1)
 
-    def generate_GOTOV(self):
-        '''
-        Genera GOTOV para for
-        '''
-        for_type = self.PTypes.pop()
-        if for_type != 'bool':
-            raise TypeError("ERROR: Type-mismatch")
-        else:
-            cond = self.PilaO.pop()
-            quadruple = Quadruple('GotoV', cond, None, None)
-            self.Quads.append(quadruple)
-            self.PJumps.append(len(self.Quads)-1)
+    # def generate_GOTOV(self):
+    #     '''
+    #     Genera GOTOV para for
+    #     '''
+    #     for_type = self.PTypes.pop()
+    #     if for_type != 'bool':
+    #         raise TypeError("ERROR: Type-mismatch")
+    #     else:
+    #         cond = self.PilaO.pop()
+    #         quadruple = Quadruple('GotoV', cond, None, None)
+    #         self.Quads.append(quadruple)
+    #         self.PJumps.append(len(self.Quads)-1)
 
+    def generateFor_condition(self):
+        '''
+        Genera el cuádruplo de la condicion del for
+        '''
+        operator = '>'
+        self.POper.append(operator)
+        # print("pila operadores", self.POper)
+        # print("func for")
+        # print(self.PilaO)
+        op_izq = self.PilaO.pop()
+        # print("izquierdo", op_izq)
+        op_derecho = self.PilaO.pop()
+        # print('derecho', op_derecho)
+        result = self.direccion_mem('local', 'bool')
+        quadruple = Quadruple(operator, op_izq, op_derecho, result)
+        self.Quads.append(quadruple)
 
     def generate_END(self):
         '''
@@ -259,25 +275,6 @@ class Intermediate_CodeGeneration:
         '''
         quadruple = Quadruple('END',None,None,None)
         self.Quads.append(quadruple)
-
-    def check_type(self, var):
-        '''
-        Checa que el tipo de la variable (id)
-        param: Variable (id) que se agrega a PilaO
-        '''
-        tipo = self.PTypes.pop()
-        if tipo != 'int' or tipo != 'float':
-            raise TypeError("ERROR: Type mismatch")
-        else:
-            self.PilaO.append(var)
-
-    def generate_compare_quad(self):
-        '''
-        Generate comparisson quad used in for loop
-        '''
-        tmp1 = self.PilaO.pop()
-        tmp2 = self.PilaO.pop()
-
 
     def generate_else(self):
         '''
@@ -401,7 +398,6 @@ class Intermediate_CodeGeneration:
         quadruple = Quadruple('GOSUB', None, None, begin)
         self.Quads.append(quadruple)
 
-
     def checa_Tipo_Params(self, params_dec, params_fun):
         '''
         para checar si los parametros de la llamada a la funcion
@@ -411,8 +407,6 @@ class Intermediate_CodeGeneration:
 
         len1 = len(params_dec)
         len2 = len(params_fun)
-
-        
 
         if len(params_fun) != len(params_dec):
             raise TypeError("ERROR: Expected "+str(len1)+" params, got "+str(len2)+" instead")

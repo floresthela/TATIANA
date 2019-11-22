@@ -1,0 +1,10 @@
+program prueba11;
+
+* {
+
+    int i = 0;
+    int a;
+    for (i:5){
+     a=4;
+    }
+}

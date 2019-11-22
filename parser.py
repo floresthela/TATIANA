@@ -38,19 +38,19 @@ def p_program(p):
     f_quads = cg.format_quads()
     f_constantes = cg.format_constantes()
     genera_comp.genera_arch(p[2],vars_t.table, f_quads, f_constantes)
-  
+
 def p_program_fun(p):
     '''
     program_fun : funs
     '''
-    
+
 
 def p_funs(p):
     '''
     funs : function funs
          | empty
     '''
-    
+
 # STAR
 def p_star(p):
     '''
@@ -97,7 +97,7 @@ def p_declara_vars(p):
     if scope == 'global' and not cg.gen_star:
         cg.generate_GOTO_star()
         cg.gen_star = True
-        
+
     if len(p) == 3:
         p[0] = p[1:]
         p[0] = flatten(p[0])
@@ -119,24 +119,24 @@ def p_vars(p):
         dimensionada = False
         var_dim = None
         dim = 1
-    
+
 
     if not vars_t.initialized:
         vars_t.FunDirectory('global', 'np',None)
-    
+
     if vars_t.current_scope == 'global':
         dir = cg.direccion_mem('global',p[1],dim)
-    
+
     else:
         dir = cg.direccion_mem('local',p[1],dim)
     # 1.- guardar id y su tipo en tabla de variables
     # 2.- indicar que esa variable es dimensionada
-    
+
     vars_t.insert_var(p[2],p[1],dir,dimensionada,var_dim)
 
     if dimensionada:
         if cg.POper and cg.POper[-1] in ['=']:
-            
+
             # checar que las tuplas con tamaños sean iguales
             if var_dim == p[5]:
                 cg.POper.pop()
@@ -149,8 +149,8 @@ def p_vars(p):
                     cg.generate_quad(vars_t.current_scope)
             else:
                 raise TypeError(f"Variable dimensionada {p[2]} debe ser de tamaño {var_dim}")
-        
-        
+
+
         else:
             # arreglo en blanco
             if p[1] == 'int':
@@ -159,19 +159,19 @@ def p_vars(p):
                 blanco = 0.0
             elif p[1] == 'string':
                 blanco = ""
-            
+
             blanco = cg.direccion_mem('constantes',p[1],val=blanco)
 
             for i in range(dim - 1,-1,-1):
                 cg.PilaO.append(blanco)
                 cg.POper.append('=')
                 cg.PilaO.append(dir + i)
-                
+
                 cg.PTypes.append(p[1])
                 cg.PTypes.append(p[1])
 
                 cg.generate_quad(vars_t.current_scope)
- 
+
     else:
         # print('ok')
         if cg.POper and cg.POper[-1] in ['=']:
@@ -181,7 +181,7 @@ def p_vars(p):
 
 
 
-        
+
 
 # variable dimensionada o no..
 def p_dimensionada(p):
@@ -192,7 +192,7 @@ def p_dimensionada(p):
     '''
     if len(p) == 2:
         p[0] = None
-    
+
     # si es variable dimensionada mandamos parriba las dimensiones [0...CTEINT]
     # (renglones,columnas)
     elif len(p) == 4:
@@ -228,12 +228,12 @@ def p_assignment(p):
     if t:
         if t['esdimensionada']:
             dir = f"({p[1][1]})"
-            
+
         else:
             dir = t['dir']
         cg.PilaO.append(dir)
         cg.PTypes.append(t['type'])
-    
+
     if cg.POper and cg.POper[-1] in ['=']:
         cg.generate_quad(vars_t.current_scope);
 
@@ -259,7 +259,7 @@ def p_vcte(p):
     # 1. PilaO.Push(id.name)
     # if len(p) == 2:
     #     cg.PilaO.append(p[1])
-    
+
 
 
 # asignar valores a variable dimensionada
@@ -279,7 +279,7 @@ def p_vectormatriz(p):
 def p_vm1(p):
     '''
     vm1 : OPENBRACKET vm2 CLOSEBRACKET COMMA vm1
-        | OPENBRACKET vm2 CLOSEBRACKET 
+        | OPENBRACKET vm2 CLOSEBRACKET
     '''
     if len(p) > 4:
         if p[5][1] == p[2]:
@@ -309,7 +309,7 @@ def p_functionI(p):
         '''
     #vars_t.FunDirectory(p[2], p[1])
     #cg.generate_ERA(p[2])
-    
+
     p[0] = p[2]
 
     cg.reset_locales()
@@ -317,7 +317,7 @@ def p_functionI(p):
     vars_t.FunDirectory(p[2],p[1],beginFun)
     # mete las funciones como variables globales...
     vars_t.table['global']['vars'][p[0]] = { 'id': p[0], 'type':p[1]}
-    
+
 
 
 
@@ -330,7 +330,7 @@ def p_function(p):
         vars = p[7]
         vars = vars[:-1]
         p[0] = vars
-    
+
 
     # vars_t.delete_vars(p[2])
 
@@ -457,7 +457,7 @@ def p_id(p):
     '''
 
     t = vars_t.search_var(p[1])
-    
+
     if t:
         if t['esdimensionada']:
             # es dimensionada y no le asignaron indices
@@ -465,10 +465,10 @@ def p_id(p):
                 raise TypeError(f"Variable dimensionada {p[1]} debe llevar sus indices")
             base = t['dir']
             var_dim = t['var_dim']
-            
+
             lim1 = cg.PilaO.pop()
             cg.PTypes.pop()
-            
+
             # arreglo
             if var_dim[0] == 1:
                 dir = cg.genera_arreglos(base, lim1, var_dim)
@@ -477,9 +477,9 @@ def p_id(p):
                     raise TypeError(f"Variable dimensionada {p[1]} debe llevar dos dimensiones [[],[]]")
                 lim2 = cg.PilaO.pop()
                 cg.PTypes.pop()
-                
+
                 dir = cg.genera_matrices(base,lim1,lim2,var_dim)
-            
+
             # regresamos (dir) para cuadruplos después...
             cg.PilaO.append(f"({dir})")
             cg.PTypes.append(t['type'])
@@ -541,15 +541,13 @@ def p_funCall2(p):
              | empty
     '''
     types = []
-    
+
     if len(p) == 3:
         types.append(p[1])
         types.append(p[2:])
-        
         types = flatten(types)
         types = types[:-1]
         print(types)
-        
         p[0] = types
 
 
@@ -561,9 +559,9 @@ def p_funCall3(p):
 
     if len(p) == 4:
         p[0] = p[2:]
-        
 
-# ESTA FUNCIÓN VA A LA DOCUMENTACIÓN, PRIMER TOMO 
+
+# ESTA FUNCIÓN VA A LA DOCUMENTACIÓN, PRIMER TOMO
 def p_funCallParam(p):
     '''
     funCallParam : exp
@@ -587,7 +585,7 @@ def p_funCallParam(p):
             t = 'float'
         elif type(temp) is str:
             t = 'string'
-    
+
     # print(list(my_dict.keys())[list(my_dict.values()).index(112)])
     # cg.checa_Tipo_Params(p[1][0])
     p[0] = t
@@ -734,44 +732,34 @@ def p_body1(p):
 # TODO: cuádruplos para for
 def p_for(p):
     '''
-    for : for1 body
+    for : forInit for1 TWODOTS for2 forClose body
     '''
-    end = cg.PJumps.pop()
-    return_for = cg.PJumps.pop()
-    id = cg.PilaO.pop()
-    id += 1
-    cg.generate_GOTO()
-    cg.fill_goto(return_for)
-    cg.fill_quad(end)
+    info = vars_t.search_var(p[2])
+    print(info)
+    # print("tipos", cg.PTypes)
 
+    #el id tiene que ser de tipo int o float...
+    #no se puede hacer un for sobre un bool o un string...
+    if info['type'] == 'bool' or info['type'] == 'string':
+        raise TypeError("ERROR: expected an int or a float")
+    else:
+        print("todo bien")
+        cg.generateFor_condition()
+        # print("scope",vars_t.current_scope)
+        # direccion = info['dir']
+        # cg.PilaO.append(direccion)
+        # print("pila", cg.PilaO)
+        # # cg.PilaO.append(p[4])
+        # print("pila2", cg.PilaO)
+        # cg.generateFor_condition()
 
-def p_for1(p):
-    '''
-    for1 : forInit OPENPAREN ID for2
-    '''
-    p[0] = p[3]
-    # 2
-    #cg.PilaO.push()
-    cg.check_type(p[3])
-
-
-def p_for2(p):
-    '''
-    for2 : TWODOTS exp for3
-    '''
-    # 3
-    cg.PilaO.append(p[2])
-    # tmp1 = cg.PilaO.pop()
-    # tmp2 = cg.PilaO.pop()
-    # cg.PilaO.append(tmp2)
-
-
-def p_for3(p):
-    '''
-    for3 : CLOSEPAREN
-    '''
-    # 4
-    cg.generate_GOTOV()
+    # end = cg.PJumps.pop()
+    # return_for = cg.PJumps.pop()
+    # id = cg.PilaO.pop()
+    # id += 1
+    # cg.generate_GOTO()
+    # cg.fill_goto(return_for)
+    # cg.fill_quad(end)
 
 
 def p_forInit(p):
@@ -780,6 +768,36 @@ def p_forInit(p):
     '''
     # 1
     cg.PJumps.append(len(cg.Quads)+1)
+
+
+def p_for1(p):
+    '''
+    for1 : OPENPAREN ID
+    '''
+    p[0] = p[2]
+    # 2
+    # cg.PilaO.push()
+    # cg.check_type(p[3])
+
+
+def p_for2(p):
+    '''
+    for2 : exp
+    '''
+    p[0] = p[1]
+    # 3
+    # cg.PilaO.append(p[2])
+    # tmp1 = cg.PilaO.pop()
+    # tmp2 = cg.PilaO.pop()
+    # cg.PilaO.append(tmp2)
+
+
+def p_forClose(p):
+    '''
+    forClose : CLOSEPAREN
+    '''
+    # 4
+    # cg.generate_GOTOV()
 
 
 # WHILE
