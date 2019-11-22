@@ -341,8 +341,12 @@ class Intermediate_CodeGeneration:
         Genera cuádruplo de gráfica que lleva solo un parámetro
         :param type: tipo de acción para graficar
         '''
+        print('t',type)
         exp_type = self.PTypes.pop()
-        if exp_type != 'int':
+
+        if type == 'color_star' and exp_type != 'string':
+            raise TypeError("ERROR: Type-mismatch")
+        elif type != 'color_star' and exp_type != 'int':
             raise TypeError("ERROR: Type-mismatch")
         else:
             result = self.PilaO.pop()

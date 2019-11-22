@@ -32,7 +32,7 @@ reserved = {
     'arc': 'ARC',
     'hide_star': 'HIDE_STAR',
     'show_star': 'SHOW_STAR',
-    'setXY': 'SETXY',
+    'position': 'POSITION',
     'color_star': 'COLOR_STAR',
     'size_star': 'SIZE_STAR',
     'return': 'RETURN',

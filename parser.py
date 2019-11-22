@@ -109,7 +109,6 @@ def p_vars(p):
     '''
     p[0] = (p[1], p[2])
 
-    print(p[3])
     # variables dimensionadas
     if isinstance(p[3], tuple):
         dimensionada = True
@@ -120,7 +119,7 @@ def p_vars(p):
         dimensionada = False
         var_dim = None
         dim = 1
-    print(dim)
+    
 
     if not vars_t.initialized:
         vars_t.FunDirectory('global', 'np',None)
@@ -229,7 +228,7 @@ def p_assignment(p):
     if t:
         if t['esdimensionada']:
             dir = f"({p[1][1]})"
-            print(dir)
+            
         else:
             dir = t['dir']
         cg.PilaO.append(dir)
@@ -318,7 +317,7 @@ def p_functionI(p):
     vars_t.FunDirectory(p[2],p[1],beginFun)
     # mete las funciones como variables globales...
     vars_t.table['global']['vars'][p[0]] = { 'id': p[0], 'type':p[1]}
-    print(vars_t.table[p[2]])
+    
 
 
 
@@ -458,7 +457,7 @@ def p_id(p):
     '''
 
     t = vars_t.search_var(p[1])
-    print('var' ,p[1],p[2])
+    
     if t:
         if t['esdimensionada']:
             # es dimensionada y no le asignaron indices
@@ -478,7 +477,7 @@ def p_id(p):
                     raise TypeError(f"Variable dimensionada {p[1]} debe llevar dos dimensiones [[],[]]")
                 lim2 = cg.PilaO.pop()
                 cg.PTypes.pop()
-                print('lim',lim1,lim2)
+                
                 dir = cg.genera_matrices(base,lim1,lim2,var_dim)
             
             # regresamos (dir) para cuadruplos después...
@@ -542,12 +541,14 @@ def p_funCall2(p):
              | empty
     '''
     types = []
+    
     if len(p) == 3:
         types.append(p[1])
         types.append(p[2:])
         
         types = flatten(types)
         types = types[:-1]
+        print(types)
         
         p[0] = types
 
@@ -562,21 +563,34 @@ def p_funCall3(p):
         p[0] = p[2:]
         
 
-
+# ESTA FUNCIÓN VA A LA DOCUMENTACIÓN, PRIMER TOMO 
 def p_funCallParam(p):
     '''
     funCallParam : exp
     '''
     # p[0] = p[1]
-    print('FUNCALLPARAMS', p[1][0])
-    vt = vars_t.search_var(p[1][0])
-    print('vt',vt)
-    # cg.checa_Tipo_Params(p[1][0])
-    
-    dir = vt['dir']
-    type = vt['type']
-    p[0] = type
+    print(cg.constantes)
+    if isinstance(p[1],tuple):
+        var_param = p[1][0]
+        print(var_param)
+        vt = vars_t.search_var(var_param)
+        dir = vt['dir']
+        t = vt['type']
+    else:
+        # es constante el parametro alv
+        dir = p[1]
+        temp = cg.constantes[dir]
 
+        if type(temp) is int:
+            t = 'int'
+        elif type(temp) is float:
+            t = 'float'
+        elif type(temp) is str:
+            t = 'string'
+    
+    # print(list(my_dict.keys())[list(my_dict.values()).index(112)])
+    # cg.checa_Tipo_Params(p[1][0])
+    p[0] = t
     cg.generate_paramQuad(dir)
 
 
@@ -829,6 +843,7 @@ def p_graphfig1(p):
     '''
     graphfig1 : CIRCLE unaExp
             | SQUARE unaExp
+            | TRIANGLE unaExp
     '''
     p[0] = p[1]
     cg.generate_quad_graph1(p[0])
@@ -836,8 +851,7 @@ def p_graphfig1(p):
 # Figures que llevan dos exp
 def p_graphfig2(p):
     '''
-    graphfig2 : TRIANGLE dosExp
-            | RECTANGLE dosExp
+    graphfig2 : RECTANGLE dosExp
     '''
     p[0] = p[1]
     cg.generate_quad_graph2(p[0])
@@ -903,7 +917,7 @@ def p_graphview1(p):
 
 def p_graphview2(p):
     '''
-    graphview2 : SETXY dosExp
+    graphview2 : POSITION dosExp
     '''
     p[0] = p[1]
     cg.generate_quad_graph2(p[0])

@@ -117,7 +117,7 @@ Rule 111   graphfig -> graphfig1 SEMICOLON
 Rule 112   graphfig -> graphfig2 SEMICOLON
 Rule 113   graphfig1 -> CIRCLE unaExp
 Rule 114   graphfig1 -> SQUARE unaExp
-Rule 115   graphfig2 -> TRIANGLE dosExp
+Rule 115   graphfig1 -> TRIANGLE unaExp
 Rule 116   graphfig2 -> RECTANGLE dosExp
 Rule 117   graphmove -> graphmove0 SEMICOLON
 Rule 118   graphmove -> graphmove1 SEMICOLON
@@ -136,7 +136,7 @@ Rule 130   graphview0 -> HIDE_STAR
 Rule 131   graphview0 -> SHOW_STAR
 Rule 132   graphview1 -> COLOR_STAR unaExp
 Rule 133   graphview1 -> SIZE_STAR unaExp
-Rule 134   graphview2 -> SETXY dosExp
+Rule 134   graphview2 -> POSITION dosExp
 Rule 135   expression -> exp loper exp
 Rule 136   expression -> exp
 Rule 137   exp -> term
@@ -190,6 +190,7 @@ NOTEQUAL             : 85
 OPENBRACES           : 6 46 94
 OPENBRACKET          : 14 15 15 36 38 39 61 61 62 65 65 66
 OPENPAREN            : 48 59 60 70 93 99 104 106 107 141
+POSITION             : 134
 PRINT                : 59
 PROGRAM              : 1
 READ                 : 60
@@ -197,7 +198,6 @@ RECTANGLE            : 116
 RETURN               : 80
 RIGHT                : 124
 SEMICOLON            : 1 12 13 25 27 59 60 80 111 112 117 118 119 127 128 129
-SETXY                : 134
 SHOW_STAR            : 131
 SIZE_STAR            : 133
 SQUARE               : 114
@@ -224,7 +224,7 @@ cte_int              : 30
 cte_string           : 32
 declara_vars         : 1 5 10 45
 dimensionada         : 12 13
-dosExp               : 115 116 126 134
+dosExp               : 116 126 134
 else                 : 89
 elseif               : 88
 empty                : 4 9 11 16 42 50 52 54 63 67 73 75 90 97
@@ -287,7 +287,7 @@ term_o               : 143
 terminaFunCall       : 69
 termina_fun          : 45
 type                 : 12 13 43 55
-unaExp               : 113 114 122 123 124 125 132 133
+unaExp               : 113 114 115 122 123 124 125 132 133
 vars                 : 10
 vcte                 : 81 147
 vectormatriz         : 35
@@ -395,7 +395,7 @@ state 6
     SHOW_STAR       reduce using rule 149 (empty -> .)
     COLOR_STAR      reduce using rule 149 (empty -> .)
     SIZE_STAR       reduce using rule 149 (empty -> .)
-    SETXY           reduce using rule 149 (empty -> .)
+    POSITION        reduce using rule 149 (empty -> .)
     HAND_DOWN       reduce using rule 149 (empty -> .)
     HAND_UP         reduce using rule 149 (empty -> .)
     GO              reduce using rule 149 (empty -> .)
@@ -434,7 +434,7 @@ state 7
     SHOW_STAR       reduce using rule 11 (declara_vars -> empty .)
     COLOR_STAR      reduce using rule 11 (declara_vars -> empty .)
     SIZE_STAR       reduce using rule 11 (declara_vars -> empty .)
-    SETXY           reduce using rule 11 (declara_vars -> empty .)
+    POSITION        reduce using rule 11 (declara_vars -> empty .)
     HAND_DOWN       reduce using rule 11 (declara_vars -> empty .)
     HAND_UP         reduce using rule 11 (declara_vars -> empty .)
     GO              reduce using rule 11 (declara_vars -> empty .)
@@ -554,7 +554,7 @@ state 17
     SHOW_STAR       reduce using rule 10 (declara_vars -> vars declara_vars .)
     COLOR_STAR      reduce using rule 10 (declara_vars -> vars declara_vars .)
     SIZE_STAR       reduce using rule 10 (declara_vars -> vars declara_vars .)
-    SETXY           reduce using rule 10 (declara_vars -> vars declara_vars .)
+    POSITION        reduce using rule 10 (declara_vars -> vars declara_vars .)
     HAND_DOWN       reduce using rule 10 (declara_vars -> vars declara_vars .)
     HAND_UP         reduce using rule 10 (declara_vars -> vars declara_vars .)
     GO              reduce using rule 10 (declara_vars -> vars declara_vars .)
@@ -615,7 +615,7 @@ state 20
     SHOW_STAR       reduce using rule 149 (empty -> .)
     COLOR_STAR      reduce using rule 149 (empty -> .)
     SIZE_STAR       reduce using rule 149 (empty -> .)
-    SETXY           reduce using rule 149 (empty -> .)
+    POSITION        reduce using rule 149 (empty -> .)
     HAND_DOWN       reduce using rule 149 (empty -> .)
     HAND_UP         reduce using rule 149 (empty -> .)
     GO              reduce using rule 149 (empty -> .)
@@ -746,13 +746,13 @@ state 30
     (99) for1 -> . forInit OPENPAREN ID for2
     (113) graphfig1 -> . CIRCLE unaExp
     (114) graphfig1 -> . SQUARE unaExp
-    (115) graphfig2 -> . TRIANGLE dosExp
+    (115) graphfig1 -> . TRIANGLE unaExp
     (116) graphfig2 -> . RECTANGLE dosExp
     (130) graphview0 -> . HIDE_STAR
     (131) graphview0 -> . SHOW_STAR
     (132) graphview1 -> . COLOR_STAR unaExp
     (133) graphview1 -> . SIZE_STAR unaExp
-    (134) graphview2 -> . SETXY dosExp
+    (134) graphview2 -> . POSITION dosExp
     (120) graphmove0 -> . HAND_DOWN
     (121) graphmove0 -> . HAND_UP
     (122) graphmove1 -> . GO unaExp
@@ -777,7 +777,7 @@ state 30
     SHOW_STAR       shift and go to state 79
     COLOR_STAR      shift and go to state 80
     SIZE_STAR       shift and go to state 81
-    SETXY           shift and go to state 82
+    POSITION        shift and go to state 82
     HAND_DOWN       shift and go to state 83
     HAND_UP         shift and go to state 84
     GO              shift and go to state 85
@@ -838,7 +838,7 @@ state 31
     SHOW_STAR       reduce using rule 6 (starI -> star_sign OPENBRACES .)
     COLOR_STAR      reduce using rule 6 (starI -> star_sign OPENBRACES .)
     SIZE_STAR       reduce using rule 6 (starI -> star_sign OPENBRACES .)
-    SETXY           reduce using rule 6 (starI -> star_sign OPENBRACES .)
+    POSITION        reduce using rule 6 (starI -> star_sign OPENBRACES .)
     HAND_DOWN       reduce using rule 6 (starI -> star_sign OPENBRACES .)
     HAND_UP         reduce using rule 6 (starI -> star_sign OPENBRACES .)
     GO              reduce using rule 6 (starI -> star_sign OPENBRACES .)
@@ -963,7 +963,7 @@ state 37
     SHOW_STAR       reduce using rule 13 (vars -> type ID dimensionada SEMICOLON .)
     COLOR_STAR      reduce using rule 13 (vars -> type ID dimensionada SEMICOLON .)
     SIZE_STAR       reduce using rule 13 (vars -> type ID dimensionada SEMICOLON .)
-    SETXY           reduce using rule 13 (vars -> type ID dimensionada SEMICOLON .)
+    POSITION        reduce using rule 13 (vars -> type ID dimensionada SEMICOLON .)
     HAND_DOWN       reduce using rule 13 (vars -> type ID dimensionada SEMICOLON .)
     HAND_UP         reduce using rule 13 (vars -> type ID dimensionada SEMICOLON .)
     GO              reduce using rule 13 (vars -> type ID dimensionada SEMICOLON .)
@@ -1044,13 +1044,13 @@ state 41
     (99) for1 -> . forInit OPENPAREN ID for2
     (113) graphfig1 -> . CIRCLE unaExp
     (114) graphfig1 -> . SQUARE unaExp
-    (115) graphfig2 -> . TRIANGLE dosExp
+    (115) graphfig1 -> . TRIANGLE unaExp
     (116) graphfig2 -> . RECTANGLE dosExp
     (130) graphview0 -> . HIDE_STAR
     (131) graphview0 -> . SHOW_STAR
     (132) graphview1 -> . COLOR_STAR unaExp
     (133) graphview1 -> . SIZE_STAR unaExp
-    (134) graphview2 -> . SETXY dosExp
+    (134) graphview2 -> . POSITION dosExp
     (120) graphmove0 -> . HAND_DOWN
     (121) graphmove0 -> . HAND_UP
     (122) graphmove1 -> . GO unaExp
@@ -1075,7 +1075,7 @@ state 41
     SHOW_STAR       shift and go to state 79
     COLOR_STAR      shift and go to state 80
     SIZE_STAR       shift and go to state 81
-    SETXY           shift and go to state 82
+    POSITION        shift and go to state 82
     HAND_DOWN       shift and go to state 83
     HAND_UP         shift and go to state 84
     GO              shift and go to state 85
@@ -1140,7 +1140,7 @@ state 43
     SHOW_STAR       reduce using rule 19 (stmt -> assignment .)
     COLOR_STAR      reduce using rule 19 (stmt -> assignment .)
     SIZE_STAR       reduce using rule 19 (stmt -> assignment .)
-    SETXY           reduce using rule 19 (stmt -> assignment .)
+    POSITION        reduce using rule 19 (stmt -> assignment .)
     HAND_DOWN       reduce using rule 19 (stmt -> assignment .)
     HAND_UP         reduce using rule 19 (stmt -> assignment .)
     GO              reduce using rule 19 (stmt -> assignment .)
@@ -1170,7 +1170,7 @@ state 44
     SHOW_STAR       reduce using rule 20 (stmt -> condition .)
     COLOR_STAR      reduce using rule 20 (stmt -> condition .)
     SIZE_STAR       reduce using rule 20 (stmt -> condition .)
-    SETXY           reduce using rule 20 (stmt -> condition .)
+    POSITION        reduce using rule 20 (stmt -> condition .)
     HAND_DOWN       reduce using rule 20 (stmt -> condition .)
     HAND_UP         reduce using rule 20 (stmt -> condition .)
     GO              reduce using rule 20 (stmt -> condition .)
@@ -1200,7 +1200,7 @@ state 45
     SHOW_STAR       reduce using rule 21 (stmt -> print .)
     COLOR_STAR      reduce using rule 21 (stmt -> print .)
     SIZE_STAR       reduce using rule 21 (stmt -> print .)
-    SETXY           reduce using rule 21 (stmt -> print .)
+    POSITION        reduce using rule 21 (stmt -> print .)
     HAND_DOWN       reduce using rule 21 (stmt -> print .)
     HAND_UP         reduce using rule 21 (stmt -> print .)
     GO              reduce using rule 21 (stmt -> print .)
@@ -1230,7 +1230,7 @@ state 46
     SHOW_STAR       reduce using rule 22 (stmt -> loop .)
     COLOR_STAR      reduce using rule 22 (stmt -> loop .)
     SIZE_STAR       reduce using rule 22 (stmt -> loop .)
-    SETXY           reduce using rule 22 (stmt -> loop .)
+    POSITION        reduce using rule 22 (stmt -> loop .)
     HAND_DOWN       reduce using rule 22 (stmt -> loop .)
     HAND_UP         reduce using rule 22 (stmt -> loop .)
     GO              reduce using rule 22 (stmt -> loop .)
@@ -1260,7 +1260,7 @@ state 47
     SHOW_STAR       reduce using rule 23 (stmt -> read .)
     COLOR_STAR      reduce using rule 23 (stmt -> read .)
     SIZE_STAR       reduce using rule 23 (stmt -> read .)
-    SETXY           reduce using rule 23 (stmt -> read .)
+    POSITION        reduce using rule 23 (stmt -> read .)
     HAND_DOWN       reduce using rule 23 (stmt -> read .)
     HAND_UP         reduce using rule 23 (stmt -> read .)
     GO              reduce using rule 23 (stmt -> read .)
@@ -1290,7 +1290,7 @@ state 48
     SHOW_STAR       reduce using rule 24 (stmt -> graphstmt .)
     COLOR_STAR      reduce using rule 24 (stmt -> graphstmt .)
     SIZE_STAR       reduce using rule 24 (stmt -> graphstmt .)
-    SETXY           reduce using rule 24 (stmt -> graphstmt .)
+    POSITION        reduce using rule 24 (stmt -> graphstmt .)
     HAND_DOWN       reduce using rule 24 (stmt -> graphstmt .)
     HAND_UP         reduce using rule 24 (stmt -> graphstmt .)
     GO              reduce using rule 24 (stmt -> graphstmt .)
@@ -1327,7 +1327,7 @@ state 50
     SHOW_STAR       reduce using rule 26 (stmt -> return .)
     COLOR_STAR      reduce using rule 26 (stmt -> return .)
     SIZE_STAR       reduce using rule 26 (stmt -> return .)
-    SETXY           reduce using rule 26 (stmt -> return .)
+    POSITION        reduce using rule 26 (stmt -> return .)
     HAND_DOWN       reduce using rule 26 (stmt -> return .)
     HAND_UP         reduce using rule 26 (stmt -> return .)
     GO              reduce using rule 26 (stmt -> return .)
@@ -1382,7 +1382,7 @@ state 54
     SHOW_STAR       reduce using rule 17 (loop -> while .)
     COLOR_STAR      reduce using rule 17 (loop -> while .)
     SIZE_STAR       reduce using rule 17 (loop -> while .)
-    SETXY           reduce using rule 17 (loop -> while .)
+    POSITION        reduce using rule 17 (loop -> while .)
     HAND_DOWN       reduce using rule 17 (loop -> while .)
     HAND_UP         reduce using rule 17 (loop -> while .)
     GO              reduce using rule 17 (loop -> while .)
@@ -1412,7 +1412,7 @@ state 55
     SHOW_STAR       reduce using rule 18 (loop -> for .)
     COLOR_STAR      reduce using rule 18 (loop -> for .)
     SIZE_STAR       reduce using rule 18 (loop -> for .)
-    SETXY           reduce using rule 18 (loop -> for .)
+    POSITION        reduce using rule 18 (loop -> for .)
     HAND_DOWN       reduce using rule 18 (loop -> for .)
     HAND_UP         reduce using rule 18 (loop -> for .)
     GO              reduce using rule 18 (loop -> for .)
@@ -1449,7 +1449,7 @@ state 57
     SHOW_STAR       reduce using rule 108 (graphstmt -> graphfig .)
     COLOR_STAR      reduce using rule 108 (graphstmt -> graphfig .)
     SIZE_STAR       reduce using rule 108 (graphstmt -> graphfig .)
-    SETXY           reduce using rule 108 (graphstmt -> graphfig .)
+    POSITION        reduce using rule 108 (graphstmt -> graphfig .)
     HAND_DOWN       reduce using rule 108 (graphstmt -> graphfig .)
     HAND_UP         reduce using rule 108 (graphstmt -> graphfig .)
     GO              reduce using rule 108 (graphstmt -> graphfig .)
@@ -1479,7 +1479,7 @@ state 58
     SHOW_STAR       reduce using rule 109 (graphstmt -> graphview .)
     COLOR_STAR      reduce using rule 109 (graphstmt -> graphview .)
     SIZE_STAR       reduce using rule 109 (graphstmt -> graphview .)
-    SETXY           reduce using rule 109 (graphstmt -> graphview .)
+    POSITION        reduce using rule 109 (graphstmt -> graphview .)
     HAND_DOWN       reduce using rule 109 (graphstmt -> graphview .)
     HAND_UP         reduce using rule 109 (graphstmt -> graphview .)
     GO              reduce using rule 109 (graphstmt -> graphview .)
@@ -1509,7 +1509,7 @@ state 59
     SHOW_STAR       reduce using rule 110 (graphstmt -> graphmove .)
     COLOR_STAR      reduce using rule 110 (graphstmt -> graphmove .)
     SIZE_STAR       reduce using rule 110 (graphstmt -> graphmove .)
-    SETXY           reduce using rule 110 (graphstmt -> graphmove .)
+    POSITION        reduce using rule 110 (graphstmt -> graphmove .)
     HAND_DOWN       reduce using rule 110 (graphstmt -> graphmove .)
     HAND_UP         reduce using rule 110 (graphstmt -> graphmove .)
     GO              reduce using rule 110 (graphstmt -> graphmove .)
@@ -1697,21 +1697,21 @@ state 75
 
 state 76
 
-    (115) graphfig2 -> TRIANGLE . dosExp
-    (106) dosExp -> . OPENPAREN exp COMMA exp CLOSEPAREN
+    (115) graphfig1 -> TRIANGLE . unaExp
+    (107) unaExp -> . OPENPAREN exp CLOSEPAREN
 
-    OPENPAREN       shift and go to state 150
+    OPENPAREN       shift and go to state 147
 
-    dosExp                         shift and go to state 149
+    unaExp                         shift and go to state 149
 
 state 77
 
     (116) graphfig2 -> RECTANGLE . dosExp
     (106) dosExp -> . OPENPAREN exp COMMA exp CLOSEPAREN
 
-    OPENPAREN       shift and go to state 150
+    OPENPAREN       shift and go to state 151
 
-    dosExp                         shift and go to state 151
+    dosExp                         shift and go to state 150
 
 state 78
 
@@ -1747,10 +1747,10 @@ state 81
 
 state 82
 
-    (134) graphview2 -> SETXY . dosExp
+    (134) graphview2 -> POSITION . dosExp
     (106) dosExp -> . OPENPAREN exp COMMA exp CLOSEPAREN
 
-    OPENPAREN       shift and go to state 150
+    OPENPAREN       shift and go to state 151
 
     dosExp                         shift and go to state 154
 
@@ -1809,7 +1809,7 @@ state 89
     (126) graphmove2 -> ARC . dosExp
     (106) dosExp -> . OPENPAREN exp COMMA exp CLOSEPAREN
 
-    OPENPAREN       shift and go to state 150
+    OPENPAREN       shift and go to state 151
 
     dosExp                         shift and go to state 159
 
@@ -1852,7 +1852,7 @@ state 92
     SHOW_STAR       reduce using rule 149 (empty -> .)
     COLOR_STAR      reduce using rule 149 (empty -> .)
     SIZE_STAR       reduce using rule 149 (empty -> .)
-    SETXY           reduce using rule 149 (empty -> .)
+    POSITION        reduce using rule 149 (empty -> .)
     HAND_DOWN       reduce using rule 149 (empty -> .)
     HAND_UP         reduce using rule 149 (empty -> .)
     GO              reduce using rule 149 (empty -> .)
@@ -1892,7 +1892,7 @@ state 93
     SHOW_STAR       reduce using rule 46 (inicia_fun -> OPENBRACES .)
     COLOR_STAR      reduce using rule 46 (inicia_fun -> OPENBRACES .)
     SIZE_STAR       reduce using rule 46 (inicia_fun -> OPENBRACES .)
-    SETXY           reduce using rule 46 (inicia_fun -> OPENBRACES .)
+    POSITION        reduce using rule 46 (inicia_fun -> OPENBRACES .)
     HAND_DOWN       reduce using rule 46 (inicia_fun -> OPENBRACES .)
     HAND_UP         reduce using rule 46 (inicia_fun -> OPENBRACES .)
     GO              reduce using rule 46 (inicia_fun -> OPENBRACES .)
@@ -2372,7 +2372,7 @@ state 119
     SHOW_STAR       reduce using rule 25 (stmt -> funCall SEMICOLON .)
     COLOR_STAR      reduce using rule 25 (stmt -> funCall SEMICOLON .)
     SIZE_STAR       reduce using rule 25 (stmt -> funCall SEMICOLON .)
-    SETXY           reduce using rule 25 (stmt -> funCall SEMICOLON .)
+    POSITION        reduce using rule 25 (stmt -> funCall SEMICOLON .)
     HAND_DOWN       reduce using rule 25 (stmt -> funCall SEMICOLON .)
     HAND_UP         reduce using rule 25 (stmt -> funCall SEMICOLON .)
     GO              reduce using rule 25 (stmt -> funCall SEMICOLON .)
@@ -2753,7 +2753,7 @@ state 133
     SHOW_STAR       reduce using rule 103 (while -> while1 body .)
     COLOR_STAR      reduce using rule 103 (while -> while1 body .)
     SIZE_STAR       reduce using rule 103 (while -> while1 body .)
-    SETXY           reduce using rule 103 (while -> while1 body .)
+    POSITION        reduce using rule 103 (while -> while1 body .)
     HAND_DOWN       reduce using rule 103 (while -> while1 body .)
     HAND_UP         reduce using rule 103 (while -> while1 body .)
     GO              reduce using rule 103 (while -> while1 body .)
@@ -2806,13 +2806,13 @@ state 134
     (99) for1 -> . forInit OPENPAREN ID for2
     (113) graphfig1 -> . CIRCLE unaExp
     (114) graphfig1 -> . SQUARE unaExp
-    (115) graphfig2 -> . TRIANGLE dosExp
+    (115) graphfig1 -> . TRIANGLE unaExp
     (116) graphfig2 -> . RECTANGLE dosExp
     (130) graphview0 -> . HIDE_STAR
     (131) graphview0 -> . SHOW_STAR
     (132) graphview1 -> . COLOR_STAR unaExp
     (133) graphview1 -> . SIZE_STAR unaExp
-    (134) graphview2 -> . SETXY dosExp
+    (134) graphview2 -> . POSITION dosExp
     (120) graphmove0 -> . HAND_DOWN
     (121) graphmove0 -> . HAND_UP
     (122) graphmove1 -> . GO unaExp
@@ -2837,7 +2837,7 @@ state 134
     SHOW_STAR       shift and go to state 79
     COLOR_STAR      shift and go to state 80
     SIZE_STAR       shift and go to state 81
-    SETXY           shift and go to state 82
+    POSITION        shift and go to state 82
     HAND_DOWN       shift and go to state 83
     HAND_UP         shift and go to state 84
     GO              shift and go to state 85
@@ -2895,7 +2895,7 @@ state 135
     SHOW_STAR       reduce using rule 98 (for -> for1 body .)
     COLOR_STAR      reduce using rule 98 (for -> for1 body .)
     SIZE_STAR       reduce using rule 98 (for -> for1 body .)
-    SETXY           reduce using rule 98 (for -> for1 body .)
+    POSITION        reduce using rule 98 (for -> for1 body .)
     HAND_DOWN       reduce using rule 98 (for -> for1 body .)
     HAND_UP         reduce using rule 98 (for -> for1 body .)
     GO              reduce using rule 98 (for -> for1 body .)
@@ -2925,7 +2925,7 @@ state 136
     SHOW_STAR       reduce using rule 111 (graphfig -> graphfig1 SEMICOLON .)
     COLOR_STAR      reduce using rule 111 (graphfig -> graphfig1 SEMICOLON .)
     SIZE_STAR       reduce using rule 111 (graphfig -> graphfig1 SEMICOLON .)
-    SETXY           reduce using rule 111 (graphfig -> graphfig1 SEMICOLON .)
+    POSITION        reduce using rule 111 (graphfig -> graphfig1 SEMICOLON .)
     HAND_DOWN       reduce using rule 111 (graphfig -> graphfig1 SEMICOLON .)
     HAND_UP         reduce using rule 111 (graphfig -> graphfig1 SEMICOLON .)
     GO              reduce using rule 111 (graphfig -> graphfig1 SEMICOLON .)
@@ -2955,7 +2955,7 @@ state 137
     SHOW_STAR       reduce using rule 112 (graphfig -> graphfig2 SEMICOLON .)
     COLOR_STAR      reduce using rule 112 (graphfig -> graphfig2 SEMICOLON .)
     SIZE_STAR       reduce using rule 112 (graphfig -> graphfig2 SEMICOLON .)
-    SETXY           reduce using rule 112 (graphfig -> graphfig2 SEMICOLON .)
+    POSITION        reduce using rule 112 (graphfig -> graphfig2 SEMICOLON .)
     HAND_DOWN       reduce using rule 112 (graphfig -> graphfig2 SEMICOLON .)
     HAND_UP         reduce using rule 112 (graphfig -> graphfig2 SEMICOLON .)
     GO              reduce using rule 112 (graphfig -> graphfig2 SEMICOLON .)
@@ -2985,7 +2985,7 @@ state 138
     SHOW_STAR       reduce using rule 127 (graphview -> graphview0 SEMICOLON .)
     COLOR_STAR      reduce using rule 127 (graphview -> graphview0 SEMICOLON .)
     SIZE_STAR       reduce using rule 127 (graphview -> graphview0 SEMICOLON .)
-    SETXY           reduce using rule 127 (graphview -> graphview0 SEMICOLON .)
+    POSITION        reduce using rule 127 (graphview -> graphview0 SEMICOLON .)
     HAND_DOWN       reduce using rule 127 (graphview -> graphview0 SEMICOLON .)
     HAND_UP         reduce using rule 127 (graphview -> graphview0 SEMICOLON .)
     GO              reduce using rule 127 (graphview -> graphview0 SEMICOLON .)
@@ -3015,7 +3015,7 @@ state 139
     SHOW_STAR       reduce using rule 128 (graphview -> graphview1 SEMICOLON .)
     COLOR_STAR      reduce using rule 128 (graphview -> graphview1 SEMICOLON .)
     SIZE_STAR       reduce using rule 128 (graphview -> graphview1 SEMICOLON .)
-    SETXY           reduce using rule 128 (graphview -> graphview1 SEMICOLON .)
+    POSITION        reduce using rule 128 (graphview -> graphview1 SEMICOLON .)
     HAND_DOWN       reduce using rule 128 (graphview -> graphview1 SEMICOLON .)
     HAND_UP         reduce using rule 128 (graphview -> graphview1 SEMICOLON .)
     GO              reduce using rule 128 (graphview -> graphview1 SEMICOLON .)
@@ -3045,7 +3045,7 @@ state 140
     SHOW_STAR       reduce using rule 129 (graphview -> graphview2 SEMICOLON .)
     COLOR_STAR      reduce using rule 129 (graphview -> graphview2 SEMICOLON .)
     SIZE_STAR       reduce using rule 129 (graphview -> graphview2 SEMICOLON .)
-    SETXY           reduce using rule 129 (graphview -> graphview2 SEMICOLON .)
+    POSITION        reduce using rule 129 (graphview -> graphview2 SEMICOLON .)
     HAND_DOWN       reduce using rule 129 (graphview -> graphview2 SEMICOLON .)
     HAND_UP         reduce using rule 129 (graphview -> graphview2 SEMICOLON .)
     GO              reduce using rule 129 (graphview -> graphview2 SEMICOLON .)
@@ -3075,7 +3075,7 @@ state 141
     SHOW_STAR       reduce using rule 117 (graphmove -> graphmove0 SEMICOLON .)
     COLOR_STAR      reduce using rule 117 (graphmove -> graphmove0 SEMICOLON .)
     SIZE_STAR       reduce using rule 117 (graphmove -> graphmove0 SEMICOLON .)
-    SETXY           reduce using rule 117 (graphmove -> graphmove0 SEMICOLON .)
+    POSITION        reduce using rule 117 (graphmove -> graphmove0 SEMICOLON .)
     HAND_DOWN       reduce using rule 117 (graphmove -> graphmove0 SEMICOLON .)
     HAND_UP         reduce using rule 117 (graphmove -> graphmove0 SEMICOLON .)
     GO              reduce using rule 117 (graphmove -> graphmove0 SEMICOLON .)
@@ -3105,7 +3105,7 @@ state 142
     SHOW_STAR       reduce using rule 118 (graphmove -> graphmove1 SEMICOLON .)
     COLOR_STAR      reduce using rule 118 (graphmove -> graphmove1 SEMICOLON .)
     SIZE_STAR       reduce using rule 118 (graphmove -> graphmove1 SEMICOLON .)
-    SETXY           reduce using rule 118 (graphmove -> graphmove1 SEMICOLON .)
+    POSITION        reduce using rule 118 (graphmove -> graphmove1 SEMICOLON .)
     HAND_DOWN       reduce using rule 118 (graphmove -> graphmove1 SEMICOLON .)
     HAND_UP         reduce using rule 118 (graphmove -> graphmove1 SEMICOLON .)
     GO              reduce using rule 118 (graphmove -> graphmove1 SEMICOLON .)
@@ -3135,7 +3135,7 @@ state 143
     SHOW_STAR       reduce using rule 119 (graphmove -> graphmove2 SEMICOLON .)
     COLOR_STAR      reduce using rule 119 (graphmove -> graphmove2 SEMICOLON .)
     SIZE_STAR       reduce using rule 119 (graphmove -> graphmove2 SEMICOLON .)
-    SETXY           reduce using rule 119 (graphmove -> graphmove2 SEMICOLON .)
+    POSITION        reduce using rule 119 (graphmove -> graphmove2 SEMICOLON .)
     HAND_DOWN       reduce using rule 119 (graphmove -> graphmove2 SEMICOLON .)
     HAND_UP         reduce using rule 119 (graphmove -> graphmove2 SEMICOLON .)
     GO              reduce using rule 119 (graphmove -> graphmove2 SEMICOLON .)
@@ -3266,12 +3266,19 @@ state 148
 
 state 149
 
-    (115) graphfig2 -> TRIANGLE dosExp .
+    (115) graphfig1 -> TRIANGLE unaExp .
 
-    SEMICOLON       reduce using rule 115 (graphfig2 -> TRIANGLE dosExp .)
+    SEMICOLON       reduce using rule 115 (graphfig1 -> TRIANGLE unaExp .)
 
 
 state 150
+
+    (116) graphfig2 -> RECTANGLE dosExp .
+
+    SEMICOLON       reduce using rule 116 (graphfig2 -> RECTANGLE dosExp .)
+
+
+state 151
 
     (106) dosExp -> OPENPAREN . exp COMMA exp CLOSEPAREN
     (137) exp -> . term
@@ -3317,13 +3324,6 @@ state 150
     vectormatriz                   shift and go to state 109
     vm1                            shift and go to state 115
 
-state 151
-
-    (116) graphfig2 -> RECTANGLE dosExp .
-
-    SEMICOLON       reduce using rule 116 (graphfig2 -> RECTANGLE dosExp .)
-
-
 state 152
 
     (132) graphview1 -> COLOR_STAR unaExp .
@@ -3340,9 +3340,9 @@ state 153
 
 state 154
 
-    (134) graphview2 -> SETXY dosExp .
+    (134) graphview2 -> POSITION dosExp .
 
-    SEMICOLON       reduce using rule 134 (graphview2 -> SETXY dosExp .)
+    SEMICOLON       reduce using rule 134 (graphview2 -> POSITION dosExp .)
 
 
 state 155
@@ -3420,13 +3420,13 @@ state 160
     (99) for1 -> . forInit OPENPAREN ID for2
     (113) graphfig1 -> . CIRCLE unaExp
     (114) graphfig1 -> . SQUARE unaExp
-    (115) graphfig2 -> . TRIANGLE dosExp
+    (115) graphfig1 -> . TRIANGLE unaExp
     (116) graphfig2 -> . RECTANGLE dosExp
     (130) graphview0 -> . HIDE_STAR
     (131) graphview0 -> . SHOW_STAR
     (132) graphview1 -> . COLOR_STAR unaExp
     (133) graphview1 -> . SIZE_STAR unaExp
-    (134) graphview2 -> . SETXY dosExp
+    (134) graphview2 -> . POSITION dosExp
     (120) graphmove0 -> . HAND_DOWN
     (121) graphmove0 -> . HAND_UP
     (122) graphmove1 -> . GO unaExp
@@ -3451,7 +3451,7 @@ state 160
     SHOW_STAR       shift and go to state 79
     COLOR_STAR      shift and go to state 80
     SIZE_STAR       shift and go to state 81
-    SETXY           shift and go to state 82
+    POSITION        shift and go to state 82
     HAND_DOWN       shift and go to state 83
     HAND_UP         shift and go to state 84
     GO              shift and go to state 85
@@ -3558,7 +3558,7 @@ state 166
     SHOW_STAR       reduce using rule 12 (vars -> type ID dimensionada equals exp SEMICOLON .)
     COLOR_STAR      reduce using rule 12 (vars -> type ID dimensionada equals exp SEMICOLON .)
     SIZE_STAR       reduce using rule 12 (vars -> type ID dimensionada equals exp SEMICOLON .)
-    SETXY           reduce using rule 12 (vars -> type ID dimensionada equals exp SEMICOLON .)
+    POSITION        reduce using rule 12 (vars -> type ID dimensionada equals exp SEMICOLON .)
     HAND_DOWN       reduce using rule 12 (vars -> type ID dimensionada equals exp SEMICOLON .)
     HAND_UP         reduce using rule 12 (vars -> type ID dimensionada equals exp SEMICOLON .)
     GO              reduce using rule 12 (vars -> type ID dimensionada equals exp SEMICOLON .)
@@ -3882,7 +3882,7 @@ state 184
     SHOW_STAR       reduce using rule 149 (empty -> .)
     COLOR_STAR      reduce using rule 149 (empty -> .)
     SIZE_STAR       reduce using rule 149 (empty -> .)
-    SETXY           reduce using rule 149 (empty -> .)
+    POSITION        reduce using rule 149 (empty -> .)
     HAND_DOWN       reduce using rule 149 (empty -> .)
     HAND_UP         reduce using rule 149 (empty -> .)
     GO              reduce using rule 149 (empty -> .)
@@ -4008,7 +4008,7 @@ state 194
     SHOW_STAR       reduce using rule 80 (return -> RETURN return1 SEMICOLON .)
     COLOR_STAR      reduce using rule 80 (return -> RETURN return1 SEMICOLON .)
     SIZE_STAR       reduce using rule 80 (return -> RETURN return1 SEMICOLON .)
-    SETXY           reduce using rule 80 (return -> RETURN return1 SEMICOLON .)
+    POSITION        reduce using rule 80 (return -> RETURN return1 SEMICOLON .)
     HAND_DOWN       reduce using rule 80 (return -> RETURN return1 SEMICOLON .)
     HAND_UP         reduce using rule 80 (return -> RETURN return1 SEMICOLON .)
     GO              reduce using rule 80 (return -> RETURN return1 SEMICOLON .)
@@ -4068,13 +4068,13 @@ state 196
     (99) for1 -> . forInit OPENPAREN ID for2
     (113) graphfig1 -> . CIRCLE unaExp
     (114) graphfig1 -> . SQUARE unaExp
-    (115) graphfig2 -> . TRIANGLE dosExp
+    (115) graphfig1 -> . TRIANGLE unaExp
     (116) graphfig2 -> . RECTANGLE dosExp
     (130) graphview0 -> . HIDE_STAR
     (131) graphview0 -> . SHOW_STAR
     (132) graphview1 -> . COLOR_STAR unaExp
     (133) graphview1 -> . SIZE_STAR unaExp
-    (134) graphview2 -> . SETXY dosExp
+    (134) graphview2 -> . POSITION dosExp
     (120) graphmove0 -> . HAND_DOWN
     (121) graphmove0 -> . HAND_UP
     (122) graphmove1 -> . GO unaExp
@@ -4099,7 +4099,7 @@ state 196
     SHOW_STAR       shift and go to state 79
     COLOR_STAR      shift and go to state 80
     SIZE_STAR       shift and go to state 81
-    SETXY           shift and go to state 82
+    POSITION        shift and go to state 82
     HAND_DOWN       shift and go to state 83
     HAND_UP         shift and go to state 84
     GO              shift and go to state 85
@@ -4226,13 +4226,13 @@ state 203
     (99) for1 -> . forInit OPENPAREN ID for2
     (113) graphfig1 -> . CIRCLE unaExp
     (114) graphfig1 -> . SQUARE unaExp
-    (115) graphfig2 -> . TRIANGLE dosExp
+    (115) graphfig1 -> . TRIANGLE unaExp
     (116) graphfig2 -> . RECTANGLE dosExp
     (130) graphview0 -> . HIDE_STAR
     (131) graphview0 -> . SHOW_STAR
     (132) graphview1 -> . COLOR_STAR unaExp
     (133) graphview1 -> . SIZE_STAR unaExp
-    (134) graphview2 -> . SETXY dosExp
+    (134) graphview2 -> . POSITION dosExp
     (120) graphmove0 -> . HAND_DOWN
     (121) graphmove0 -> . HAND_UP
     (122) graphmove1 -> . GO unaExp
@@ -4257,7 +4257,7 @@ state 203
     SHOW_STAR       shift and go to state 79
     COLOR_STAR      shift and go to state 80
     SIZE_STAR       shift and go to state 81
-    SETXY           shift and go to state 82
+    POSITION        shift and go to state 82
     HAND_DOWN       shift and go to state 83
     HAND_UP         shift and go to state 84
     GO              shift and go to state 85
@@ -4595,7 +4595,7 @@ state 219
     SHOW_STAR       reduce using rule 27 (assignment -> id equals assignment3 SEMICOLON .)
     COLOR_STAR      reduce using rule 27 (assignment -> id equals assignment3 SEMICOLON .)
     SIZE_STAR       reduce using rule 27 (assignment -> id equals assignment3 SEMICOLON .)
-    SETXY           reduce using rule 27 (assignment -> id equals assignment3 SEMICOLON .)
+    POSITION        reduce using rule 27 (assignment -> id equals assignment3 SEMICOLON .)
     HAND_DOWN       reduce using rule 27 (assignment -> id equals assignment3 SEMICOLON .)
     HAND_UP         reduce using rule 27 (assignment -> id equals assignment3 SEMICOLON .)
     GO              reduce using rule 27 (assignment -> id equals assignment3 SEMICOLON .)
@@ -4625,7 +4625,7 @@ state 220
     SHOW_STAR       reduce using rule 87 (condition -> IF head_cond body condition1 .)
     COLOR_STAR      reduce using rule 87 (condition -> IF head_cond body condition1 .)
     SIZE_STAR       reduce using rule 87 (condition -> IF head_cond body condition1 .)
-    SETXY           reduce using rule 87 (condition -> IF head_cond body condition1 .)
+    POSITION        reduce using rule 87 (condition -> IF head_cond body condition1 .)
     HAND_DOWN       reduce using rule 87 (condition -> IF head_cond body condition1 .)
     HAND_UP         reduce using rule 87 (condition -> IF head_cond body condition1 .)
     GO              reduce using rule 87 (condition -> IF head_cond body condition1 .)
@@ -4673,7 +4673,7 @@ state 223
     SHOW_STAR       reduce using rule 90 (condition1 -> empty .)
     COLOR_STAR      reduce using rule 90 (condition1 -> empty .)
     SIZE_STAR       reduce using rule 90 (condition1 -> empty .)
-    SETXY           reduce using rule 90 (condition1 -> empty .)
+    POSITION        reduce using rule 90 (condition1 -> empty .)
     HAND_DOWN       reduce using rule 90 (condition1 -> empty .)
     HAND_UP         reduce using rule 90 (condition1 -> empty .)
     GO              reduce using rule 90 (condition1 -> empty .)
@@ -4921,7 +4921,7 @@ state 238
     SHOW_STAR       reduce using rule 94 (body -> OPENBRACES body1 CLOSEBRACES .)
     COLOR_STAR      reduce using rule 94 (body -> OPENBRACES body1 CLOSEBRACES .)
     SIZE_STAR       reduce using rule 94 (body -> OPENBRACES body1 CLOSEBRACES .)
-    SETXY           reduce using rule 94 (body -> OPENBRACES body1 CLOSEBRACES .)
+    POSITION        reduce using rule 94 (body -> OPENBRACES body1 CLOSEBRACES .)
     HAND_DOWN       reduce using rule 94 (body -> OPENBRACES body1 CLOSEBRACES .)
     HAND_UP         reduce using rule 94 (body -> OPENBRACES body1 CLOSEBRACES .)
     GO              reduce using rule 94 (body -> OPENBRACES body1 CLOSEBRACES .)
@@ -5144,7 +5144,7 @@ state 254
     SHOW_STAR       reduce using rule 89 (condition1 -> else body .)
     COLOR_STAR      reduce using rule 89 (condition1 -> else body .)
     SIZE_STAR       reduce using rule 89 (condition1 -> else body .)
-    SETXY           reduce using rule 89 (condition1 -> else body .)
+    POSITION        reduce using rule 89 (condition1 -> else body .)
     HAND_DOWN       reduce using rule 89 (condition1 -> else body .)
     HAND_UP         reduce using rule 89 (condition1 -> else body .)
     GO              reduce using rule 89 (condition1 -> else body .)
@@ -5174,7 +5174,7 @@ state 255
     SHOW_STAR       reduce using rule 59 (print -> PRINT OPENPAREN expression CLOSEPAREN SEMICOLON .)
     COLOR_STAR      reduce using rule 59 (print -> PRINT OPENPAREN expression CLOSEPAREN SEMICOLON .)
     SIZE_STAR       reduce using rule 59 (print -> PRINT OPENPAREN expression CLOSEPAREN SEMICOLON .)
-    SETXY           reduce using rule 59 (print -> PRINT OPENPAREN expression CLOSEPAREN SEMICOLON .)
+    POSITION        reduce using rule 59 (print -> PRINT OPENPAREN expression CLOSEPAREN SEMICOLON .)
     HAND_DOWN       reduce using rule 59 (print -> PRINT OPENPAREN expression CLOSEPAREN SEMICOLON .)
     HAND_UP         reduce using rule 59 (print -> PRINT OPENPAREN expression CLOSEPAREN SEMICOLON .)
     GO              reduce using rule 59 (print -> PRINT OPENPAREN expression CLOSEPAREN SEMICOLON .)
@@ -5374,7 +5374,7 @@ state 264
     SHOW_STAR       reduce using rule 149 (empty -> .)
     COLOR_STAR      reduce using rule 149 (empty -> .)
     SIZE_STAR       reduce using rule 149 (empty -> .)
-    SETXY           reduce using rule 149 (empty -> .)
+    POSITION        reduce using rule 149 (empty -> .)
     HAND_DOWN       reduce using rule 149 (empty -> .)
     HAND_UP         reduce using rule 149 (empty -> .)
     GO              reduce using rule 149 (empty -> .)
@@ -5408,7 +5408,7 @@ state 265
     SHOW_STAR       reduce using rule 60 (read -> READ OPENPAREN id read1 CLOSEPAREN SEMICOLON .)
     COLOR_STAR      reduce using rule 60 (read -> READ OPENPAREN id read1 CLOSEPAREN SEMICOLON .)
     SIZE_STAR       reduce using rule 60 (read -> READ OPENPAREN id read1 CLOSEPAREN SEMICOLON .)
-    SETXY           reduce using rule 60 (read -> READ OPENPAREN id read1 CLOSEPAREN SEMICOLON .)
+    POSITION        reduce using rule 60 (read -> READ OPENPAREN id read1 CLOSEPAREN SEMICOLON .)
     HAND_DOWN       reduce using rule 60 (read -> READ OPENPAREN id read1 CLOSEPAREN SEMICOLON .)
     HAND_UP         reduce using rule 60 (read -> READ OPENPAREN id read1 CLOSEPAREN SEMICOLON .)
     GO              reduce using rule 60 (read -> READ OPENPAREN id read1 CLOSEPAREN SEMICOLON .)
@@ -5483,7 +5483,7 @@ state 272
     SHOW_STAR       reduce using rule 88 (condition1 -> elseif head_cond body condition1 .)
     COLOR_STAR      reduce using rule 88 (condition1 -> elseif head_cond body condition1 .)
     SIZE_STAR       reduce using rule 88 (condition1 -> elseif head_cond body condition1 .)
-    SETXY           reduce using rule 88 (condition1 -> elseif head_cond body condition1 .)
+    POSITION        reduce using rule 88 (condition1 -> elseif head_cond body condition1 .)
     HAND_DOWN       reduce using rule 88 (condition1 -> elseif head_cond body condition1 .)
     HAND_UP         reduce using rule 88 (condition1 -> elseif head_cond body condition1 .)
     GO              reduce using rule 88 (condition1 -> elseif head_cond body condition1 .)

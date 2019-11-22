@@ -1,6 +1,7 @@
 program prueba1;
 int v = 50;
 int  e = 4;
+string color = "blue";
 
 fun int fun1(float s){
     print("jelou");
@@ -8,10 +9,26 @@ fun int fun1(float s){
 
 fun int fun2(int a, string s){
     v = 4 + 5 - v;
+    print("orange");
 }
 
 * {
     float f1;
     circle(v);
     square(100);
+    rectangle(100,50);
+
+    hand_up;
+    hide_star;
+    position(100,100);
+    hand_down;
+
+    color_star("red");
+
+    show_star;
+    triangle(80);
+
+    fun2(v,"orange");
+    
+    arc(60,100);
 }

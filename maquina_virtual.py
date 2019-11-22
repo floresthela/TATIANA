@@ -19,6 +19,8 @@ class MaquinaVirtual:
         self.screen = None
         self.turtle_activa = False
 
+        self.pila_contextos = []
+
 
 
     def agarra_datos(self,program):
@@ -51,7 +53,7 @@ class MaquinaVirtual:
         :param fun_dir: Directorio de funciones
         :param sig: Apuntador al siguiente cuádruplo
         '''
-
+        
 
         while True:
             
@@ -170,13 +172,26 @@ class MaquinaVirtual:
                 self.estrella.pu()
                 sig += 1
 
+            elif operador == 'hide_star':
+                if not self.turtle_activa:
+                    self.activa_tortuga()
+                    
+                self.estrella.hideturtle()
+                sig += 1
+            
+            elif operador == 'show_star':
+                if not self.turtle_activa:
+                    self.activa_tortuga()
+                    
+                self.estrella.showturtle()
+                sig += 1
+
             # 1 exp
             elif operador == 'circle':
                 mem = self.dame_mem(op_izq)
                 if not self.turtle_activa:
                     self.activa_tortuga()
                     
-                print('hola',mem[op_izq])
                 self.estrella.circle(mem[op_izq])
                 sig += 1
             
@@ -221,6 +236,9 @@ class MaquinaVirtual:
             elif operador == 'square':
                 mem = self.dame_mem(op_izq)
 
+                if not self.turtle_activa:
+                    self.activa_tortuga()
+
                 # grafica cuadrado
                 self.estrella.forward(mem[op_izq])
                 self.estrella.left(90) 
@@ -231,19 +249,65 @@ class MaquinaVirtual:
                 self.estrella.forward(mem[op_izq])
                 self.estrella.left(90)
                 sig += 1
+            
+            elif operador == 'rectangle':
+                mem1 = self.dame_mem(op_izq) # base
+                mem2 = self.dame_mem(op_der) # altura
+                
+                base = mem1[op_izq]
+                altura = mem2[op_der]
+
+                if not self.turtle_activa:
+                    self.activa_tortuga()
+
+                # grafica rectangulo
+                self.estrella.fd(base)
+                self.estrella.lt(90) 
+                self.estrella.fd(altura)
+                self.estrella.lt(90)
+                self.estrella.fd(base)
+                self.estrella.lt(90)
+                self.estrella.fd(altura)
+                self.estrella.lt(90)
+                sig += 1
+
+            elif operador == 'triangle':
+                mem = self.dame_mem(op_izq)
+
+                if not self.turtle_activa:
+                    self.activa_tortuga()
+
+                # dibuja triangulo equilatero de base ingresada
+                self.estrella.fd(mem[op_izq])
+                
+                self.estrella.lt(120)
+                self.estrella.fd(mem[op_izq])
+
+                self.estrella.lt(120)
+                self.estrella.fd(mem[op_izq])
+
+                sig += 1
+            
+            elif operador == 'color_star':
+                mem = self.dame_mem(op_izq)
+
+                if not self.turtle_activa:
+                    self.activa_tortuga()
+                color = mem[op_izq]
+                self.estrella.color(color)
+                sig += 1
 
             # 2 exp
-            # TODO: maybe cambiar el nombre a set_position
-            elif operador == 'setXY':
+            elif operador == 'position':
                 mem1 = self.dame_mem(op_izq)
                 mem2 = self.dame_mem(op_der)
 
                 if not self.turtle_activa:
                     self.activa_tortuga()
                     
-                sig += 1
-                
+
                 self.estrella.setpos(mem1[op_izq],mem2[op_der])
+                sig += 1
 
 
             elif operador == 'arc':
@@ -269,24 +333,29 @@ class MaquinaVirtual:
                     raise TypeError(f"Out of bouuunddsss")
                 
                 sig += 1
+            
+            
             ############ FUNCIONES ############
 
             elif operador == 'ERA':
                 fun = fun_dir[res]
+                sig += 1
 
+            elif operador == 'GOSUB':
+                # mem = self.dame_mem(res)
+                
 
+                sig = int(res) - 1
+
+            elif operador == 'param':
+                sig += 1
 
             # TODO: 
             # agregar clear
+            # agregar fill
 
-            # square
-            # triangle
-            # rectangle
-            # arc
-            # hide_star
-            # show_star
-            # color_star
-            # size_star
+            # color_star (pen)
+            # size_star (grosor supongo)
             # era
             # params
 
@@ -360,7 +429,8 @@ class MaquinaVirtual:
             return bool
 
     def activa_tortuga(self):
-        self.turtle_active = True
+        self.turtle_activa = True
+        
         s = Turtle()
         self.screen = Screen()
         self.dibuja_estrella(s)
@@ -368,6 +438,7 @@ class MaquinaVirtual:
         # self.star = Turtle(shape="estrella")
 
         self.screen.title(self.programa)
+        self.screen.clear()
         self.estrella = Turtle(shape="estrella")
         # self.screen.clear()
         # self.screen.exitonclick()

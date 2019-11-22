@@ -116,10 +116,6 @@ class VarsTable:
     def insert_param(self,param_id,param_type):
         scope = self.current_scope
         if param_id not in self.table[scope]['params'] and param_id not in self.table['global']['vars']:
-            # new_param = {
-            #     'id': param_id,
-            #     'type' : param_type
-            # }
             self.table[scope]['params'].append(param_type)
         else:
             raise TypeError(f'Parameter {param_id} already declared')
