@@ -12,22 +12,16 @@ def genera_arch(program,varst,quads,consts):
     '''
     Genera el archivo con los cuádruplos, tablas de funciones y constantes del programa
     '''
-    archivo_quads = {
-        "Quads" : quads
-    }
-
-    archivo_dir = {
+    archivo_comp = {
+        "Quads" : quads,
         "FunDir" : varst,
         "tConstantes": consts
     }
 
-    with open(f'pruebas/c_{program}.q', 'w') as nuevo_arch:
-        json.dump(archivo_quads,nuevo_arch, separators = (',',':'))
-    
-    with open(f'pruebas/c_{program}.d', 'w') as nuevo_arch:
-        json.dump(archivo_dir,nuevo_arch, separators = (',',':'))
-    
-    
+    with open(f'pruebas/{program}_comp.ta', 'w') as nuevo_arch:
+        json.dump(archivo_comp,nuevo_arch, separators = (',',':'))
+
+
     # manda datos a máquina virtual
     MaquinaVirtual().agarra_datos(program)
 

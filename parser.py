@@ -47,7 +47,8 @@ def p_program_fun(p):
 
 def p_funs(p):
     '''
-    funs : function funs
+    funs : function_t funs
+         | function_v funs
          | empty
     '''
     
@@ -61,7 +62,11 @@ def p_star(p):
     star = cg.PJumps.pop()
     cg.fill_goto_star(star)
 
+    # count = sum(len(v) for v in d.itervalues())
+    # count_vars = sum(len(v) for v in vars_t.table['star']['vars'].values())
+    count_vars = len(s_table['vars'])
     vars_t.delete_vars('star')
+    s_table['vars'] = count_vars
     cg.generate_END()
 
 
@@ -83,7 +88,7 @@ def p_star_sign(p):
 
 def p_star1(p):
     '''
-    star1 : stmt star1
+    star1 : stmt_v star1
         | empty
     '''
 
@@ -220,6 +225,17 @@ def p_stmt(p):
         | return
     '''
 
+def p_stmt_v(p):
+    '''
+    stmt_v : assignment
+        | condition
+        | print
+        | loop
+        | read
+        | graphstmt
+        | funCall SEMICOLON
+    '''
+
 def p_assignment(p):
     '''
     assignment : id equals assignment3 SEMICOLON
@@ -305,8 +321,7 @@ def p_vm2(p):
 def p_functionI(p):
     '''
     functionI : type ID
-              | VOID ID
-        '''
+    '''
     #vars_t.FunDirectory(p[2], p[1])
     #cg.generate_ERA(p[2])
     
@@ -317,22 +332,52 @@ def p_functionI(p):
     vars_t.FunDirectory(p[2],p[1],beginFun)
     # mete las funciones como variables globales...
     vars_t.table['global']['vars'][p[0]] = { 'id': p[0], 'type':p[1]}
+
+def p_functionV(p):
+    '''
+    functionV : VOID ID
+    '''
+    p[0] = p[2]
+
+    cg.reset_locales()
+    beginFun = len(cg.Quads) + 1
+    vars_t.FunDirectory(p[2],p[1],beginFun)
+    # mete las funciones como variables globales...
+    vars_t.table['global']['vars'][p[0]] = { 'id': p[0], 'type':p[1]}
+
+def p_function_t(p):
+    '''
+    function_t : FUN functionI function2 inicia_fun declara_vars function4 termina_fun
+    '''
+
+    table = vars_t.table[p[2]]
     
-
-
-
-
-def p_function(p):
-    '''
-    function : FUN functionI function2 inicia_fun declara_vars function4 termina_fun
-    '''
     if p[7] is not None:
         vars = p[7]
         vars = vars[:-1]
         p[0] = vars
     
+    count_vars = len(table['vars'])
+    vars_t.delete_vars(p[2])
 
-    # vars_t.delete_vars(p[2])
+    table['vars'] = count_vars
+
+def p_function_v(p):
+    '''
+    function_v : FUN functionV function2 inicia_fun declara_vars function9 termina_fun
+    '''
+
+    table = vars_t.table[p[2]]
+    
+    if p[7] is not None:
+        vars = p[7]
+        vars = vars[:-1]
+        p[0] = vars
+    
+    count_vars = len(table['vars'])
+    vars_t.delete_vars(p[2])
+
+    table['vars'] = count_vars
 
 def p_inicia_fun(p):
     '''
@@ -371,6 +416,14 @@ def p_function4(p):
         p[0] = p[1:]
         p[0] = flatten(p[0])
 
+def p_function9(p):
+    '''
+    function9 : stmt_v function9
+              | empty
+    '''
+    if p[1] is not None:
+        p[0] = p[1:]
+        p[0] = flatten(p[0])
 
 def p_function5(p):
     '''
@@ -597,21 +650,34 @@ def p_funCallParam(p):
 # CTE
 def p_cte_int(p):
     '''
-    cte_int : CTEINT
+    cte_int : negativo CTEINT
     '''
 
-    dir = cg.direccion_mem('constantes','int',1, p[1])
-    p[0] = dir
+    if p[1] is not None:
+        num = int(f'-{p[2]}')
+        p[0] = num
+        dir = cg.direccion_mem('constantes','int',1,num)
+    else:
+        p[0] = p[2]
+        dir = cg.direccion_mem('constantes','int',1, p[2])
+    # p[0] = dir
     cg.PTypes.append('int')
     cg.PilaO.append(dir)
 
 
 def p_cte_float(p):
     '''
-    cte_float : CTEFLOAT
+    cte_float : negativo CTEFLOAT
     '''
-    dir = cg.direccion_mem('constantes','float',1, p[1])
-    p[0] = dir
+    if p[1] is not None:
+        num = float(f'-{p[2]}')
+        p[0] = num
+        dir = cg.direccion_mem('constantes','float',1,num)
+    else:
+        p[0] = p[2]
+        print(p[1])
+        dir = cg.direccion_mem('constantes','float',1, p[2])
+        
     cg.PTypes.append('float')
     cg.PilaO.append(dir)
 
@@ -630,6 +696,9 @@ def p_return(p):
     '''
     return : RETURN return1 SEMICOLON
     '''
+    scope = vars_t.current_scope
+    tipo_fun = vars_t.table[scope]['type']
+    cg.generate_RETURN(tipo_fun)
 
 
 def p_return1(p):
@@ -1009,6 +1078,13 @@ def p_factor(p):
     if cg.POper and cg.POper[-1] in ['*', '/']:
         t = cg.generate_quad(vars_t.current_scope)
         vars_t.insert_temp(t,vars_t.current_scope)
+
+def p_negativo(p):
+    '''
+    negativo : SUBSTRACTION
+             | empty
+    '''
+    p[0] = p[1]
 
 # def p_factor1(p):
 #     '''

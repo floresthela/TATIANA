@@ -7,7 +7,6 @@ Flor Esthela Barbosa y Laura Santacruz
 import sys
 import json
 from turtle import Turtle, Screen, Shape
-
 from memoria import Memoria
 
 class MaquinaVirtual:
@@ -15,6 +14,8 @@ class MaquinaVirtual:
 
         self.programa = None
         self.memoria = Memoria()
+        # self.mem_local = MemLocal()
+        
         self.estrella = None
         self.screen = None
         self.turtle_activa = False
@@ -29,21 +30,17 @@ class MaquinaVirtual:
         :param program: Nombre del programa compilado
         '''
 
-        quads = f"pruebas/c_{program}.q"
-        directorio = f"pruebas/c_{program}.d"
+        compilado = f"pruebas/{program}_comp.ta"
 
 
-        arch_quads = open(quads, 'r')
-        arch_fundir = open(directorio, 'r')
+        arch_compilado = open(compilado, 'r')
         
-        q = json.load(arch_quads)
-        d = json.load(arch_fundir)
+        todito = json.load(arch_compilado)
         
         self.programa = program
-        fun_dir = d["FunDir"]
 
-        self.haz_constantes(d['tConstantes'])
-        self.haz_quads(q['Quads'],fun_dir)
+        self.haz_constantes(todito['tConstantes'])
+        self.haz_quads(todito['Quads'],todito['FunDir'])
 
     # dnb
     def haz_quads(self,quads,fun_dir,sig=0):
@@ -125,6 +122,7 @@ class MaquinaVirtual:
 
             elif operador == 'print':
                 mem = self.dame_mem(res)
+                # no borrar este print
                 print(mem[res])
                 sig +=1
 
@@ -339,9 +337,17 @@ class MaquinaVirtual:
 
             elif operador == 'ERA':
                 fun = fun_dir[res]
+                
+                if self.memoria.activa is not None:
+                    superior = self.memoria.activa
+                else:
+                    superior = self.memoria
+                self.memoria.record_activacion(superior, fun['vars'])
                 sig += 1
 
             elif operador == 'GOSUB':
+                self.memoria.activa = self.memoria.mem[list(self.memoria.mem.keys())[-1]]
+                self.pila_contextos.append(res)
                 # mem = self.dame_mem(res)
                 
 
@@ -361,7 +367,7 @@ class MaquinaVirtual:
 
     def haz_constantes(self, t):
         '''
-        Genera tabla de constantes
+        Genera tabla de constantes y las carga a memoria
         :param t: Tabla de constantes
         '''
         for const in t:

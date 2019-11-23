@@ -19,6 +19,7 @@ class Operators(Enum):
     NOT_EQUAL = '!='
     ISEQUAL = '=='
     EQUAL = '='
+    RETURN = 'return'
 
 
 class SemanticCube:
@@ -186,7 +187,25 @@ class SemanticCube:
                     'float': 'err',
                     'string': 'string'
                 }
+            },
+            Operators.RETURN: {
+                'int': {
+                    'int': 'int',
+                    'float': 'err',
+                    'string': 'err'
+                },
+                'float': {
+                    'int': 'err',
+                    'float': 'float',
+                    'string': 'err'
+                },
+                'string': {
+                    'int': 'err',
+                    'float': 'err',
+                    'string': 'string'
+                }
             }
+
 
         }
 

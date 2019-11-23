@@ -150,7 +150,9 @@ class Intermediate_CodeGeneration:
 
         elif mem == 'constantes':
             if val is None:
+                print(mem,type,size,val)
                 raise TypeError(f"Valor de constante no especificado")
+                
 
             elif val in self.constantes.values():
                return [x for x, y in self.constantes.items() if y == val].pop()
@@ -252,6 +254,9 @@ class Intermediate_CodeGeneration:
             self.Quads.append(quadruple)
             self.PJumps.append(len(self.Quads)-1)
 
+    def generate_ENDPROC(self):
+        quadruple = Quadruple('ENDPROC',None,None,None)
+        self.Quads.append(quadruple)
 
     def generate_END(self):
         '''
@@ -399,6 +404,16 @@ class Intermediate_CodeGeneration:
         Generate goSub quadruple
         '''
         quadruple = Quadruple('GOSUB', None, None, begin)
+        self.Quads.append(quadruple)
+
+    def generate_RETURN(self,type):
+        '''
+        Genera cuádruplo para return de una función
+        :param type: Tipo de función
+        '''
+        self.cubo.semantics(self.PTypes.pop(),type,Operators.RETURN)
+        quadruple = Quadruple('RETURN',None,None,self.PilaO.pop())
+
         self.Quads.append(quadruple)
 
 
