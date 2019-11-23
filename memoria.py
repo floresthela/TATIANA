@@ -45,7 +45,7 @@ class Memoria:
 
 
 class MemLocal:
-    def __init(self, superior, tamaño):
+    def __init__(self, superior, tamaño):
         self.mem_local = {}
         self.contador = 21000 # base local
         

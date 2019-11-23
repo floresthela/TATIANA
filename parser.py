@@ -342,6 +342,7 @@ def p_functionV(p):
     cg.reset_locales()
     beginFun = len(cg.Quads) + 1
     vars_t.FunDirectory(p[2],p[1],beginFun)
+
     # mete las funciones como variables globales...
     vars_t.table['global']['vars'][p[0]] = { 'id': p[0], 'type':p[1]}
 
@@ -356,7 +357,8 @@ def p_function_t(p):
         vars = p[7]
         vars = vars[:-1]
         p[0] = vars
-    
+
+    cg.generate_ENDPROC()
     count_vars = len(table['vars'])
     vars_t.delete_vars(p[2])
 
@@ -374,6 +376,7 @@ def p_function_v(p):
         vars = vars[:-1]
         p[0] = vars
     
+    cg.generate_ENDPROC()
     count_vars = len(table['vars'])
     vars_t.delete_vars(p[2])
 
