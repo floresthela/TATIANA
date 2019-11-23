@@ -32,7 +32,10 @@ class Memoria:
         self.contador = self.contador + tamaño
         self.mem[dir] = actual
     
-    def elimina_fun(self):
+    def cuello(self):
+        '''
+        Elimina scope de memoria (local) actual 
+        '''
         if self.activa is not None:
             if self.activa.superior is not self:
                 self.activa = self.activa.superior

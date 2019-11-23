@@ -51,6 +51,9 @@ class MaquinaVirtual:
         :param sig: Apuntador al siguiente cuádruplo
         '''
         
+        # parametros que estamos mandando
+        parametros = []
+        retornado = None
 
         while True:
             
@@ -348,6 +351,9 @@ class MaquinaVirtual:
             elif operador == 'GOSUB':
                 self.memoria.activa = self.memoria.mem[list(self.memoria.mem.keys())[-1]]
                 self.pila_contextos.append(res)
+
+                
+
                 # mem = self.dame_mem(res)
                 
 
@@ -356,6 +362,24 @@ class MaquinaVirtual:
             elif operador == 'param':
                 sig += 1
 
+            elif operador == 'RETURN':
+                mem = self.dame_mem(res)
+                
+                # jaja que pedo con el nombre k le puse ?¿
+                retornado = mem[res]
+
+                sig += 1
+            
+            elif operador == 'param':
+                mem = self.dame_mem(res)
+                parametros.append(mem[res])
+
+                sig += 1
+            
+            elif operador == 'ENDPROC':
+                self.memoria.cuello()
+                self.pila_contextos.pop()
+
             # TODO: 
             # agregar clear
             # agregar fill
@@ -363,7 +387,7 @@ class MaquinaVirtual:
             # color_star (pen)
             # size_star (grosor supongo)
             # era
-            # params
+            # endproc
 
     def haz_constantes(self, t):
         '''

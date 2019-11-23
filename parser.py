@@ -658,12 +658,12 @@ def p_cte_int(p):
 
     if p[1] is not None:
         num = int(f'-{p[2]}')
-        p[0] = num
         dir = cg.direccion_mem('constantes','int',1,num)
     else:
-        p[0] = p[2]
+        
         dir = cg.direccion_mem('constantes','int',1, p[2])
-    # p[0] = dir
+        
+    p[0] = dir
     cg.PTypes.append('int')
     cg.PilaO.append(dir)
 
@@ -674,13 +674,14 @@ def p_cte_float(p):
     '''
     if p[1] is not None:
         num = float(f'-{p[2]}')
-        p[0] = num
+        # p[0] = num
         dir = cg.direccion_mem('constantes','float',1,num)
     else:
-        p[0] = p[2]
+        # p[0] = p[2]
         print(p[1])
         dir = cg.direccion_mem('constantes','float',1, p[2])
         
+    p[0] = dir
     cg.PTypes.append('float')
     cg.PilaO.append(dir)
 

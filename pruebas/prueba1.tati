@@ -22,7 +22,7 @@ fun void hola(float f){
     float f1;
     print(4 * -4);
 
-    fun2(v,"orange");
+    fun2(5,"orange");
     
     
 }
