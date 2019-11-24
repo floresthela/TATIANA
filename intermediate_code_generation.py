@@ -267,7 +267,9 @@ class Intermediate_CodeGeneration:
         ''''
         Llena el quad de GotoV para el for
         '''
-        position = len(self.Quads) - 2
+        print("pila saltos", self.PJumps)
+        # position = len(self.Quads) - 3
+        position = self.PJumps.pop()
         self.Quads[position].cambia_res(salto)
 
     def generateFor_condition(self):
@@ -276,15 +278,10 @@ class Intermediate_CodeGeneration:
         '''
         operator = '>'
         self.POper.append(operator)
-        # print("pila operadores", self.POper)
-        # print("func for")
-        # print(self.PilaO)
         op_izq = self.PilaO.pop()
-        # print("izquierdo", op_izq)
         op_derecho = self.PilaO.pop()
-        # print('derecho', op_derecho)
         result = self.direccion_mem('local', 'bool')
-        quadruple = Quadruple(operator, op_izq, op_derecho, result)
+        quadruple = Quadruple(operator, op_derecho, op_izq, result)
         self.Quads.append(quadruple)
         self.PilaO.append(result)
 

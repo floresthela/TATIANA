@@ -235,7 +235,7 @@ def p_assignment(p):
         cg.PTypes.append(t['type'])
 
     if cg.POper and cg.POper[-1] in ['=']:
-        cg.generate_quad(vars_t.current_scope);
+        cg.generate_quad(vars_t.current_scope)
 
 def p_assignment3(p):
     '''
@@ -746,9 +746,9 @@ def p_for(p):
         print("todo bien")
         cg.PJumps.append(len(cg.Quads)+2)
 
-    # print("saltos", cg.PJumps)
     salto = cg.PJumps.pop()
     cg.fill_gotoV(salto)
+    print("len", len(cg.Quads))
     # cg.quad_incrementaFor()
     goto = cg.PJumps.pop()
     cg.generate_GOTO()
@@ -786,16 +786,14 @@ def p_forClose(p):
     '''
     cg.generateFor_condition()
     cg.generate_GOTOV()
+    cg.PJumps.append(len(cg.Quads)-1)
 
 
 def p_forBody(p):
     '''
     forBody : body
     '''
-    # cg.generate_GOTOV()
-    # cg.PJumps.append(len(cg.Quads))
-    # cg.quad_incrementaFor()
-    # print("saltos", cg.PJumps)
+    # cg.PJumps.append(len(cg.Quads)+1)
 
 
 # WHILE
