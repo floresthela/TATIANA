@@ -18,7 +18,7 @@ cg = Intermediate_CodeGeneration()
 if __name__ == '__main__':
     try:
         path = 'pruebas/'
-        nombreArchivo = 'prueba11.tati'
+        nombreArchivo = 'bubble_sort.tati'
 
         path += nombreArchivo
         arch = open(path, 'r')

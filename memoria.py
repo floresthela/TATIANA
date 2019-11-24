@@ -64,8 +64,8 @@ class MemLocal:
         Asigna valores de parametros enviados a variables de esa función
         :param params: Lista de parametros
         '''
-        for p in params[::-1]:
-            
+        print(params)
+        for p in params:
             if type(p) is int:
                 self.mem_local[self.contador + self.c_int] = p
                 self.c_int += 1
@@ -73,8 +73,10 @@ class MemLocal:
             elif type(p) is float:
                 self.mem_local[self.contador + self.c_float] = p
                 self.c_float += 1
+            
             elif type(p) is str:
                 self.mem_local[self.contador + self.c_str] = p
                 self.c_str += 1
             # self.mem_local[self.contador] = p
-            self.contador += 1
+            # self.contador += 1
+        print(self.mem_local)

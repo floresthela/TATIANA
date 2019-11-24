@@ -508,16 +508,25 @@ def p_indice_dimensionada(p):
                         | empty
 
     '''
+    
     if len(p) == 4:
         p[0] = (0,p[2])
     elif len(p) == 7:
         p[0] = (p[2],p[5])
+    
+def p_aidi(p):
+    '''
+    aidi : ID
+    '''
+    p[0] = p[1]
+    # más fondos falsos porque si no, tenemos que poner parentesis en código
+    cg.POper.append('(')
 
 def p_id(p):
     '''
-    id : ID indice_dimensionada
+    id : aidi indice_dimensionada
     '''
-
+    cg.POper.pop()
     t = vars_t.search_var(p[1])
 
     if t:
