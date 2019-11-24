@@ -17,7 +17,7 @@ class Memoria:
         self.mem_local = {}
         self.mem_constantes = {}
 
-        self.mem = OrderedDict()
+        self.mem_ejec = OrderedDict()
         self.activa = None
         self.base_fun = 40000
         self.contador = 0
@@ -30,7 +30,7 @@ class Memoria:
 
         dir = self.base_fun + self.contador
         self.contador = self.contador + tamaño
-        self.mem[dir] = actual
+        self.mem_ejec[dir] = actual
     
     def cuello(self):
         '''
@@ -41,21 +41,41 @@ class Memoria:
                 self.activa = self.activa.superior
             else:
                 self.activa = None
-            fun = list(self.mem.keys())[-1]
-            self.contador -= self.mem[fun].size
-            del self.mem[fun]
+            fun = list(self.mem_ejec.keys())[-1]
+            self.contador -= self.mem_ejec[fun].tam
+            del self.mem_ejec[fun]
 
 
 
 class MemLocal:
-    def __init__(self, superior, tamaño):
+    def __init__(self, superior, tam):
         self.mem_local = {}
         self.contador = 21000 # base local
+
+        self.c_int = 0
+        self.c_str = 10000
+        self.c_float = 5000
         
         self.superior = superior
-        self. tam = tamaño
+        self.tam = tam
 
-    def haz_params(self,params):
+    def matcheo(self,params):
+        '''
+        Asigna valores de parametros enviados a variables de esa función
+        :param params: Lista de parametros
+        '''
         for p in params[::-1]:
-            self.mem_local[self.contador] = p
+            
+            if type(p) is int:
+                self.mem_local[self.contador + self.c_int] = p
+                self.c_int += 1
+
+            elif type(p) is float:
+                self.mem_local[self.contador + self.c_float] = p
+                self.c_float += 1
+            elif type(p) is str:
+                self.mem_local[self.contador + self.c_str] = p
+                self.c_str += 1
+            print('p',p)
+            # self.mem_local[self.contador] = p
             self.contador += 1

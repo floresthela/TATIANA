@@ -37,10 +37,13 @@ class MaquinaVirtual:
         
         todito = json.load(arch_compilado)
         
+        self.pila_contextos.append('star')
         self.programa = program
 
         self.haz_constantes(todito['tConstantes'])
         self.haz_quads(todito['Quads'],todito['FunDir'])
+
+
 
     # dnb
     def haz_quads(self,quads,fun_dir,sig=0):
@@ -73,10 +76,12 @@ class MaquinaVirtual:
             if operador == '=':
                 mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
                 tipo_res = self.dame_tipo(res)
+                print('y',mem1)
                 mem_r[res] = tipo_res(mem1[op_izq])
                 sig += 1
 
             elif operador == '+':
+
                 mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
                 mem_r[res] = mem1[op_izq] + mem2[op_der]
                 sig += 1
@@ -110,6 +115,17 @@ class MaquinaVirtual:
                 mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
                 mem_r[res] = mem1[op_izq] < mem2[op_der]
                 sig +=1
+            
+            elif operador == '>=':
+                mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
+                mem_r[res] = mem1[op_izq] >= mem2[op_der]
+                sig +=1
+
+            elif operador == '<=':
+                mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
+                mem_r[res] = mem1[op_izq] <= mem2[op_der]
+                sig +=1
+
 
             elif operador == '!=':
                 mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
@@ -119,8 +135,8 @@ class MaquinaVirtual:
 
             elif operador == '==':
                 mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
-                mem_r[res] = mem1[op_izq] != mem2[op_der]
-
+                mem_r[res] = mem1[op_izq] == mem2[op_der]
+                
                 sig +=1
 
             elif operador == 'print':
@@ -128,7 +144,6 @@ class MaquinaVirtual:
                 # no borrar este print
                 print(mem[res])
                 sig +=1
-
 
             elif operador == 'read':
                 mem = self.dame_mem(res)
@@ -349,18 +364,21 @@ class MaquinaVirtual:
                 sig += 1
 
             elif operador == 'GOSUB':
-                self.memoria.activa = self.memoria.mem[list(self.memoria.mem.keys())[-1]]
+                self.memoria.activa = self.memoria.mem_ejec[list(self.memoria.mem_ejec.keys())[-1]]
+                
                 self.pila_contextos.append(res)
 
-                
-
                 # mem = self.dame_mem(res)
+                self.memoria.activa.matcheo(parametros)
+                val = self.haz_quads(quads, fun_dir, int(res)-1)
+
+                # return
+                if val is not None:
+                    mem = self.dame_mem(op_izq)
+                    mem[op_izq] = val
                 
-
-                sig = int(res) - 1
-
-            elif operador == 'param':
                 sig += 1
+                
 
             elif operador == 'RETURN':
                 mem = self.dame_mem(res)
@@ -377,8 +395,15 @@ class MaquinaVirtual:
                 sig += 1
             
             elif operador == 'ENDPROC':
+                
                 self.memoria.cuello()
                 self.pila_contextos.pop()
+
+                if retornado is not None:
+                    return retornado
+                else:
+                    break
+
 
             # TODO: 
             # agregar clear
@@ -434,13 +459,15 @@ class MaquinaVirtual:
         Regresa la dirección a la que pertenece la variable global, local o de constantes
         :param dir: Dirección de variable
         '''
+        
         if dir is None:
             return None
         elif 1000 <= dir < 21000:
             return self.memoria.mem_global
         elif 21000 <= dir < 41000:
             # hay que poner la activa
-            return self.memoria.mem_local
+            #return self.main_memory.active_record.memory_local if self.main_memory.active_record is not None else self.main_memory.memory_local
+            return self.memoria.activa.mem_local if self.memoria.activa is not None else self.memoria.mem_local
         else:
             return self.memoria.mem_constantes
 

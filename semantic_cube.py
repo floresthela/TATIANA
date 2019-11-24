@@ -16,6 +16,8 @@ class Operators(Enum):
     DIVISION = '/'
     GREATER = '>'
     LESS = '<'
+    GREATEREQ = '>='
+    LESSEQ = '<='
     NOT_EQUAL = '!='
     ISEQUAL = '=='
     EQUAL = '='
@@ -136,7 +138,41 @@ class SemanticCube:
                     'string': 'err'
                 }
             },
+            Operators.GREATEREQ: {
+                'int': {
+                    'int': 'bool',
+                    'float': 'bool',
+                    'string': 'err'
+                },
+                'float': {
+                    'int': 'bool',
+                    'float': 'bool',
+                    'string': 'err'
+                },
+                'string': {
+                    'int': 'err',
+                    'float': 'err',
+                    'string': 'err'
+                }
+            },
 
+            Operators.LESSEQ: {
+                'int': {
+                    'int': 'bool',
+                    'float': 'bool',
+                    'string': 'err'
+                },
+                'float': {
+                    'int': 'bool',
+                    'float': 'bool',
+                    'string': 'err'
+                },
+                'string': {
+                    'int': 'err',
+                    'float': 'err',
+                    'string': 'err'
+                }
+            },
             Operators.ISEQUAL: {
                 'int': {
                     'int': 'bool',

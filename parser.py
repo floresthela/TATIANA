@@ -66,6 +66,7 @@ def p_star(p):
     # count_vars = sum(len(v) for v in vars_t.table['star']['vars'].values())
     count_vars = len(s_table['vars'])
     vars_t.delete_vars('star')
+    del s_table['size']
     s_table['vars'] = count_vars
     cg.generate_END()
 
@@ -362,7 +363,11 @@ def p_function_t(p):
     count_vars = len(table['vars'])
     vars_t.delete_vars(p[2])
 
+    del table['size']
+
     table['vars'] = count_vars
+
+    
 
 def p_function_v(p):
     '''
@@ -379,6 +384,7 @@ def p_function_v(p):
     cg.generate_ENDPROC()
     count_vars = len(table['vars'])
     vars_t.delete_vars(p[2])
+    del table['size']
 
     table['vars'] = count_vars
 
@@ -550,15 +556,16 @@ def p_funCall(p):
     '''
     funCall : ID iniciaFunCall funCall2 terminaFunCall
     '''
-    cg.PilaO.append(p[1])
+    # cg.PilaO.append(p[1])
     if p[1] in vars_t.table:
         p[0] = p[1]
         # print("HOLAA")
         # print(p[0])
         init = vars_t.table[p[0]]['begin']
         params_declarados = vars_t.table[p[0]]['params']
+        type = vars_t.table[p[0]]['type']
         cg.fill_ERA(p[1])
-        cg.generate_GOSUB(init)
+        cg.generate_GOSUB(init,type)
 
         # si no se mandaron parametros manda lista vacía para checar
         if p[3] is not None:
@@ -647,7 +654,7 @@ def p_funCallParam(p):
     # print(list(my_dict.keys())[list(my_dict.values()).index(112)])
     # cg.checa_Tipo_Params(p[1][0])
     p[0] = t
-    cg.generate_paramQuad(dir)
+    cg.generate_paramQuad()
 
 
 # CTE
@@ -718,9 +725,10 @@ def p_loper(p):
     '''
     loper : GREATER
           | LESS
+          | GREATEREQ
+          | LESSEQ
           | NOTEQUAL
           | ISEQUAL
-
     '''
     # 8. POper.Push(rel.op)
     cg.POper.append(p[1])
@@ -1018,7 +1026,7 @@ def p_exp(p):
     else:
         p[0] = p[1]
 
-    if cg.POper and cg.POper[-1] in ['>','<','==','!=']:
+    if cg.POper and cg.POper[-1] in ['>','<','==','!=','<=','>=']:
         cg.generate_quad(vars_t.current_scope)
 
 def p_exp_o(p):

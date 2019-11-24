@@ -232,7 +232,11 @@ class Intermediate_CodeGeneration:
         Genera GOTOF para condicion y while
         '''
         # Hay que checar si sí jala un elseif igual... aunque si deberia no?? lo checamos.
+
+        print(self.PTypes)
+        print(self.PilaO)
         exp_type = self.PTypes.pop()
+        print('hey',exp_type)
         if exp_type != 'bool':
             raise TypeError("ERROR: Type-mismatch")
         else:
@@ -392,18 +396,26 @@ class Intermediate_CodeGeneration:
         if self.era is not None:
             self.Quads[self.era].cambia_res(funcName)
 
-    def generate_paramQuad(self, direccion):
+    def generate_paramQuad(self):
         '''
         Generate params quad
         '''
-        quadruple = Quadruple('param', None, None, direccion)
+        quadruple = Quadruple('param', None, None, self.PilaO.pop())
         self.Quads.append(quadruple)
 
-    def generate_GOSUB(self, begin):
+    def generate_GOSUB(self, begin, type):
         '''
         Generate goSub quadruple
         '''
-        quadruple = Quadruple('GOSUB', None, None, begin)
+
+        if type != 'void':
+            valor_retorno = self.direccion_mem('local', type)
+            self.PilaO.append(valor_retorno)
+            self.PTypes.append(type)
+        else:
+            valor_retorno = None
+            
+        quadruple = Quadruple('GOSUB', valor_retorno, None, begin)
         self.Quads.append(quadruple)
 
     def generate_RETURN(self,type):
@@ -412,6 +424,7 @@ class Intermediate_CodeGeneration:
         :param type: Tipo de función
         '''
         self.cubo.semantics(self.PTypes.pop(),type,Operators.RETURN)
+
         quadruple = Quadruple('RETURN',None,None,self.PilaO.pop())
 
         self.Quads.append(quadruple)

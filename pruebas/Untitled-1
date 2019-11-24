@@ -1,0 +1,18 @@
+program fibo;
+
+fi
+fun int fibonacci(int x){
+
+    int f;
+    if(x == 0){
+        f = 0;
+    }
+    elseif(x == 1){
+        f = 1;
+    }
+    else{
+        f = fibonacci(x-1) + 5;   
+    }
+    return f;
+}
+
