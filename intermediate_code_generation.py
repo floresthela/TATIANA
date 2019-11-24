@@ -239,18 +239,36 @@ class Intermediate_CodeGeneration:
             self.Quads.append(quadruple)
             self.PJumps.append(len(self.Quads)-1)
 
-    # def generate_GOTOV(self):
+    def generate_GOTOV(self):
+        '''
+        Genera GOTOV para for
+        '''
+        cond = self.PilaO.pop()
+        print("cond", cond)
+        quadruple = Quadruple('GotoV', cond, None, None)
+        self.Quads.append(quadruple)
+
+    # def quad_incrementaFor(self):
     #     '''
-    #     Genera GOTOV para for
+    #     Genera el quadruplo para incrementar el iterador del for
     #     '''
-    #     for_type = self.PTypes.pop()
-    #     if for_type != 'bool':
-    #         raise TypeError("ERROR: Type-mismatch")
-    #     else:
-    #         cond = self.PilaO.pop()
-    #         quadruple = Quadruple('GotoV', cond, None, None)
-    #         self.Quads.append(quadruple)
-    #         self.PJumps.append(len(self.Quads)-1)
+    #     # print("pila operandos", self.PilaO)
+    #     operador = '+'
+    #     self.POper.append(operador)
+    #     op_izq = self.PilaO.pop()
+    #     op_der = 1
+    #     print("pila operadores", self.POper)
+    #     result = self.direccion_mem('local', 'float')
+    #     quadruple = Quadruple(operador, op_izq, op_der, result)
+    #     self.Quads.append(quadruple)
+    #     self.PilaO.append(result)
+
+    def fill_gotoV(self, salto):
+        ''''
+        Llena el quad de GotoV para el for
+        '''
+        position = len(self.Quads) - 2
+        self.Quads[position].cambia_res(salto)
 
     def generateFor_condition(self):
         '''
@@ -268,6 +286,7 @@ class Intermediate_CodeGeneration:
         result = self.direccion_mem('local', 'bool')
         quadruple = Quadruple(operator, op_izq, op_derecho, result)
         self.Quads.append(quadruple)
+        self.PilaO.append(result)
 
     def generate_END(self):
         '''

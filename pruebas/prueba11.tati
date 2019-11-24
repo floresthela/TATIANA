@@ -4,7 +4,9 @@ program prueba11;
 
     int i = 0;
     int a;
+    int b;
     for (i:5){
      a=4;
     }
+    b=4;
 }

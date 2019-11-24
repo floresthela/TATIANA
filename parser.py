@@ -732,34 +732,27 @@ def p_body1(p):
 # TODO: cuádruplos para for
 def p_for(p):
     '''
-    for : forInit for1 TWODOTS for2 forClose body
+    for : forInit for1 TWODOTS for2 forClose forBody
     '''
     info = vars_t.search_var(p[2])
     print(info)
     # print("tipos", cg.PTypes)
 
     #el id tiene que ser de tipo int o float...
-    #no se puede hacer un for sobre un bool o un string...
+    #no se puede hacer un for que empiece con un bool o un string...
     if info['type'] == 'bool' or info['type'] == 'string':
         raise TypeError("ERROR: expected an int or a float")
     else:
         print("todo bien")
-        cg.generateFor_condition()
-        # print("scope",vars_t.current_scope)
-        # direccion = info['dir']
-        # cg.PilaO.append(direccion)
-        # print("pila", cg.PilaO)
-        # # cg.PilaO.append(p[4])
-        # print("pila2", cg.PilaO)
-        # cg.generateFor_condition()
+        cg.PJumps.append(len(cg.Quads)+2)
 
-    # end = cg.PJumps.pop()
-    # return_for = cg.PJumps.pop()
-    # id = cg.PilaO.pop()
-    # id += 1
-    # cg.generate_GOTO()
-    # cg.fill_goto(return_for)
-    # cg.fill_quad(end)
+    # print("saltos", cg.PJumps)
+    salto = cg.PJumps.pop()
+    cg.fill_gotoV(salto)
+    # cg.quad_incrementaFor()
+    goto = cg.PJumps.pop()
+    cg.generate_GOTO()
+    cg.fill_goto(goto)
 
 
 def p_forInit(p):
@@ -776,8 +769,8 @@ def p_for1(p):
     '''
     p[0] = p[2]
     # 2
-    # cg.PilaO.push()
-    # cg.check_type(p[3])
+    info = vars_t.search_var(p[2])
+    cg.PilaO.append(info['dir'])
 
 
 def p_for2(p):
@@ -785,19 +778,24 @@ def p_for2(p):
     for2 : exp
     '''
     p[0] = p[1]
-    # 3
-    # cg.PilaO.append(p[2])
-    # tmp1 = cg.PilaO.pop()
-    # tmp2 = cg.PilaO.pop()
-    # cg.PilaO.append(tmp2)
 
 
 def p_forClose(p):
     '''
     forClose : CLOSEPAREN
     '''
-    # 4
+    cg.generateFor_condition()
+    cg.generate_GOTOV()
+
+
+def p_forBody(p):
+    '''
+    forBody : body
+    '''
     # cg.generate_GOTOV()
+    # cg.PJumps.append(len(cg.Quads))
+    # cg.quad_incrementaFor()
+    # print("saltos", cg.PJumps)
 
 
 # WHILE

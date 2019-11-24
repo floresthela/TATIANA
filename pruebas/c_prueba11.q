@@ -1,1 +1,1 @@
-{"Quads":[["Goto_main",null,null,3],["=",41000,null,21000],["=",41002,null,21001],[">",21001,41001,36000],["END",null,null,null]]}
+{"Quads":[["Goto_main",null,null,2],["=",41000,null,21000],[">",41001,21000,36000],["GotoV",36000,null,7],["=",41002,null,21001],["Goto",null,null,3],["=",41002,null,21002],["END",null,null,null]]}
