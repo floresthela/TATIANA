@@ -1,0 +1,16 @@
+program factorial_recursivo;
+
+fun int factorial(int n){
+    int f;
+    if(n <= 1){
+        f = 1;
+    }
+    else {
+        f = n * factorial( n - 1);
+    }
+    return f;
+}
+
+* {
+    print(factorial(20));
+}

@@ -47,7 +47,7 @@ tokens = [
     'MULTIPLICATION', 'OPENBRACES', 'CLOSEBRACES',
     'ADDITION', 'SUBSTRACTION', 'DIVISION', 'CTEINT', 'CTEFLOAT',
     'CTESTRING', 'GREATER', 'LESS', 'NOTEQUAL', 'SEMICOLON',
-    'OPENBRACKET', 'CLOSEBRACKET', 'ISEQUAL'
+    'OPENBRACKET', 'CLOSEBRACKET', 'ISEQUAL', 'GREATEREQ','LESSEQ'
 ] + list(reserved.values())
 
 
@@ -64,7 +64,9 @@ t_CLOSEBRACES = r'\}'
 t_SUBSTRACTION = r'\-'
 t_DIVISION = r'\/'
 t_GREATER = r'\>'
+t_GREATEREQ = r'\>='
 t_LESS = r'\<'
+t_LESSEQ = r'\<='
 t_NOTEQUAL = r'\!='
 t_SEMICOLON = r'\;'
 t_OPENBRACKET = r'\['

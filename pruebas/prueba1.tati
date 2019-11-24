@@ -3,32 +3,35 @@ int v = 50;
 int  e = 4;
 string color = "blue";
 
-fun int fun1(float s){
+fun float fun1(float ff){
+    float s = 5;
     print("jelou");
+    return ff + 1000;
 }
 
 fun int fun2(int a, string s){
+    int b = 5;
     v = 4 + 5 - v;
     print("orange");
+    return 999;
+}
+
+fun void hola(int conta){
+    string s = "hola";
+    int contador = 5;
+
+    while(conta > 0){
+        print(conta);
+        conta = conta - 1;
+    } 
 }
 
 * {
     float f1;
-    circle(v);
-    square(100);
-    rectangle(100,50);
-
-    hand_up;
-    hide_star;
-    position(100,100);
-    hand_down;
-
-    color_star("red");
-
-    show_star;
-    triangle(80);
-
-    fun2(v,"orange");
+    print(4 * -4);
+    print("hola");
+    f1 = fun1(5.6);
     
-    arc(60,100);
+    print(f1);
+    hola(5);
 }

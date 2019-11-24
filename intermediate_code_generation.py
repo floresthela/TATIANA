@@ -150,7 +150,9 @@ class Intermediate_CodeGeneration:
 
         elif mem == 'constantes':
             if val is None:
+                print(mem,type,size,val)
                 raise TypeError(f"Valor de constante no especificado")
+
 
             elif val in self.constantes.values():
                return [x for x, y in self.constantes.items() if y == val].pop()
@@ -171,6 +173,10 @@ class Intermediate_CodeGeneration:
         return dir
 
     def generate_quad(self,scope):
+
+        print(self.POper)
+        print(self.PilaO)
+
         right_op = self.PilaO.pop()
         right_type = self.PTypes.pop()
 
@@ -199,6 +205,9 @@ class Intermediate_CodeGeneration:
                 result = left_op
                 quadruple = Quadruple(operator, result, None, right_op)
         self.Quads.append(quadruple)
+
+
+
         return result_type
 
     def generate_quad_print(self):
@@ -230,7 +239,11 @@ class Intermediate_CodeGeneration:
         Genera GOTOF para condicion y while
         '''
         # Hay que checar si sí jala un elseif igual... aunque si deberia no?? lo checamos.
+
+        print(self.PTypes)
+        print(self.PilaO)
         exp_type = self.PTypes.pop()
+        print('hey',exp_type)
         if exp_type != 'bool':
             raise TypeError("ERROR: Type-mismatch")
         else:
@@ -248,21 +261,6 @@ class Intermediate_CodeGeneration:
         quadruple = Quadruple('GotoV', cond, None, None)
         self.Quads.append(quadruple)
 
-    # def quad_incrementaFor(self):
-    #     '''
-    #     Genera el quadruplo para incrementar el iterador del for
-    #     '''
-    #     # print("pila operandos", self.PilaO)
-    #     operador = '+'
-    #     self.POper.append(operador)
-    #     op_izq = self.PilaO.pop()
-    #     op_der = 1
-    #     print("pila operadores", self.POper)
-    #     result = self.direccion_mem('local', 'float')
-    #     quadruple = Quadruple(operador, op_izq, op_der, result)
-    #     self.Quads.append(quadruple)
-    #     self.PilaO.append(result)
-
     def fill_gotoV(self, salto):
         ''''
         Llena el quad de GotoV para el for
@@ -271,6 +269,11 @@ class Intermediate_CodeGeneration:
         # position = len(self.Quads) - 3
         position = self.PJumps.pop()
         self.Quads[position].cambia_res(salto)
+
+    def generate_ENDPROC(self):
+        quadruple = Quadruple('ENDPROC',None,None,None)
+        self.Quads.append(quadruple)
+
 
     def generateFor_condition(self):
         '''
@@ -388,6 +391,9 @@ class Intermediate_CodeGeneration:
         Genera cuadruplo de ERA (llamada a funcion)
         :param fun: el nombre de la funcion
         '''
+
+
+
         quadruple = Quadruple('ERA', None, None, None)
         self.Quads.append(quadruple)
         self.era = len(self.Quads)-1
@@ -400,18 +406,38 @@ class Intermediate_CodeGeneration:
         if self.era is not None:
             self.Quads[self.era].cambia_res(funcName)
 
-    def generate_paramQuad(self, direccion):
+    def generate_paramQuad(self):
         '''
         Generate params quad
         '''
-        quadruple = Quadruple('param', None, None, direccion)
+
+        quadruple = Quadruple('param', None, None, self.PilaO.pop())
         self.Quads.append(quadruple)
 
-    def generate_GOSUB(self, begin):
+    def generate_GOSUB(self, begin, type):
         '''
         Generate goSub quadruple
         '''
-        quadruple = Quadruple('GOSUB', None, None, begin)
+
+        if type != 'void':
+            valor_retorno = self.direccion_mem('local', type)
+            self.PilaO.append(valor_retorno)
+            self.PTypes.append(type)
+        else:
+            valor_retorno = None
+
+        quadruple = Quadruple('GOSUB', valor_retorno, None, begin)
+        self.Quads.append(quadruple)
+
+    def generate_RETURN(self,type):
+        '''
+        Genera cuádruplo para return de una función
+        :param type: Tipo de función
+        '''
+        self.cubo.semantics(self.PTypes.pop(),type,Operators.RETURN)
+
+        quadruple = Quadruple('RETURN',None,None,self.PilaO.pop())
+
         self.Quads.append(quadruple)
 
     def checa_Tipo_Params(self, params_dec, params_fun):
