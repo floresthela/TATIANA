@@ -160,7 +160,7 @@ class MaquinaVirtual:
 
             elif operador == 'GotoV':
                 mem_b = self.dame_mem(op_izq)
-                if mem_b:
+                if mem_b[op_izq]:
                     sig = int(res) - 1
                 else:
                     sig += 1
@@ -344,7 +344,6 @@ class MaquinaVirtual:
                 
                 mem1 = self.dame_mem(op_izq)
                 mem2 = self.dame_mem(op_der)
-        
                 if not(0 <= mem1[op_izq] < mem2[op_der]):
                     raise TypeError(f"Out of bouuunddsss")
                 

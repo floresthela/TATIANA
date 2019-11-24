@@ -257,6 +257,8 @@ class Intermediate_CodeGeneration:
         Genera GOTOV para for
         '''
         cond = self.PilaO.pop()
+        self.PTypes.pop()
+
         print("cond", cond)
         quadruple = Quadruple('GotoV', cond, None, None)
         self.Quads.append(quadruple)
@@ -265,9 +267,10 @@ class Intermediate_CodeGeneration:
         ''''
         Llena el quad de GotoV para el for
         '''
-        print("pila saltos", self.PJumps)
         # position = len(self.Quads) - 3
+        
         position = self.PJumps.pop()
+        print('posicion',position)
         self.Quads[position].cambia_res(salto)
 
     def generate_ENDPROC(self):
@@ -279,14 +282,18 @@ class Intermediate_CodeGeneration:
         '''
         Genera el cuádruplo de la condicion del for
         '''
-        operator = '>'
-        self.POper.append(operator)
+        self.POper.append('>')
         op_izq = self.PilaO.pop()
         op_derecho = self.PilaO.pop()
         result = self.direccion_mem('local', 'bool')
-        quadruple = Quadruple(operator, op_derecho, op_izq, result)
+        quadruple = Quadruple('>', op_derecho, op_izq, result)
+        
+        # pop a '>'
+        self.POper.pop()
         self.Quads.append(quadruple)
         self.PilaO.append(result)
+        self.PTypes.append('bool')
+
 
     def generate_END(self):
         '''
