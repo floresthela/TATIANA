@@ -32,9 +32,6 @@ def p_program(p):
     p[0] = "PROGRAM COMPILED"
     vars_t.delete_vars('global')
 
-    print(vars_t.table)
-    print(cg.constantes)
-    print(cg.Quads)
     f_quads = cg.format_quads()
     f_constantes = cg.format_constantes()
     genera_comp.genera_arch(p[2],vars_t.table, f_quads, f_constantes)
@@ -179,7 +176,7 @@ def p_vars(p):
                 cg.generate_quad(vars_t.current_scope)
 
     else:
-        # print('ok')
+
         if cg.POper and cg.POper[-1] in ['=']:
             cg.PilaO.append(dir)
             cg.PTypes.append(p[1])
@@ -450,7 +447,7 @@ def p_funParam(p):
     p[0] = (p[1],p[2])
 
     dir = cg.direccion_mem('local', p[1])
-    # print('fun',vars_t.current_scope)
+
     vars_t.insert_var(p[2], p[1], dir, False,None)
     # cg.PTemp.append(p[1])
     vars_t.insert_param(p[2],p[1])
@@ -569,8 +566,7 @@ def p_funCall(p):
 
     if p[1] in vars_t.table:
         p[0] = p[1]
-        # print("HOLAA")
-        # print(p[0])
+
         init = vars_t.table[p[0]]['begin']
         params_declarados = vars_t.table[p[0]]['params']
         type = vars_t.table[p[0]]['type']
@@ -625,7 +621,7 @@ def p_funCall2(p):
         types.append(p[2:])
         types = flatten(types)
         types = types[:-1]
-        print(types)
+        
         p[0] = types
 
 
@@ -645,10 +641,10 @@ def p_funCallParam(p):
     funCallParam : exp
     '''
     # p[0] = p[1]
-    print(cg.constantes)
+    
     if isinstance(p[1],tuple):
         var_param = p[1][0]
-        print(var_param)
+        
         vt = vars_t.search_var(var_param)
         dir = vt['dir']
         t = vt['type']
@@ -698,7 +694,7 @@ def p_cte_float(p):
         dir = cg.direccion_mem('constantes','float',1,num)
     else:
         # p[0] = p[2]
-        print(p[1])
+        
         dir = cg.direccion_mem('constantes','float',1, p[2])
 
     p[0] = dir
@@ -828,7 +824,6 @@ def p_for_v2(p):
     for_v2 : nuevo_for forBody
     '''
 
-    print('HOLA',p[1])
     var = vars_t.current_scope['vars'][p[1]]
     if var is not None:
         dir = var['dir']
@@ -866,7 +861,7 @@ def p_nuevo_for(p):
     '''
     nuevo_for : FOR OPENPAREN ID TWODOTS for2 CLOSEPAREN
     '''
-    print('HOLA',p[3])
+
     dir = cg.direccion_mem('local','int')
     vars_t.insert_var(p[3],'int',dir, False,None)
 
@@ -915,7 +910,7 @@ def p_for(p):
     if info['type'] == 'bool' or info['type'] == 'string':
         raise TypeError("ERROR: expected an int or a float")
     else:
-        print("todo bien")
+    
         cg.PJumps.append(len(cg.Quads)+2)
 
     salto = cg.PJumps.pop()
