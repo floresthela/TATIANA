@@ -557,6 +557,7 @@ def p_funCall(p):
     funCall : ID iniciaFunCall funCall2 terminaFunCall
     '''
     # cg.PilaO.append(p[1])
+
     if p[1] in vars_t.table:
         p[0] = p[1]
         # print("HOLAA")
@@ -591,6 +592,8 @@ def p_iniciaFunCall(p):
     '''
     iniciaFunCall : OPENPAREN
     '''
+    # fondo falso porque si no no jala
+    cg.POper.append('(')
     cg.generate_ERA()
 
 
@@ -598,6 +601,7 @@ def p_terminaFunCall(p):
     '''
     terminaFunCall : CLOSEPAREN
     '''
+    cg.POper.pop()
 
 
 def p_funCall2(p):

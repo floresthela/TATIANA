@@ -6,7 +6,6 @@ int t1 = 0;
 int t2 = 1;
 int i = 0;
 
-
 * {
     while(i < n){
         if(i <= 1)
