@@ -76,6 +76,5 @@ class MemLocal:
             elif type(p) is str:
                 self.mem_local[self.contador + self.c_str] = p
                 self.c_str += 1
-            print('p',p)
             # self.mem_local[self.contador] = p
             self.contador += 1

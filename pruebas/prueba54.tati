@@ -9,8 +9,7 @@ fun int laura(int l){
 * {
     int i =  10;
     int j = 0;
-    j = (5 + 6 * 7) - (5 + 6 - 5 * (6 + 1));
-    i = laura(i) + laura(5 - 6);
+    i = laura(i + 1) * (laura(5 + 6));
     print(j);
     print(i);
 }

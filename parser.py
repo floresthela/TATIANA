@@ -578,6 +578,8 @@ def p_funCall(p):
     else:
         raise TypeError(f"Function '{p[1]}' not declared")
 
+    p[0] = cg.Quads[-1].result
+
 # def p_funID(p):
 #     '''
 #     funID : ID

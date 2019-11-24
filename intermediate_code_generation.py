@@ -173,6 +173,10 @@ class Intermediate_CodeGeneration:
         return dir
 
     def generate_quad(self,scope):
+
+        print(self.POper)
+        print(self.PilaO)
+        
         right_op = self.PilaO.pop()
         right_type = self.PTypes.pop()
 
@@ -201,6 +205,9 @@ class Intermediate_CodeGeneration:
                 result = left_op
                 quadruple = Quadruple(operator, result, None, right_op)
         self.Quads.append(quadruple)
+
+        
+
         return result_type
 
     def generate_quad_print(self):
@@ -384,6 +391,9 @@ class Intermediate_CodeGeneration:
         Genera cuadruplo de ERA (llamada a funcion)
         :param fun: el nombre de la funcion
         '''
+
+        
+
         quadruple = Quadruple('ERA', None, None, None)
         self.Quads.append(quadruple)
         self.era = len(self.Quads)-1
@@ -400,6 +410,7 @@ class Intermediate_CodeGeneration:
         '''
         Generate params quad
         '''
+
         quadruple = Quadruple('param', None, None, self.PilaO.pop())
         self.Quads.append(quadruple)
 

@@ -76,7 +76,7 @@ class MaquinaVirtual:
             if operador == '=':
                 mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
                 tipo_res = self.dame_tipo(res)
-                print('y',mem1)
+                
                 mem_r[res] = tipo_res(mem1[op_izq])
                 sig += 1
 
