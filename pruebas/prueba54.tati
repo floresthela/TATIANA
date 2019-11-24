@@ -1,0 +1,15 @@
+program prueba54;
+
+fun int laura(int l){
+    int x = 5;
+    l = x + 6;
+    return l;
+}
+
+* {
+    int i =  10;
+    int j = 0;
+    i = laura(i + 1) * (laura(5 + 6));
+    print(j);
+    print(i);
+}

@@ -1,0 +1,21 @@
+program fibo;
+
+
+fun int fibonacci(int x){
+
+    int f;
+    if(x == 0){
+        f = 0;
+    }
+    elseif(x == 1){
+        f = 1;
+    }
+    else{
+        f = fibonacci(x-1) + fibonacci(x-2);
+    }
+    return f;
+}
+
+*{
+    print(fibonacci(10));
+}

@@ -18,7 +18,7 @@ cg = Intermediate_CodeGeneration()
 if __name__ == '__main__':
     try:
         path = 'pruebas/'
-        nombreArchivo = 'prueba1.tati'
+        nombreArchivo = 'fibo.tati'
         path += nombreArchivo
         arch = open(path, 'r')
         print(f"Leyendo archivo {nombreArchivo}...\n")

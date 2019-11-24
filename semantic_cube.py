@@ -16,9 +16,12 @@ class Operators(Enum):
     DIVISION = '/'
     GREATER = '>'
     LESS = '<'
+    GREATEREQ = '>='
+    LESSEQ = '<='
     NOT_EQUAL = '!='
     ISEQUAL = '=='
     EQUAL = '='
+    RETURN = 'return'
 
 
 class SemanticCube:
@@ -135,7 +138,41 @@ class SemanticCube:
                     'string': 'err'
                 }
             },
+            Operators.GREATEREQ: {
+                'int': {
+                    'int': 'bool',
+                    'float': 'bool',
+                    'string': 'err'
+                },
+                'float': {
+                    'int': 'bool',
+                    'float': 'bool',
+                    'string': 'err'
+                },
+                'string': {
+                    'int': 'err',
+                    'float': 'err',
+                    'string': 'err'
+                }
+            },
 
+            Operators.LESSEQ: {
+                'int': {
+                    'int': 'bool',
+                    'float': 'bool',
+                    'string': 'err'
+                },
+                'float': {
+                    'int': 'bool',
+                    'float': 'bool',
+                    'string': 'err'
+                },
+                'string': {
+                    'int': 'err',
+                    'float': 'err',
+                    'string': 'err'
+                }
+            },
             Operators.ISEQUAL: {
                 'int': {
                     'int': 'bool',
@@ -186,7 +223,25 @@ class SemanticCube:
                     'float': 'err',
                     'string': 'string'
                 }
+            },
+            Operators.RETURN: {
+                'int': {
+                    'int': 'int',
+                    'float': 'err',
+                    'string': 'err'
+                },
+                'float': {
+                    'int': 'err',
+                    'float': 'float',
+                    'string': 'err'
+                },
+                'string': {
+                    'int': 'err',
+                    'float': 'err',
+                    'string': 'string'
+                }
             }
+
 
         }
 
