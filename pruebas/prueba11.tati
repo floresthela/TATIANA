@@ -1,0 +1,17 @@
+program prueba11;
+
+* {
+
+    int i = 0;
+    int a;
+    int x = 3;
+    int b;
+    float c;
+    int d;
+    for (i:5){
+     a=4;
+     c = 5.5;
+     d = 10;
+    }
+    b=4;
+}

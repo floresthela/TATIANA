@@ -19,6 +19,7 @@ if __name__ == '__main__':
     try:
         path = 'pruebas/'
         nombreArchivo = 'fibo.tati'
+
         path += nombreArchivo
         arch = open(path, 'r')
         print(f"Leyendo archivo {nombreArchivo}...\n")
