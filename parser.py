@@ -830,13 +830,11 @@ def p_for(p):
     if info['type'] == 'bool' or info['type'] == 'string':
         raise TypeError("ERROR: expected an int or a float")
     else:
-        print("todo bien")
         cg.PJumps.append(len(cg.Quads)+2)
 
     salto = cg.PJumps.pop()
     cg.fill_gotoV(salto)
-    print("len", len(cg.Quads))
-    # cg.quad_incrementaFor()
+    # print("len", len(cg.Quads))
     goto = cg.PJumps.pop()
     cg.generate_GOTO()
     cg.fill_goto(goto)
@@ -858,6 +856,8 @@ def p_for1(p):
     # 2
     info = vars_t.search_var(p[2])
     cg.PilaO.append(info['dir'])
+    # cg.PTemp.append(info['dir'])
+    cg.PTypes.append(info['type'])
 
 
 def p_for2(p):
@@ -880,6 +880,8 @@ def p_forBody(p):
     '''
     forBody : body
     '''
+    cg.quad_incrementaFor()
+    # cg.generateFor_condition()
     # cg.PJumps.append(len(cg.Quads)+1)
 
 

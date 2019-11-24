@@ -1,0 +1,17 @@
+program prueba12;
+
+* {
+
+    int i = 0;
+    int a;
+    int x = 3;
+    int b;
+    float c;
+    int d;
+    for(i:5){
+        print("hola");
+        i = i + 1;
+        print(i);
+    }
+    print(x);
+}
