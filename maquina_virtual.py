@@ -83,7 +83,12 @@ class MaquinaVirtual:
             elif operador == '+':
 
                 mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
-                mem_r[res] = mem1[op_izq] + mem2[op_der]
+                
+                # suma de un string con algo más
+                if(isinstance(mem1[op_izq], str) and not isinstance(mem2[op_der], str)) or (isinstance(mem2[op_der],str) and not isinstance(mem1[op_izq],str)):
+                    mem_r[res] = str(mem1[op_izq]) + str(mem2[op_der])
+                else:
+                    mem_r[res] = mem1[op_izq] + mem2[op_der]
                 sig += 1
 
             elif operador == '-':
@@ -160,7 +165,7 @@ class MaquinaVirtual:
 
             elif operador == 'GotoV':
                 mem_b = self.dame_mem(op_izq)
-                if mem_b:
+                if mem_b[op_izq]:
                     sig = int(res) - 1
                 else:
                     sig += 1
@@ -344,7 +349,6 @@ class MaquinaVirtual:
                 
                 mem1 = self.dame_mem(op_izq)
                 mem2 = self.dame_mem(op_der)
-        
                 if not(0 <= mem1[op_izq] < mem2[op_der]):
                     raise TypeError(f"Out of bouuunddsss")
                 

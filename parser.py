@@ -210,7 +210,7 @@ def p_dimensionada(p):
 def p_loop(p):
     '''
     loop : while
-        | for
+         | for_v2
     '''
 
 # STMT
@@ -508,16 +508,25 @@ def p_indice_dimensionada(p):
                         | empty
 
     '''
+
     if len(p) == 4:
         p[0] = (0,p[2])
     elif len(p) == 7:
         p[0] = (p[2],p[5])
 
+def p_aidi(p):
+    '''
+    aidi : ID
+    '''
+    p[0] = p[1]
+    # más fondos falsos porque si no, tenemos que poner parentesis en código
+    cg.POper.append('(')
+
 def p_id(p):
     '''
-    id : ID indice_dimensionada
+    id : aidi indice_dimensionada
     '''
-
+    cg.POper.pop()
     t = vars_t.search_var(p[1])
 
     if t:
@@ -814,15 +823,93 @@ def p_body1(p):
 #     for : FOR OPENPAREN ID TWODOTS exp CLOSEPAREN body
 #     '''
 
+def p_for_v2(p):
+    '''
+    for_v2 : nuevo_for forBody
+    '''
+    print('HOLA',p[1])
+    var = vars_t.search_var(p[1])
+    # var = vars_t.current_scope['vars'][p[1]]
+    if var is not None:
+        dir = var['dir']
+    else:
+        raise TypeError(f"'Variable {p[1]}' no ha sido declarada")
+
+    cg.PilaO.append(dir)
+    cg.PTypes.append('int')
+    print("DIR", dir)
+
+    suma_uno = cg.direccion_mem('constantes','int',1,1)
+
+    cg.PilaO.append(suma_uno)
+    cg.PTypes.append('int')
+    cg.POper.append('+')
+
+    cg.generate_quad(vars_t.current_scope)
+
+
+    cg.PilaO.append(dir)
+    cg.PTypes.append('int')
+    cg.POper.append('=')
+
+    cg.generate_quad(vars_t.current_scope)
+
+    fin_for = cg.PJumps.pop()
+    ret = cg.PJumps.pop()
+
+    cg.generate_GOTO()
+    cg.fill_goto(ret)
+
+    cg.fill_quad(fin_for)
+
+
+def p_nuevo_for(p):
+    '''
+    nuevo_for : FOR OPENPAREN ID TWODOTS for2 CLOSEPAREN
+    '''
+    print('HOLA',p[3])
+    dir = cg.direccion_mem('local','int')
+    print("k es esto?", dir)
+    vars_t.insert_var(p[3],'int',dir, False,None)
+    variable = vars_t.search_var(p[3])
+    print("Variablee", variable)
+
+    temp = cg.PilaO[-1]
+    print("TEMP", temp)
+    temp_t = cg.PTypes[-1]
+    cg.PilaO.pop()
+    cg.PTypes.pop()
+
+    cg.PilaO.append(dir)
+    cg.PTypes.append('int')
+    cg.POper.append('=')
+
+    # cg.generate_quad(vars_t.current_scope)
+
+    cg.PilaO.append(dir)
+    cg.PTypes.append('int')
+    cg.POper.append('<')
+
+    cg.PilaO.append(temp)
+    cg.PTypes.append(temp_t)
+
+    cg.generate_quad(vars_t.current_scope)
+
+    cg.PJumps.append(len(cg.Quads))
+
+    cg.generate_GOTOF()
+    p[0] = p[3]
+
+
+
 
 # FOR
 # TODO: cuádruplos para for
 def p_for(p):
     '''
-    for : forInit for1 TWODOTS for2 forClose forBody
+    for : FOR for1 TWODOTS for2 forClose forBody
     '''
-    info = vars_t.search_var(p[2])
-    print(info)
+    info = vars_t.search_var(p[2][0])
     # print("tipos", cg.PTypes)
 
     #el id tiene que ser de tipo int o float...
@@ -835,6 +922,7 @@ def p_for(p):
     salto = cg.PJumps.pop()
     cg.fill_gotoV(salto)
     # print("len", len(cg.Quads))
+    # cg.quad_incrementaFor()
     goto = cg.PJumps.pop()
     cg.generate_GOTO()
     cg.fill_goto(goto)
@@ -845,7 +933,7 @@ def p_forInit(p):
     forInit : FOR
     '''
     # 1
-    cg.PJumps.append(len(cg.Quads)+1)
+    # cg.PJumps.append(len(cg.Quads)+1)
 
 
 def p_for1(p):
@@ -858,6 +946,8 @@ def p_for1(p):
     cg.PilaO.append(info['dir'])
     # cg.PTemp.append(info['dir'])
     cg.PTypes.append(info['type'])
+    # info = vars_t.search_var(p[2])
+    # cg.PilaO.append(info['dir'])
 
 
 def p_for2(p):
@@ -871,16 +961,16 @@ def p_forClose(p):
     '''
     forClose : CLOSEPAREN
     '''
-    cg.generateFor_condition()
-    cg.generate_GOTOV()
-    cg.PJumps.append(len(cg.Quads)-1)
+    # cg.generateFor_condition()
+    # cg.generate_GOTOV()
+    # cg.PJumps.append(len(cg.Quads)-1)
 
 
 def p_forBody(p):
     '''
     forBody : body
     '''
-    cg.quad_incrementaFor()
+    # cg.quad_incrementaFor()
     # cg.generateFor_condition()
     # cg.PJumps.append(len(cg.Quads)+1)
 
