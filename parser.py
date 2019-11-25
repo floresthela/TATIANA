@@ -32,9 +32,8 @@ def p_program(p):
     p[0] = "PROGRAM COMPILED"
     vars_t.delete_vars('global')
 
-    print(vars_t.table)
-    print(cg.constantes)
     print(cg.Quads)
+    print(cg.constantes)
     f_quads = cg.format_quads()
     f_constantes = cg.format_constantes()
     genera_comp.genera_arch(p[2],vars_t.table, f_quads, f_constantes)
@@ -142,7 +141,6 @@ def p_vars(p):
 
     if dimensionada:
         if cg.POper and cg.POper[-1] in ['=']:
-
             # checar que las tuplas con tamaños sean iguales
             if var_dim == p[5]:
                 cg.POper.pop()
@@ -179,7 +177,7 @@ def p_vars(p):
                 cg.generate_quad(vars_t.current_scope)
 
     else:
-        # print('ok')
+
         if cg.POper and cg.POper[-1] in ['=']:
             cg.PilaO.append(dir)
             cg.PTypes.append(p[1])
@@ -288,10 +286,12 @@ def p_vectormatriz(p):
     vectormatriz : OPENBRACKET vm1 CLOSEBRACKET
                  | vm1
     '''
+    
     if len(p) > 2:
         p[0] = p[2]
     else:
         p[0] = p[1]
+    print(p[0])
 
 def p_vm1(p):
     '''
@@ -305,6 +305,7 @@ def p_vm1(p):
             raise TypeError(f"Las matrices deben tener arreglos del mismo tamaño")
     else:
         p[0] = (1,p[2])
+        print(p[0])
 
 def p_vm2(p):
     '''
@@ -316,7 +317,6 @@ def p_vm2(p):
         p[0] = 1 + p[3]
     else:
         p[0] = 1
-
 
 # FUNCTION
 def p_functionI(p):
@@ -450,7 +450,7 @@ def p_funParam(p):
     p[0] = (p[1],p[2])
 
     dir = cg.direccion_mem('local', p[1])
-    # print('fun',vars_t.current_scope)
+
     vars_t.insert_var(p[2], p[1], dir, False,None)
     # cg.PTemp.append(p[1])
     vars_t.insert_param(p[2],p[1])
@@ -513,6 +513,14 @@ def p_indice_dimensionada(p):
         p[0] = (0,p[2])
     elif len(p) == 7:
         p[0] = (p[2],p[5])
+    
+def p_aidi(p):
+    '''
+    aidi : ID
+    '''
+    p[0] = p[1]
+    # más fondos falsos porque si no, tenemos que poner parentesis en código
+    cg.POper.append('(')
 
 def p_aidi(p):
     '''
@@ -526,6 +534,7 @@ def p_id(p):
     '''
     id : aidi indice_dimensionada
     '''
+
     cg.POper.pop()
     t = vars_t.search_var(p[1])
 
@@ -569,8 +578,7 @@ def p_funCall(p):
 
     if p[1] in vars_t.table:
         p[0] = p[1]
-        # print("HOLAA")
-        # print(p[0])
+
         init = vars_t.table[p[0]]['begin']
         params_declarados = vars_t.table[p[0]]['params']
         type = vars_t.table[p[0]]['type']
@@ -625,7 +633,7 @@ def p_funCall2(p):
         types.append(p[2:])
         types = flatten(types)
         types = types[:-1]
-        print(types)
+        
         p[0] = types
 
 
@@ -645,10 +653,10 @@ def p_funCallParam(p):
     funCallParam : exp
     '''
     # p[0] = p[1]
-    print(cg.constantes)
+    
     if isinstance(p[1],tuple):
         var_param = p[1][0]
-        print(var_param)
+        
         vt = vars_t.search_var(var_param)
         dir = vt['dir']
         t = vt['type']
@@ -698,7 +706,7 @@ def p_cte_float(p):
         dir = cg.direccion_mem('constantes','float',1,num)
     else:
         # p[0] = p[2]
-        print(p[1])
+        
         dir = cg.direccion_mem('constantes','float',1, p[2])
 
     p[0] = dir
@@ -830,6 +838,7 @@ def p_for_v2(p):
     print('HOLA',p[1])
     var = vars_t.search_var(p[1])
     # var = vars_t.current_scope['vars'][p[1]]
+
     if var is not None:
         dir = var['dir']
     else:
@@ -837,7 +846,9 @@ def p_for_v2(p):
 
     cg.PilaO.append(dir)
     cg.PTypes.append('int')
+
     print("DIR", dir)
+
 
     suma_uno = cg.direccion_mem('constantes','int',1,1)
 
@@ -867,6 +878,7 @@ def p_nuevo_for(p):
     '''
     nuevo_for : FOR OPENPAREN ID TWODOTS for2 CLOSEPAREN
     '''
+
     print('HOLA',p[3])
     dir = cg.direccion_mem('local','int')
     print("k es esto?", dir)
@@ -876,6 +888,7 @@ def p_nuevo_for(p):
 
     temp = cg.PilaO[-1]
     print("TEMP", temp)
+
     temp_t = cg.PTypes[-1]
     cg.PilaO.pop()
     cg.PTypes.pop()
@@ -883,8 +896,8 @@ def p_nuevo_for(p):
     cg.PilaO.append(dir)
     cg.PTypes.append('int')
     cg.POper.append('=')
-
     # cg.generate_quad(vars_t.current_scope)
+
 
     cg.PilaO.append(dir)
     cg.PTypes.append('int')
@@ -901,8 +914,6 @@ def p_nuevo_for(p):
     p[0] = p[3]
 
 
-
-
 # FOR
 # TODO: cuádruplos para for
 def p_for(p):
@@ -917,11 +928,12 @@ def p_for(p):
     if info['type'] == 'bool' or info['type'] == 'string':
         raise TypeError("ERROR: expected an int or a float")
     else:
+
         cg.PJumps.append(len(cg.Quads)+2)
 
     salto = cg.PJumps.pop()
     cg.fill_gotoV(salto)
-    # print("len", len(cg.Quads))
+
     # cg.quad_incrementaFor()
     goto = cg.PJumps.pop()
     cg.generate_GOTO()
@@ -942,10 +954,12 @@ def p_for1(p):
     '''
     p[0] = p[2]
     # 2
+
     info = vars_t.search_var(p[2])
     cg.PilaO.append(info['dir'])
     # cg.PTemp.append(info['dir'])
     cg.PTypes.append(info['type'])
+
     # info = vars_t.search_var(p[2])
     # cg.PilaO.append(info['dir'])
 
@@ -1096,6 +1110,10 @@ def p_graphview0(p):
     '''
     graphview0 : HIDE_STAR
               | SHOW_STAR
+              | EXITONCLICK
+              | CLEAR
+              | BEGINFILL
+              | ENDFILL
     '''
     p[0] = p[1]
     cg.generate_quad_graph0(p[0])
@@ -1104,6 +1122,7 @@ def p_graphview1(p):
     '''
     graphview1 : COLOR_STAR unaExp
               | SIZE_STAR unaExp
+              | SPEED unaExp
     '''
     p[0] = p[1]
     cg.generate_quad_graph1(p[0])

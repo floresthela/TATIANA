@@ -35,6 +35,11 @@ reserved = {
     'position': 'POSITION',
     'color_star': 'COLOR_STAR',
     'size_star': 'SIZE_STAR',
+    'speed' : 'SPEED',
+    'exitonclick' : 'EXITONCLICK',
+    'clear' : 'CLEAR',
+    'begin_fill': 'BEGINFILL',
+    'end_fill' : 'ENDFILL',
     'return': 'RETURN',
     'void': 'VOID',
     'for': 'FOR'
@@ -73,7 +78,7 @@ t_OPENBRACKET = r'\['
 t_CLOSEBRACKET = r'\]'
 t_ISEQUAL = r'\=='
 
-t_CTESTRING = r'".*"'
+# t_CTESTRING = r'".*"'
 
 t_ignore = r' '
 
@@ -89,12 +94,11 @@ def t_CTEINT(t):
     t.value = int(t.value)
     return t
 
-
-# def t_CTECHAR(t):
-#     r'(L)?\'([^\\\n]|(\\.))*?\''
-#     t.value = str(t.value)
-#     return t
-
+def t_CTESTRING(t):
+    # r'"[a-zA-Z][a-zA-Z_0-9]*"'
+    r'\"(\\.|[^"\\])*\"'
+    t.value = str(t.value)
+    return t
 
 def t_ID(t):
     r'[a-zA-Z][a-zA-Z_0-9]*'

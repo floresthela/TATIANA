@@ -23,7 +23,6 @@ class MaquinaVirtual:
         self.pila_contextos = []
 
 
-
     def agarra_datos(self,program):
         '''
         Recibe archivos con cuádruplos y el directorio de funciones y constantes
@@ -58,8 +57,7 @@ class MaquinaVirtual:
         parametros = []
         retornado = None
 
-        while True:
-            
+        while True:            
             operador = quads[sig][0]
             op_izq = quads[sig][1]
             op_der = quads[sig][2]
@@ -175,6 +173,11 @@ class MaquinaVirtual:
                 # activamos memoria star
 
             elif operador == 'END':
+                
+                self.memoria.cuello()
+                self.pila_contextos.pop()
+                # tenemos que borrar algo más ?
+
                 break
 
             #################################### GRAPH STATEMENTS ####################################
@@ -206,6 +209,35 @@ class MaquinaVirtual:
                     
                 self.estrella.showturtle()
                 sig += 1
+            
+            elif operador == 'exitonclick':
+                if not self.turtle_activa:
+                    self.activa_tortuga()
+                    
+                self.screen.exitonclick()
+                sig += 1
+
+            elif operador == 'clear':
+                if not self.turtle_activa:
+                    self.activa_tortuga()
+
+                self.screen.clear()
+                sig += 1
+            
+            elif operador == 'begin_fill':
+                if not self.turtle_activa:
+                    self.activa_tortuga()
+                
+                self.estrella.begin_fill()
+                sig += 1
+
+            elif operador == 'end_fill':
+                if not self.turtle_activa:
+                    self.activa_tortuga()
+
+                self.estrella.end_fill()
+                sig += 1
+
 
             # 1 exp
             elif operador == 'circle':
@@ -309,6 +341,22 @@ class MaquinaVirtual:
 
                 sig += 1
             
+            elif operador == 'speed':
+                mem = self.dame_mem(op_izq)
+
+                if not self.turtle_activa:
+                    self.activa_tortuga()
+
+                speed = mem[op_izq]
+                print(type(speed))
+                if self.dame_tipo(op_izq) is not str:
+                    if not 1 <= speed <= 10:
+                        raise TypeError(f"Valor de la velocidad debe estar entre 0 y 10.")
+                elif speed not in ['fastest','fast','normal','slow','slowest']:
+                    raise TypeError(f"Velocidad {speed} no válida.")
+                self.estrella.speed(mem[op_izq])
+                sig += 1
+            
             elif operador == 'color_star':
                 mem = self.dame_mem(op_izq)
 
@@ -316,6 +364,16 @@ class MaquinaVirtual:
                     self.activa_tortuga()
                 color = mem[op_izq]
                 self.estrella.color(color)
+                sig += 1
+            
+            elif operador == 'size_star':
+                mem = self.dame_mem(op_izq)
+
+                if not self.turtle_activa:
+                    self.activa_tortuga()
+                
+                size = mem[op_izq]
+                self.estrella.pensize(size)
                 sig += 1
 
             # 2 exp
@@ -408,15 +466,12 @@ class MaquinaVirtual:
                 else:
                     break
 
-
             # TODO: 
             # agregar clear
             # agregar fill
+            
+    
 
-            # color_star (pen)
-            # size_star (grosor supongo)
-            # era
-            # endproc
 
     def haz_constantes(self, t):
         '''
@@ -469,8 +524,6 @@ class MaquinaVirtual:
         elif 1000 <= dir < 21000:
             return self.memoria.mem_global
         elif 21000 <= dir < 41000:
-            # hay que poner la activa
-            #return self.main_memory.active_record.memory_local if self.main_memory.active_record is not None else self.main_memory.memory_local
             return self.memoria.activa.mem_local if self.memoria.activa is not None else self.memoria.mem_local
         else:
             return self.memoria.mem_constantes
@@ -486,6 +539,8 @@ class MaquinaVirtual:
             return float
         elif 11000 <= dir < 16000 or 31000 <= dir < 36000:
             return str
+        elif dir >= 41000:
+            return type(self.memoria.mem_constantes[dir])
         else:
             return bool
 
@@ -503,6 +558,7 @@ class MaquinaVirtual:
         self.estrella = Turtle(shape="estrella")
         # self.screen.clear()
         # self.screen.exitonclick()
+        
 
     def dibuja_estrella(self,lapiz):
         '''

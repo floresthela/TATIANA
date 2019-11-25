@@ -149,7 +149,6 @@ class Intermediate_CodeGeneration:
 
         elif mem == 'constantes':
             if val is None:
-                print(mem,type,size,val)
                 raise TypeError(f"Valor de constante no especificado")
 
 
@@ -172,10 +171,6 @@ class Intermediate_CodeGeneration:
         return dir
 
     def generate_quad(self,scope):
-
-        print(self.POper)
-        print(self.PilaO)
-
         right_op = self.PilaO.pop()
         right_type = self.PTypes.pop()
 
@@ -238,11 +233,8 @@ class Intermediate_CodeGeneration:
         Genera GOTOF para condicion y while
         '''
         # Hay que checar si sí jala un elseif igual... aunque si deberia no?? lo checamos.
-
-        print(self.PTypes)
-        print(self.PilaO)
         exp_type = self.PTypes.pop()
-        print('hey',exp_type)
+        
         if exp_type != 'bool':
             raise TypeError("ERROR: Type-mismatch")
         else:
@@ -258,7 +250,9 @@ class Intermediate_CodeGeneration:
         cond = self.PilaO.pop()
         self.PTypes.pop()
 
+
         print("cond", cond)
+
         quadruple = Quadruple('GotoV', cond, None, None)
         self.Quads.append(quadruple)
 
@@ -268,8 +262,10 @@ class Intermediate_CodeGeneration:
         '''
         # position = len(self.Quads) - 3
 
+
         position = self.PJumps.pop()
         print('posicion',position)
+
         self.Quads[position].cambia_res(salto)
 
     def generate_ENDPROC(self):
@@ -314,8 +310,10 @@ class Intermediate_CodeGeneration:
         self.POper.pop()
         self.Quads.append(quadruple)
         self.PilaO.append(result)
+
         self.POper.pop()
         self.PTypes.append('bool')
+
 
     def generate_END(self):
         '''
@@ -386,13 +384,15 @@ class Intermediate_CodeGeneration:
         Genera cuádruplo de gráfica que lleva solo un parámetro
         :param type: tipo de acción para graficar
         '''
-        print('t',type)
+        
         exp_type = self.PTypes.pop()
 
         if type == 'color_star' and exp_type != 'string':
             raise TypeError("ERROR: Type-mismatch")
-        elif type != 'color_star' and exp_type != 'int':
-            raise TypeError("ERROR: Type-mismatch")
+        # elif type != 'color_star' and exp_type != 'int' and exp_type != 'float':
+        #     raise TypeError("ERROR: Type-mismatch")
+        # elif type == 'speed' and (exp_type != 'string' or exp_type != 'int'):
+        #     raise TypeError("ERROR: Type-mismatch")
         else:
             result = self.PilaO.pop()
             quadruple = Quadruple(type, result, None, None)
@@ -474,7 +474,6 @@ class Intermediate_CodeGeneration:
         para checar si los parametros de la llamada a la funcion
         son del mismo tipo que cuando se declara
         '''
-        print('hola',params_dec,params_fun)
 
         len1 = len(params_dec)
         len2 = len(params_fun)
@@ -518,7 +517,6 @@ class Intermediate_CodeGeneration:
         sumabase = self.direccion_mem('local','int')
         q_sumabase = Quadruple('+',sumaux, base, sumabase)
         self.Quads.append(q_sumabase)
-        print('mat',sumabase)
         return sumabase
 
     def genera_arreglos(self,base,tam, var_dim):
@@ -541,12 +539,10 @@ class Intermediate_CodeGeneration:
         sumabase = self.direccion_mem('local','int')
         q_sumabase = Quadruple('+',tam, base, sumabase)
         self.Quads.append(q_sumabase)
-        print('arr',sumabase)
         return sumabase
 
 
     def format_quads(self):
-        # print(self.Quads)
         return [(quad.operator, quad.left_op, quad.right_op, quad.result) for quad in self.Quads]
 
     def format_constantes(self):
