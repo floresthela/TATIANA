@@ -116,6 +116,7 @@ class MaquinaVirtual:
 
             elif operador == '<':
                 mem1, mem2, mem_r = self.dame_memorias(op_izq, op_der, res)
+                
                 mem_r[res] = mem1[op_izq] < mem2[op_der]
                 sig +=1
             

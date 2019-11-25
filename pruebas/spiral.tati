@@ -3,12 +3,10 @@ program spiral;
 * {
     int x = 1;
     speed("fastest");
-
     while(x < 400){
         go(50 + x);
         right(90.911);
         x = x + 1;
     }
-
     exitonclick;
 }

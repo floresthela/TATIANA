@@ -115,7 +115,7 @@ Rule 109   close_condition -> CLOSEPAREN
 Rule 110   body1 -> stmt body1
 Rule 111   body1 -> empty
 Rule 112   for_v2 -> nuevo_for forBody
-Rule 113   nuevo_for -> FOR OPENPAREN ID TWODOTS for2 CLOSEPAREN
+Rule 113   nuevo_for -> FOR OPENPAREN id TWODOTS for2 CLOSEPAREN
 Rule 114   for -> FOR for1 TWODOTS for2 forClose forBody
 Rule 115   forInit -> FOR
 Rule 116   for1 -> OPENPAREN ID
@@ -208,7 +208,7 @@ GREATEREQ            : 97
 HAND_DOWN            : 137
 HAND_UP              : 138
 HIDE_STAR            : 147
-ID                   : 1 13 14 51 52 66 79 81 113 116
+ID                   : 1 13 14 51 52 66 79 81 116
 IF                   : 101
 INT                  : 67
 ISEQUAL              : 100
@@ -300,7 +300,7 @@ graphview0           : 144
 graphview1           : 145
 graphview2           : 146
 head_cond            : 101 102
-id                   : 35 41 71
+id                   : 35 41 71 113
 indice_dimensionada  : 80
 iniciaFunCall        : 81
 inicia_fun           : 53 54
@@ -843,7 +843,7 @@ state 33
     (136) graphmove -> . graphmove2 SEMICOLON
     (79) aidi -> . ID
     (121) while1 -> . while_w OPENPAREN expression CLOSEPAREN
-    (113) nuevo_for -> . FOR OPENPAREN ID TWODOTS for2 CLOSEPAREN
+    (113) nuevo_for -> . FOR OPENPAREN id TWODOTS for2 CLOSEPAREN
     (130) graphfig1 -> . CIRCLE unaExp
     (131) graphfig1 -> . SQUARE unaExp
     (132) graphfig1 -> . TRIANGLE unaExp
@@ -1174,7 +1174,7 @@ state 45
     (136) graphmove -> . graphmove2 SEMICOLON
     (79) aidi -> . ID
     (121) while1 -> . while_w OPENPAREN expression CLOSEPAREN
-    (113) nuevo_for -> . FOR OPENPAREN ID TWODOTS for2 CLOSEPAREN
+    (113) nuevo_for -> . FOR OPENPAREN id TWODOTS for2 CLOSEPAREN
     (130) graphfig1 -> . CIRCLE unaExp
     (131) graphfig1 -> . SQUARE unaExp
     (132) graphfig1 -> . TRIANGLE unaExp
@@ -1732,6 +1732,7 @@ state 64
     CLOSEPAREN      reduce using rule 173 (empty -> .)
     COMMA           reduce using rule 173 (empty -> .)
     CLOSEBRACKET    reduce using rule 173 (empty -> .)
+    TWODOTS         reduce using rule 173 (empty -> .)
 
   ! OPENBRACKET     [ reduce using rule 173 (empty -> .) ]
 
@@ -1823,7 +1824,7 @@ state 75
 
 state 76
 
-    (113) nuevo_for -> FOR . OPENPAREN ID TWODOTS for2 CLOSEPAREN
+    (113) nuevo_for -> FOR . OPENPAREN id TWODOTS for2 CLOSEPAREN
 
     OPENPAREN       shift and go to state 151
 
@@ -2914,6 +2915,7 @@ state 135
     COMMA           reduce using rule 80 (id -> aidi indice_dimensionada .)
     CLOSEBRACKET    reduce using rule 80 (id -> aidi indice_dimensionada .)
     OPENBRACKET     reduce using rule 80 (id -> aidi indice_dimensionada .)
+    TWODOTS         reduce using rule 80 (id -> aidi indice_dimensionada .)
 
 
 state 136
@@ -2991,6 +2993,7 @@ state 137
     COMMA           reduce using rule 78 (indice_dimensionada -> empty .)
     CLOSEBRACKET    reduce using rule 78 (indice_dimensionada -> empty .)
     OPENBRACKET     reduce using rule 78 (indice_dimensionada -> empty .)
+    TWODOTS         reduce using rule 78 (indice_dimensionada -> empty .)
 
 
 state 138
@@ -3066,7 +3069,7 @@ state 139
     (136) graphmove -> . graphmove2 SEMICOLON
     (79) aidi -> . ID
     (121) while1 -> . while_w OPENPAREN expression CLOSEPAREN
-    (113) nuevo_for -> . FOR OPENPAREN ID TWODOTS for2 CLOSEPAREN
+    (113) nuevo_for -> . FOR OPENPAREN id TWODOTS for2 CLOSEPAREN
     (130) graphfig1 -> . CIRCLE unaExp
     (131) graphfig1 -> . SQUARE unaExp
     (132) graphfig1 -> . TRIANGLE unaExp
@@ -3559,10 +3562,14 @@ state 150
 
 state 151
 
-    (113) nuevo_for -> FOR OPENPAREN . ID TWODOTS for2 CLOSEPAREN
+    (113) nuevo_for -> FOR OPENPAREN . id TWODOTS for2 CLOSEPAREN
+    (80) id -> . aidi indice_dimensionada
+    (79) aidi -> . ID
 
-    ID              shift and go to state 217
+    ID              shift and go to state 198
 
+    id                             shift and go to state 217
+    aidi                           shift and go to state 64
 
 state 152
 
@@ -3801,7 +3808,7 @@ state 167
     (136) graphmove -> . graphmove2 SEMICOLON
     (79) aidi -> . ID
     (121) while1 -> . while_w OPENPAREN expression CLOSEPAREN
-    (113) nuevo_for -> . FOR OPENPAREN ID TWODOTS for2 CLOSEPAREN
+    (113) nuevo_for -> . FOR OPENPAREN id TWODOTS for2 CLOSEPAREN
     (130) graphfig1 -> . CIRCLE unaExp
     (131) graphfig1 -> . SQUARE unaExp
     (132) graphfig1 -> . TRIANGLE unaExp
@@ -3965,7 +3972,7 @@ state 173
     (136) graphmove -> . graphmove2 SEMICOLON
     (79) aidi -> . ID
     (121) while1 -> . while_w OPENPAREN expression CLOSEPAREN
-    (113) nuevo_for -> . FOR OPENPAREN ID TWODOTS for2 CLOSEPAREN
+    (113) nuevo_for -> . FOR OPENPAREN id TWODOTS for2 CLOSEPAREN
     (130) graphfig1 -> . CIRCLE unaExp
     (131) graphfig1 -> . SQUARE unaExp
     (132) graphfig1 -> . TRIANGLE unaExp
@@ -4529,6 +4536,7 @@ state 198
 
     OPENBRACKET     reduce using rule 79 (aidi -> ID .)
     CLOSEPAREN      reduce using rule 79 (aidi -> ID .)
+    TWODOTS         reduce using rule 79 (aidi -> ID .)
 
 
 state 199
@@ -4624,7 +4632,7 @@ state 205
     (136) graphmove -> . graphmove2 SEMICOLON
     (79) aidi -> . ID
     (121) while1 -> . while_w OPENPAREN expression CLOSEPAREN
-    (113) nuevo_for -> . FOR OPENPAREN ID TWODOTS for2 CLOSEPAREN
+    (113) nuevo_for -> . FOR OPENPAREN id TWODOTS for2 CLOSEPAREN
     (130) graphfig1 -> . CIRCLE unaExp
     (131) graphfig1 -> . SQUARE unaExp
     (132) graphfig1 -> . TRIANGLE unaExp
@@ -5033,7 +5041,7 @@ state 216
 
 state 217
 
-    (113) nuevo_for -> FOR OPENPAREN ID . TWODOTS for2 CLOSEPAREN
+    (113) nuevo_for -> FOR OPENPAREN id . TWODOTS for2 CLOSEPAREN
 
     TWODOTS         shift and go to state 268
 
@@ -5099,7 +5107,7 @@ state 221
     (136) graphmove -> . graphmove2 SEMICOLON
     (79) aidi -> . ID
     (121) while1 -> . while_w OPENPAREN expression CLOSEPAREN
-    (113) nuevo_for -> . FOR OPENPAREN ID TWODOTS for2 CLOSEPAREN
+    (113) nuevo_for -> . FOR OPENPAREN id TWODOTS for2 CLOSEPAREN
     (130) graphfig1 -> . CIRCLE unaExp
     (131) graphfig1 -> . SQUARE unaExp
     (132) graphfig1 -> . TRIANGLE unaExp
@@ -5248,7 +5256,7 @@ state 225
     (136) graphmove -> . graphmove2 SEMICOLON
     (79) aidi -> . ID
     (121) while1 -> . while_w OPENPAREN expression CLOSEPAREN
-    (113) nuevo_for -> . FOR OPENPAREN ID TWODOTS for2 CLOSEPAREN
+    (113) nuevo_for -> . FOR OPENPAREN id TWODOTS for2 CLOSEPAREN
     (130) graphfig1 -> . CIRCLE unaExp
     (131) graphfig1 -> . SQUARE unaExp
     (132) graphfig1 -> . TRIANGLE unaExp
@@ -6012,6 +6020,7 @@ state 260
     CLOSEPAREN      reduce using rule 77 (indice_dimensionada -> OPENBRACKET exp CLOSEBRACKET .)
     COMMA           reduce using rule 77 (indice_dimensionada -> OPENBRACKET exp CLOSEBRACKET .)
     CLOSEBRACKET    reduce using rule 77 (indice_dimensionada -> OPENBRACKET exp CLOSEBRACKET .)
+    TWODOTS         reduce using rule 77 (indice_dimensionada -> OPENBRACKET exp CLOSEBRACKET .)
 
   ! OPENBRACKET     [ reduce using rule 77 (indice_dimensionada -> OPENBRACKET exp CLOSEBRACKET .) ]
 
@@ -6133,7 +6142,7 @@ state 267
 
 state 268
 
-    (113) nuevo_for -> FOR OPENPAREN ID TWODOTS . for2 CLOSEPAREN
+    (113) nuevo_for -> FOR OPENPAREN id TWODOTS . for2 CLOSEPAREN
     (117) for2 -> . exp
     (159) exp -> . term
     (160) exp -> . term exp_o exp
@@ -6170,6 +6179,7 @@ state 268
     CTEINT          reduce using rule 173 (empty -> .)
     CTEFLOAT        reduce using rule 173 (empty -> .)
 
+    id                             shift and go to state 114
     for2                           shift and go to state 289
     exp                            shift and go to state 290
     term                           shift and go to state 107
@@ -6179,7 +6189,6 @@ state 268
     cte_int                        shift and go to state 111
     cte_float                      shift and go to state 112
     cte_string                     shift and go to state 113
-    id                             shift and go to state 114
     funCall                        shift and go to state 115
     vectormatriz                   shift and go to state 116
     negativo                       shift and go to state 118
@@ -6523,7 +6532,7 @@ state 288
 
 state 289
 
-    (113) nuevo_for -> FOR OPENPAREN ID TWODOTS for2 . CLOSEPAREN
+    (113) nuevo_for -> FOR OPENPAREN id TWODOTS for2 . CLOSEPAREN
 
     CLOSEPAREN      shift and go to state 299
 
@@ -6730,9 +6739,9 @@ state 298
 
 state 299
 
-    (113) nuevo_for -> FOR OPENPAREN ID TWODOTS for2 CLOSEPAREN .
+    (113) nuevo_for -> FOR OPENPAREN id TWODOTS for2 CLOSEPAREN .
 
-    OPENBRACES      reduce using rule 113 (nuevo_for -> FOR OPENPAREN ID TWODOTS for2 CLOSEPAREN .)
+    OPENBRACES      reduce using rule 113 (nuevo_for -> FOR OPENPAREN id TWODOTS for2 CLOSEPAREN .)
 
 
 state 300
@@ -6851,6 +6860,7 @@ state 303
     COMMA           reduce using rule 76 (indice_dimensionada -> OPENBRACKET exp CLOSEBRACKET OPENBRACKET exp CLOSEBRACKET .)
     CLOSEBRACKET    reduce using rule 76 (indice_dimensionada -> OPENBRACKET exp CLOSEBRACKET OPENBRACKET exp CLOSEBRACKET .)
     OPENBRACKET     reduce using rule 76 (indice_dimensionada -> OPENBRACKET exp CLOSEBRACKET OPENBRACKET exp CLOSEBRACKET .)
+    TWODOTS         reduce using rule 76 (indice_dimensionada -> OPENBRACKET exp CLOSEBRACKET OPENBRACKET exp CLOSEBRACKET .)
 
 
 state 304

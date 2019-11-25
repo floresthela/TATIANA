@@ -291,7 +291,7 @@ def p_vectormatriz(p):
         p[0] = p[2]
     else:
         p[0] = p[1]
-    print(p[0])
+    
 
 def p_vm1(p):
     '''
@@ -305,7 +305,7 @@ def p_vm1(p):
             raise TypeError(f"Las matrices deben tener arreglos del mismo tamaño")
     else:
         p[0] = (1,p[2])
-        print(p[0])
+        
 
 def p_vm2(p):
     '''
@@ -835,19 +835,17 @@ def p_for_v2(p):
     '''
     for_v2 : nuevo_for forBody
     '''
-    print('HOLA',p[1])
-    var = vars_t.search_var(p[1])
+    
+    var = vars_t.search_var(p[1][0])
     # var = vars_t.current_scope['vars'][p[1]]
 
     if var is not None:
         dir = var['dir']
     else:
-        raise TypeError(f"'Variable {p[1]}' no ha sido declarada")
+        raise TypeError(f"'Variable {p[1][0]}' no ha sido declarada")
 
     cg.PilaO.append(dir)
     cg.PTypes.append('int')
-
-    print("DIR", dir)
 
 
     suma_uno = cg.direccion_mem('constantes','int',1,1)
@@ -876,18 +874,16 @@ def p_for_v2(p):
 
 def p_nuevo_for(p):
     '''
-    nuevo_for : FOR OPENPAREN ID TWODOTS for2 CLOSEPAREN
+    nuevo_for : FOR OPENPAREN id TWODOTS for2 CLOSEPAREN
     '''
+    info = vars_t.search_var(p[3][0])
+    
+    # dir = cg.direccion_mem('local','int')
 
-    print('HOLA',p[3])
-    dir = cg.direccion_mem('local','int')
-    print("k es esto?", dir)
-    vars_t.insert_var(p[3],'int',dir, False,None)
-    variable = vars_t.search_var(p[3])
-    print("Variablee", variable)
+    # vars_t.insert_var(p[3],'int',dir, False,None)
+    dir = info['dir']
 
     temp = cg.PilaO[-1]
-    print("TEMP", temp)
 
     temp_t = cg.PTypes[-1]
     cg.PilaO.pop()
