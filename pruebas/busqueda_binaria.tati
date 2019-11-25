@@ -1,0 +1,42 @@
+program busqueda_binaria;
+
+int vector[10] = [2,3,4,1,3,87,34,234,12,-3];
+
+fun int bu_bi(int l, int r, int x){
+    
+    int mitad;
+    int retorno = -1;
+    
+    if(r >= l){
+
+        mitad = l + (r - l) / 2;
+
+        if(vector[mitad] == x){
+            
+            retorno = mitad;
+
+        } 
+        elseif(vector[mitad] > x) {
+
+            retorno = bu_bi(l, mitad - 1, x);
+
+        } 
+        elseif(vector[mitad] < x) {
+            retorno = bu_bi(mitad + 1, r, x);
+        }
+    }
+
+    return retorno;
+}
+
+* {
+    int x = 234;
+    int len = 10;
+    int resultado = bu_bi(0, len - 1, x);
+
+    if(resultado != -1){
+        print("Se encontró!");
+    } else {
+        print("Elemento no encontrado");
+    }
+}

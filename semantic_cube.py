@@ -37,17 +37,17 @@ class SemanticCube:
                 'int': {
                     'int': 'int',
                     'float': 'float',
-                    'string': 'err'
+                    'string': 'string'
                 },
                 'float': {
                     'int': 'float',
                     'float': 'float',
-                    'string': 'err'
+                    'string': 'string'
                 },
                 'string': {
-                    'int': 'err',
-                    'float': 'err',
-                    'string': 'err'
+                    'int': 'string',
+                    'float': 'string',
+                    'string': 'string'
                 }
             },
             Operators.SUBSTRACTION: {
