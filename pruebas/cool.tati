@@ -1,0 +1,25 @@
+program cool;
+
+string colors[20] = ["Medium Aquamarine","Aquamarine","Dark Green","Dark Olive Green","Dark Sea Green","Sea Green","Medium Sea Green","Light Sea Green","Pale Green","Spring Green","Lawn Green","Chartreuse","Medium Spring Green","Green Yellow","Forest Green","Olive Drab","Dark Khaki","Khaki","Blue","Green"];
+* {
+   int x = 0;
+   speed("fastest");
+   while(x < 100){
+       go(200);
+       right(61);
+       go(200);
+       right(61);
+       go(200);
+       right(61);
+       go(200);
+       right(61);
+       go(200);
+       right(61);
+       go(200);
+       right(61);
+       
+       right(11.11);
+       x = x + 1;
+   } 
+
+}

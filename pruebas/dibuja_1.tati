@@ -1,0 +1,19 @@
+program dibuja_1;
+
+int mat[5] =[4,5,15,20,3];
+string colores[6] = ["red","purple","blue","green","yellow","orange"];
+string vel = "fast";
+
+* {
+
+    color_star(colores[5]);
+    rectangle(40,60);
+    size_star(mat[0]);
+    speed(vel);
+    color_star(colores[1]);
+
+    begin_fill;
+    circle(200);
+    end_fill;
+    exitonclick;
+}

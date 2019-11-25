@@ -360,8 +360,10 @@ class Intermediate_CodeGeneration:
 
         if type == 'color_star' and exp_type != 'string':
             raise TypeError("ERROR: Type-mismatch")
-        elif type != 'color_star' and exp_type != 'int':
-            raise TypeError("ERROR: Type-mismatch")
+        # elif type != 'color_star' and exp_type != 'int' and exp_type != 'float':
+        #     raise TypeError("ERROR: Type-mismatch")
+        # elif type == 'speed' and (exp_type != 'string' or exp_type != 'int'):
+        #     raise TypeError("ERROR: Type-mismatch")
         else:
             result = self.PilaO.pop()
             quadruple = Quadruple(type, result, None, None)

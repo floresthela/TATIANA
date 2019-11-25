@@ -32,6 +32,8 @@ def p_program(p):
     p[0] = "PROGRAM COMPILED"
     vars_t.delete_vars('global')
 
+    print(cg.Quads)
+    print(cg.constantes)
     f_quads = cg.format_quads()
     f_constantes = cg.format_constantes()
     genera_comp.genera_arch(p[2],vars_t.table, f_quads, f_constantes)
@@ -139,7 +141,6 @@ def p_vars(p):
 
     if dimensionada:
         if cg.POper and cg.POper[-1] in ['=']:
-
             # checar que las tuplas con tamaños sean iguales
             if var_dim == p[5]:
                 cg.POper.pop()
@@ -285,10 +286,12 @@ def p_vectormatriz(p):
     vectormatriz : OPENBRACKET vm1 CLOSEBRACKET
                  | vm1
     '''
+    
     if len(p) > 2:
         p[0] = p[2]
     else:
         p[0] = p[1]
+    print(p[0])
 
 def p_vm1(p):
     '''
@@ -302,6 +305,7 @@ def p_vm1(p):
             raise TypeError(f"Las matrices deben tener arreglos del mismo tamaño")
     else:
         p[0] = (1,p[2])
+        print(p[0])
 
 def p_vm2(p):
     '''
@@ -313,7 +317,6 @@ def p_vm2(p):
         p[0] = 1 + p[3]
     else:
         p[0] = 1
-
 
 # FUNCTION
 def p_functionI(p):
@@ -1083,6 +1086,10 @@ def p_graphview0(p):
     '''
     graphview0 : HIDE_STAR
               | SHOW_STAR
+              | EXITONCLICK
+              | CLEAR
+              | BEGINFILL
+              | ENDFILL
     '''
     p[0] = p[1]
     cg.generate_quad_graph0(p[0])
@@ -1091,6 +1098,7 @@ def p_graphview1(p):
     '''
     graphview1 : COLOR_STAR unaExp
               | SIZE_STAR unaExp
+              | SPEED unaExp
     '''
     p[0] = p[1]
     cg.generate_quad_graph1(p[0])
