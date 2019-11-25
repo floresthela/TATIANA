@@ -508,7 +508,7 @@ def p_indice_dimensionada(p):
                         | empty
 
     '''
-    
+
     if len(p) == 4:
         p[0] = (0,p[2])
     elif len(p) == 7:
@@ -522,10 +522,19 @@ def p_aidi(p):
     # más fondos falsos porque si no, tenemos que poner parentesis en código
     cg.POper.append('(')
 
+def p_aidi(p):
+    '''
+    aidi : ID
+    '''
+    p[0] = p[1]
+    # más fondos falsos porque si no, tenemos que poner parentesis en código
+    cg.POper.append('(')
+
 def p_id(p):
     '''
     id : aidi indice_dimensionada
     '''
+
     cg.POper.pop()
     t = vars_t.search_var(p[1])
 
@@ -826,8 +835,10 @@ def p_for_v2(p):
     '''
     for_v2 : nuevo_for forBody
     '''
+    print('HOLA',p[1])
+    var = vars_t.search_var(p[1])
+    # var = vars_t.current_scope['vars'][p[1]]
 
-    var = vars_t.current_scope['vars'][p[1]]
     if var is not None:
         dir = var['dir']
     else:
@@ -835,6 +846,9 @@ def p_for_v2(p):
 
     cg.PilaO.append(dir)
     cg.PTypes.append('int')
+
+    print("DIR", dir)
+
 
     suma_uno = cg.direccion_mem('constantes','int',1,1)
 
@@ -865,11 +879,16 @@ def p_nuevo_for(p):
     nuevo_for : FOR OPENPAREN ID TWODOTS for2 CLOSEPAREN
     '''
 
+    print('HOLA',p[3])
     dir = cg.direccion_mem('local','int')
+    print("k es esto?", dir)
     vars_t.insert_var(p[3],'int',dir, False,None)
-
+    variable = vars_t.search_var(p[3])
+    print("Variablee", variable)
 
     temp = cg.PilaO[-1]
+    print("TEMP", temp)
+
     temp_t = cg.PTypes[-1]
     cg.PilaO.pop()
     cg.PTypes.pop()
@@ -877,8 +896,8 @@ def p_nuevo_for(p):
     cg.PilaO.append(dir)
     cg.PTypes.append('int')
     cg.POper.append('=')
+    # cg.generate_quad(vars_t.current_scope)
 
-    cg.generate_quad(vars_t.current_scope)
 
     cg.PilaO.append(dir)
     cg.PTypes.append('int')
@@ -895,10 +914,6 @@ def p_nuevo_for(p):
     p[0] = p[3]
 
 
-
-
-    
-
 # FOR
 # TODO: cuádruplos para for
 def p_for(p):
@@ -913,11 +928,12 @@ def p_for(p):
     if info['type'] == 'bool' or info['type'] == 'string':
         raise TypeError("ERROR: expected an int or a float")
     else:
-    
+
         cg.PJumps.append(len(cg.Quads)+2)
 
     salto = cg.PJumps.pop()
     cg.fill_gotoV(salto)
+
     # cg.quad_incrementaFor()
     goto = cg.PJumps.pop()
     cg.generate_GOTO()
@@ -938,6 +954,12 @@ def p_for1(p):
     '''
     p[0] = p[2]
     # 2
+
+    info = vars_t.search_var(p[2])
+    cg.PilaO.append(info['dir'])
+    # cg.PTemp.append(info['dir'])
+    cg.PTypes.append(info['type'])
+
     # info = vars_t.search_var(p[2])
     # cg.PilaO.append(info['dir'])
 
@@ -962,6 +984,8 @@ def p_forBody(p):
     '''
     forBody : body
     '''
+    # cg.quad_incrementaFor()
+    # cg.generateFor_condition()
     # cg.PJumps.append(len(cg.Quads)+1)
 
 

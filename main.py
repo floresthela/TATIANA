@@ -21,7 +21,6 @@ if __name__ == '__main__':
     
     try:
         path = 'pruebas/'
-        # nombreArchivo = 'bubble_sort.tati'
 
         path += nombreArchivo
         arch = open(path, 'r')

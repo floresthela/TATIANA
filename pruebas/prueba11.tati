@@ -2,15 +2,16 @@ program prueba11;
 
 * {
 
-    int arr[4] = [0,7,8,5];
     int a;
     int x = 3;
     int b;
     float c;
     int d;
-    for(i:5){
-        print(i);
-        a = 6;
-        b = a + 8 / 7;
+    for (i:5){
+     a=4;
+     c = 5.5;
+     d = 10;
+     print(a);
+
     }
 }

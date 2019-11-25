@@ -62,8 +62,7 @@ class Intermediate_CodeGeneration:
         self.Quads = [] # lista de cuádruplos que llevamos
         self.contador = 1 # creo que este no lo necesitamos
         self.cubo = SemanticCube()
-        self.PTemp = []  # solo la use para los params para meter el tipo de dato de cuando defines una funcion
-
+        self.PTemp = []  # para meter el contador del for
         # Tabla de constantes [valor,dir]
         # un diccionario para buscar, si hacemos un arreglo creo que sería más tardado (for loop)
         self.constantes = {}
@@ -251,6 +250,9 @@ class Intermediate_CodeGeneration:
         cond = self.PilaO.pop()
         self.PTypes.pop()
 
+
+        print("cond", cond)
+
         quadruple = Quadruple('GotoV', cond, None, None)
         self.Quads.append(quadruple)
 
@@ -259,8 +261,10 @@ class Intermediate_CodeGeneration:
         Llena el quad de GotoV para el for
         '''
         # position = len(self.Quads) - 3
-        
+
+
         position = self.PJumps.pop()
+        print('posicion',position)
 
         self.Quads[position].cambia_res(salto)
 
@@ -268,6 +272,28 @@ class Intermediate_CodeGeneration:
         quadruple = Quadruple('ENDPROC',None,None,None)
         self.Quads.append(quadruple)
 
+    def quad_incrementaFor(self):
+        '''
+        Genera el cuadruplo para incrementar el iterador del for
+        '''
+        print("pila operandos", self.PilaO)
+        print("pila temporal", self.PTemp)
+        operador = '+'
+        self.POper.append(operador)
+        op_izq = self.PilaO.pop()
+        # op_izq = self.PTemp.pop()
+        op_der = 1
+        result = self.direccion_mem('local', 'float')
+        quadruple = Quadruple(operador, op_izq, op_der, result)
+        self.Quads.append(quadruple)
+        self.PilaO.append(result)
+        self.POper.pop()
+
+    def checa_iterador(self):
+        '''
+        Genera cuadruplo para checar el iterador del for
+        y ver si entra al for o no
+        '''
 
     def generateFor_condition(self):
         '''
@@ -275,14 +301,17 @@ class Intermediate_CodeGeneration:
         '''
         self.POper.append('>')
         op_izq = self.PilaO.pop()
+        print("op izq", self.PilaO)
         op_derecho = self.PilaO.pop()
         result = self.direccion_mem('local', 'bool')
         quadruple = Quadruple('>', op_derecho, op_izq, result)
-        
+
         # pop a '>'
         self.POper.pop()
         self.Quads.append(quadruple)
         self.PilaO.append(result)
+
+        self.POper.pop()
         self.PTypes.append('bool')
 
 
