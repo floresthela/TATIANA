@@ -31,9 +31,7 @@ def p_program(p):
 
     p[0] = "PROGRAM COMPILED"
     vars_t.delete_vars('global')
-
-    print(cg.Quads)
-    print(cg.constantes)
+    
     f_quads = cg.format_quads()
     f_constantes = cg.format_constantes()
     genera_comp.genera_arch(p[2],vars_t.table, f_quads, f_constantes)
@@ -61,8 +59,6 @@ def p_star(p):
     star = cg.PJumps.pop()
     cg.fill_goto_star(star)
 
-    # count = sum(len(v) for v in d.itervalues())
-    # count_vars = sum(len(v) for v in vars_t.table['star']['vars'].values())
     count_vars = len(s_table['vars'])
     vars_t.delete_vars('star')
     del s_table['size']

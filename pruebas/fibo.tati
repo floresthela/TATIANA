@@ -1,9 +1,9 @@
 program fibo;
 
-
 fun int fibonacci(int x){
 
     int f;
+    
     if(x == 0){
         f = 0;
     }
