@@ -128,6 +128,54 @@ Programar en Tatiana te permite realizar operaciones, manejo de condiciones, man
 Aquí te mostramos algunos ejemplos del uso que le puedes dar a este lenguaje.
 
 ```
+program factorial;
+
+string res;
+
+* {
+    int n = 20;
+    int f = 1;
+    int i = 1;
+
+    while(i <= n){
+        f = f * i;
+        i = i + 1;
+    }
+
+    res = "Factorial de " + n + " es: " + f;
+    print(res);
+}
+```
+
+```
+program factorial_recursivo;
+
+string res;
+int i = 20;
+int fac;
+
+fun int factorial(int n){
+    
+    int f;
+    
+    if(n <= 1){
+        f = 1;
+    }
+    else {
+        f = n * factorial( n - 1);
+    }
+    return f;
+}
+
+* {
+    fac = factorial(i);
+    res = "Factorial de " + i + " es: " + fac;
+
+    print(res);
+}
+```
+
+```
 program fibo;
 
 fun int fibonacci(int x){
@@ -400,3 +448,9 @@ program cool;
 }
 ```
 ![cool.tati](/imgs/cool.png)
+
+## **Video DEMO**
+
+Realizamos un breve video explicando generalidades del lenguaje, desde programación de ejemplos y su ejecución.
+
+Para ver el video haz click [aquí](https://www.youtube.com/watch?v=VvgIpFEFC6k) o accede a la liga: *https://www.youtube.com/watch?v=VvgIpFEFC6k*

@@ -5,7 +5,9 @@ int i = 20;
 int fac;
 
 fun int factorial(int n){
+    
     int f;
+    
     if(n <= 1){
         f = 1;
     }

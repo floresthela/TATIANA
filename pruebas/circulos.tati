@@ -2,7 +2,6 @@ program circulos;
 
 string colores[10] = ["Thistle","Medium Purple","Purple","Blue Violet","Dark Violet","Dark Orchid","Medium Orchid","Orchid","Plum","Violet"];
 
-
 * {
     int i = 1;
     int pos;

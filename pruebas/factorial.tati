@@ -12,6 +12,6 @@ string res;
         i = i + 1;
     }
 
-    res = "Factorial de " + n " es: " + f;
+    res = "Factorial de " + n + " es: " + f;
     print(res);
 }

@@ -567,7 +567,7 @@ def p_funCall(p):
         cg.checa_Tipo_Params(params_declarados,params_mandados)
 
     else:
-        raise TypeError(f"Function '{p[1]}' not declared")
+        raise TypeError(f"Función '{p[1]}' no ha sido declarada")
 
     p[0] = cg.Quads[-1].result
 
