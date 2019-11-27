@@ -5,10 +5,11 @@ int next;
 int t1 = 0;
 int t2 = 1;
 int i = 0;
+string res;
 
 * {
     while(i < n){
-        if(i <= 1)
+        if(i <= 0)
         {
             next = i;
         } 
@@ -19,5 +20,7 @@ int i = 0;
         }
         i = i + 1;
     }  
-    print(next);
+
+    res = "Fibonacci de " + n + " es: " + next;
+    print(res);
 }

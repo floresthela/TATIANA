@@ -1,5 +1,7 @@
 program factorial;
 
+string res;
+
 * {
     int n = 20;
     int f = 1;
@@ -10,5 +12,6 @@ program factorial;
         i = i + 1;
     }
 
-    print(f);
+    res = "Factorial de " + n " es: " + f;
+    print(res);
 }

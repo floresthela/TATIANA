@@ -1,10 +1,10 @@
 program prueba6;
 
-*{
- float a = 10;
- float b = 2;
- float c;
- float d = 4;
- c = a + b * d;
+int i = 0;
+int j = 10;
+string a = "hola";
+float f = 4.5;
 
+*{
+    print(j * a);
 }

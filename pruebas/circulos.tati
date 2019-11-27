@@ -11,11 +11,14 @@ string colores[10] = ["Thistle","Medium Purple","Purple","Blue Violet","Dark Vio
 
     for(i:10){
         color_star(colores[i]);
-        circle(i*20);
+        circle(i*40);
         hand_up;
         pos = -1 * i;
         pos = pos * 10;
         position(0,pos);
         hand_down;
     }
+
+
+    exitonclick;
 }

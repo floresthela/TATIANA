@@ -30,7 +30,7 @@ fun int bu_bi(int l, int r, int x){
 }
 
 * {
-    int x = 234;
+    int x = 87;
     int len = 10;
     int resultado = bu_bi(0, len - 1, x);
 

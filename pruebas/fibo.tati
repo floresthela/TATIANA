@@ -1,5 +1,9 @@
 program fibo;
 
+string res;
+int n = 10;
+int m;
+
 fun int fibonacci(int x){
 
     int f;
@@ -17,5 +21,7 @@ fun int fibonacci(int x){
 }
 
 *{
-    print(fibonacci(10));
+    m = fibonacci(n);
+    res = "Fibonacci de " + n + " es: " + m;
+    print(res);
 }

@@ -112,8 +112,8 @@ Las funciones para graficar que el lenguaje provee son las siguientes:
 | show_star | Muestra la estrella que dibuja |
 | exitonclick | Cierra la ventana con lo dibujado hasta que se haga click en ella |
 | clear | Limpia la ventana para graficar |
-| beginfill | Comienza relleno de figuras |
-| endfill | Termina relleno de figuras programadas |
+| begin_fill | Comienza relleno de figuras |
+| end_fill | Termina relleno de figuras programadas |
 | color_star(**x**) | Color del lápiz, puedes ver todos los colores disponibles [aquí](https://ecsdtech.com/8-pages/121-python-turtle-colors) |
 | size_star(**x**) | Tamaño **x** del grosor de la línea que dibuja |
 | speed(**x**) | Velocidad **x** que lleva la estrella que dibuja, puede ser número (0-10) o ["slowest","slow","normal","fast","fastest"] |
@@ -307,7 +307,7 @@ fun void transpuesta(){
 
 ## **Graficar**
 
-Este lenguaje te permite graficar muchas figuras y te permite sacar tu lado creativo para generar cualquier cosa.
+Este lenguaje te permite graficar muchas figuras y te permite sacar tu lado creativo para generar cualquier cosa. Intenta algunos de los siguientes programas que tenemos, no olvides modificarlos, agregarles color, cambiarle la velocidad, las posibilidades son muchas para potenciar tu creatividad.
 
 ```
 program spiral;
@@ -323,4 +323,78 @@ program spiral;
     exitonclick;
 }
 ```
+![spiral.tati](/imgs/spiral.png)
+```
+program cuadrados;
 
+int i = 100;
+int j = 0;
+string c[10] = ["red","orange red","tomato","light coral","coral","dark orange","orange","light salmon","salmon","white"];
+
+* {
+
+    for(j:10){
+        right(40);
+        color_star(c[j]);
+        begin_fill;
+        square(200-j*10);
+        end_fill;  
+    }
+
+    exitonclick;
+}
+```
+![cuadrados.tati](/imgs/cuadrados.png)
+```
+program circulos;
+
+string colores[10] = ["Thistle","Medium Purple","Purple","Blue Violet","Dark Violet","Dark Orchid","Medium Orchid","Orchid","Plum","Violet"];
+
+
+* {
+    int i = 1;
+    int pos;
+    size_star(3);
+    speed("fast");
+
+    for(i:10){
+        color_star(colores[i]);
+        circle(i*40);
+        hand_up;
+        pos = -1 * i;
+        pos = pos * 10;
+        position(0,pos);
+        hand_down;
+    }
+
+    exitonclick;
+}
+```
+![circulos.tati](/imgs/circulos.png)
+```
+program cool;
+
+* {
+   int x = 0;
+   speed("fastest");
+   while(x < 100){
+       go(200);
+       right(61);
+       go(200);
+       right(61);
+       go(200);
+       right(61);
+       go(200);
+       right(61);
+       go(200);
+       right(61);
+       go(200);
+       right(61);
+       
+       right(11.11);
+       x = x + 1;
+   } 
+
+}
+```
+![cool.tati](/imgs/cool.png)

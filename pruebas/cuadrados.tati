@@ -1,0 +1,18 @@
+program cuadrados;
+
+int i = 100;
+int j = 0;
+string c[10] = ["red","orange red","tomato","light coral","coral","dark orange","orange","light salmon","salmon","white"];
+
+* {
+
+    for(j:10){
+        right(40);
+        color_star(c[j]);
+        begin_fill;
+        square(200-j*10);
+        end_fill;  
+    }
+
+    exitonclick;
+}
