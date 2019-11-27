@@ -1,0 +1,45 @@
+program cara;
+
+fun void cara(){
+    hand_up;
+    position(0,0);
+    hand_down;
+    circle(100);
+}
+
+fun void ojo_izq(){
+    hand_up;
+    position(-50,100);
+    hand_down;
+    circle(25);
+}
+
+fun void ojo_der(){
+    hand_up;
+    position(50,100);
+    hand_down;
+    circle(25);
+}
+
+fun void boca_der(){
+    hand_up;
+    position(0,25);
+    hand_down;
+    arc(100,45);
+}
+
+fun void boca_izq(){
+    hand_up;
+    position(0,25);
+    hand_down;
+    arc(100,-45);
+
+}
+
+* {
+    cara();
+    ojo_izq();
+    ojo_der();
+    boca_der();
+    boca_izq();
+}

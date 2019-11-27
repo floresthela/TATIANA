@@ -1,0 +1,23 @@
+program circulos;
+
+string colores[10] = ["Thistle","Medium Purple","Purple","Blue Violet","Dark Violet","Dark Orchid","Medium Orchid","Orchid","Plum","Violet"];
+
+* {
+    int i = 1;
+    int pos;
+    size_star(3);
+    speed("fast");
+
+    for(i:10){
+        color_star(colores[i]);
+        circle(i*40);
+        hand_up;
+        pos = -1 * i;
+        pos = pos * 10;
+        position(0,pos);
+        hand_down;
+    }
+
+
+    exitonclick;
+}

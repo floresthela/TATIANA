@@ -1,6 +1,5 @@
 program cool;
 
-string colors[20] = ["Medium Aquamarine","Aquamarine","Dark Green","Dark Olive Green","Dark Sea Green","Sea Green","Medium Sea Green","Light Sea Green","Pale Green","Spring Green","Lawn Green","Chartreuse","Medium Spring Green","Green Yellow","Forest Green","Olive Drab","Dark Khaki","Khaki","Blue","Green"];
 * {
    int x = 0;
    speed("fastest");

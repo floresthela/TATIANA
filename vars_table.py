@@ -17,14 +17,14 @@ class VarsTable:
                 'program': '',
                 'vars': {},
                 # [vars,temps]
-                'size': {'i':[0,0],'f':[0,0],'s':[0,0],'b':[0,0]},
+                # 'size': {'i':[0,0],'f':[0,0],'s':[0,0],'b':[0,0]},
             },
             'star': {
                 'type': 'void',
                 'vars': {},
                 'begin': None,
                 # [vars,temps]
-                'size': {'i':[0,0],'f':[0,0],'s':[0,0],'b':[0,0]},
+                # 'size': {'i':[0,0],'f':[0,0],'s':[0,0],'b':[0,0]},
             }
         }
         self.current_type = ''
@@ -56,8 +56,6 @@ class VarsTable:
                 'vars': {},
                 'params': [],
                 'begin': start,
-                # [vars,params,temps]
-                'size': {'i':[0,0,0],'f':[0,0,0],'s':[0,0,0],'b':[0,0,0]},
             }
             self.current_scope = fun_id
             self.current_type = type
@@ -102,40 +100,13 @@ class VarsTable:
         else:
             raise TypeError(f'Variable {var_id} ya fue declarada')
 
-        # metemos a size (vars)
-        # if scope is not 'global':
-        if var_type == 'int':
-            self.table[scope]['size']['i'][0] += 1
-        elif var_type == 'float':
-            self.table[scope]['size']['f'][0] += 1
-        elif var_type == 'string':
-            self.table[scope]['size']['s'][0] += 1
-        elif var_type == 'bool':
-            self.table[scope]['size']['b'][0] += 1
 
     def insert_param(self,param_id,param_type):
         scope = self.current_scope
         if param_id not in self.table[scope]['params'] and param_id not in self.table['global']['vars']:
             self.table[scope]['params'].append(param_type)
         else:
-            raise TypeError(f'Parameter {param_id} already declared')
-
-    def insert_temp(self,type,scope):
-        # metemos a size (temps)
-        index = -1
-        if scope == 'global' or scope == 'star': index = 0
-        # if scope == 'star': index = 1
-        else: index = 2
-
-        if type == 'int':
-            self.table[scope]['size']['i'][index] += 1
-        elif type == 'float':
-            self.table[scope]['size']['f'][index] += 1
-        elif type == 'string':
-            self.table[scope]['size']['s'][index] += 1
-        elif type == 'bool':
-            self.table[scope]['size']['b'][index] += 1
-
+            raise TypeError(f'Parametro {param_id} ya fue declarado')
 
     def search_var(self, var_id):
         '''
@@ -158,5 +129,5 @@ class VarsTable:
         if table_id in self.table:
             del self.table[table_id]['vars']
         else:
-            raise TypeError(f"Table of variables for {table_id} wasn't found")
+            raise TypeError(f"Tabla de variables para {table_id} no se encontró")
 

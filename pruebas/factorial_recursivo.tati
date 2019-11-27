@@ -1,7 +1,13 @@
 program factorial_recursivo;
 
+string res;
+int i = 20;
+int fac;
+
 fun int factorial(int n){
+    
     int f;
+    
     if(n <= 1){
         f = 1;
     }
@@ -12,5 +18,8 @@ fun int factorial(int n){
 }
 
 * {
-    print(factorial(20));
+    fac = factorial(i);
+    res = "Factorial de " + i + " es: " + fac;
+
+    print(res);
 }

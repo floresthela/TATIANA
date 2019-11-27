@@ -187,7 +187,7 @@ class SemanticCube:
                 'string': {
                     'int': 'err',
                     'float': 'err',
-                    'string': 'err'
+                    'string': 'string'
                 }
             },
             Operators.NOT_EQUAL: {
@@ -254,8 +254,8 @@ class SemanticCube:
         '''
         if self.semantic_cube[operator][left_type][right_type] != 'err':
             return self.semantic_cube[operator][left_type][right_type]
-        raise TypeError("Unable to apply operator {} to types {} and {}".format(
-            operator, left_type, right_type))
+        raise TypeError("No se puede aplicar el operador {} a los tipos {} y {}".format(
+            operator.name, left_type, right_type))
 
 
 # https://docs.python.org/3/library/enum.html

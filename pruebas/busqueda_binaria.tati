@@ -30,13 +30,13 @@ fun int bu_bi(int l, int r, int x){
 }
 
 * {
-    int x = 234;
+    int x = 87;
     int len = 10;
     int resultado = bu_bi(0, len - 1, x);
 
     if(resultado != -1){
         print("Se encontró!");
     } else {
-        print("Elemento no encontrado");
+        print("Elemento no encontrado en la lista");
     }
 }

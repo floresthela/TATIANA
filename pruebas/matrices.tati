@@ -1,41 +1,66 @@
 program matrices;
 
-int x[3][3] = [[12,7,3],[4,5,6],[7,8,9]];
-int y[3][3] = [[5,8,1],[6,7,3],[4,5,9]];
+int arreglo_1[5] = [1,2,3,4,5];
+int arreglo_2[5] = [5,4,3,2,1];
 
-int multiplicacion[3][3];
+int x[3][3] = [[1,2,3],[4,5,6],[7,8,9]];
+int y[3][3] = [[1,2,3],[4,5,6],[7,8,9]];
 
-* {
+int mul[3][3];
+int trans[3][3];
+
+fun void imprime_matriz() {
+    string ren = "";
     int i = 0;
-    int j = 0;
-    int k = 0;
-    int a = 0;
-    int b = 0;
-    int c = 0;
+    int j;
+
+    while(i < 3) {
+        j = 0;
+        while(j < 3) {
+            ren = ren + trans[i][j] + " ";
+            j = j + 1;
+        }
+        print(ren);
+        i = i + 1;
+        ren = "";
+    }
+}
+
+fun void multiplica() {
+    int i = 0;
+    int j;
+    int k;
 
     while(i < 3){
+        j = 0;
         while(j < 3){
+            k = 0;
             while(k < 3){
-                print(i);
-                print(j);
-                print(k);
-                multiplicacion[i][j] = (multiplicacion[i][j]) + (x[i][k]) * (y[k][j]);
+                mul[i][j] = mul[i][j] + x[i][k] * y[k][j];
                 k = k + 1;
             }
             j = j + 1;
-            k = 0;
         }
-        j = 0;
         i = i + 1;
     }
+}
 
-    while(a < 3){
-        while(b < 3){
-            print(multiplicacion[a][b]);
-            b = b + 1;
+fun void transpuesta(){
+    int i = 0;
+    int j;
+
+    while(i < 3){
+        j = 0;
+        while(j < 3){
+            trans[j][i] = x[i][j];
+            j = j + 1;
         }
-        a = a + 1;
-        b = 0;
+        i = i + 1;
     }
-    
+}
+
+* {
+    multiplica();
+    transpuesta();
+    imprime_matriz();
 }

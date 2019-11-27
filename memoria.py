@@ -23,6 +23,11 @@ class Memoria:
         self.contador = 0
 
     def record_activacion(self, superior, tamaño):
+        '''
+        Función para activar memoria de una función en su llamado
+        :param superior: Función en la que se manda llamar
+        :param tamaño: Cantidad de variables de la función llamada
+        '''
         actual = MemLocal(superior, tamaño)
 
         if self.contador + tamaño > 40000:
@@ -64,7 +69,7 @@ class MemLocal:
         Asigna valores de parametros enviados a variables de esa función
         :param params: Lista de parametros
         '''
-
+        
         for p in params:
             if type(p) is int:
                 self.mem_local[self.contador + self.c_int] = p
@@ -77,4 +82,5 @@ class MemLocal:
             elif type(p) is str:
                 self.mem_local[self.contador + self.c_str] = p
                 self.c_str += 1
+
             # self.mem_local[self.contador] = p

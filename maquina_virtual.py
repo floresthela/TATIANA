@@ -86,6 +86,7 @@ class MaquinaVirtual:
                 if(isinstance(mem1[op_izq], str) and not isinstance(mem2[op_der], str)) or (isinstance(mem2[op_der],str) and not isinstance(mem1[op_izq],str)):
                     mem_r[res] = str(mem1[op_izq]) + str(mem2[op_der])
                 else:
+                    
                     mem_r[res] = mem1[op_izq] + mem2[op_der]
                 sig += 1
 
@@ -157,11 +158,11 @@ class MaquinaVirtual:
             elif operador == 'GotoF':
                 # memoria de valor booleano
                 mem_b = self.dame_mem(op_izq)
-                if mem_b[op_izq]:
-                    sig += 1
-                else:
+                if not mem_b[op_izq]:
                     sig = int(res) - 1
-
+                else:
+                    sig += 1
+                    
             elif operador == 'GotoV':
                 mem_b = self.dame_mem(op_izq)
                 if mem_b[op_izq]:
@@ -178,7 +179,6 @@ class MaquinaVirtual:
                 self.memoria.cuello()
                 self.pila_contextos.pop()
                 # tenemos que borrar algo más ?
-
                 break
 
             #################################### GRAPH STATEMENTS ####################################
@@ -347,9 +347,7 @@ class MaquinaVirtual:
 
                 if not self.turtle_activa:
                     self.activa_tortuga()
-
                 speed = mem[op_izq]
-                print(type(speed))
                 if self.dame_tipo(op_izq) is not str:
                     if not 1 <= speed <= 10:
                         raise TypeError(f"Valor de la velocidad debe estar entre 0 y 10.")
@@ -409,7 +407,7 @@ class MaquinaVirtual:
                 mem1 = self.dame_mem(op_izq)
                 mem2 = self.dame_mem(op_der)
                 if not(0 <= mem1[op_izq] < mem2[op_der]):
-                    raise TypeError(f"Out of bouuunddsss")
+                    raise TypeError(f"OUT OF BOUNDS")
                 
                 sig += 1
             
@@ -433,6 +431,7 @@ class MaquinaVirtual:
 
                 # mem = self.dame_mem(res)
                 self.memoria.activa.matcheo(parametros)
+                parametros.clear()
                 val = self.haz_quads(quads, fun_dir, int(res)-1)
 
                 # return

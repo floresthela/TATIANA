@@ -24,14 +24,13 @@ if __name__ == '__main__':
 
         path += nombreArchivo
         arch = open(path, 'r')
-        print(f"Leyendo archivo {nombreArchivo}...\n")
         info = arch.read()
         arch.close()
 
         if(parser.yacc.parse(info, tracking=True) == 'PROGRAM COMPILED'):
-            print("SINTAXIS VALIDA :) ")
+            print(f"Archivo {nombreArchivo} fue compilado")
         else:
-            print("ERRORES EN LA SINTAXIS :( ")
+            print("Errores en compilación")
     
     except FileNotFoundError:
         print(f"No se encontró el archivo {nombreArchivo}.")

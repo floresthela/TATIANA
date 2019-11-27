@@ -3,6 +3,7 @@ program bubble_sort;
 int vector[10] = [5,9,3,1,10,4,8,23,7,2];
 
 fun void burbuja(int t){
+    
     int i = 0;
     int j;
     int t1;
@@ -26,20 +27,7 @@ fun void burbuja(int t){
     }
 }
 
-fun void muestra_vector(){
-    string s = "";
-    int i = 0;
-    while(i < 10){
-        print("hola");
-        s = s + "," + vector[i];
-        i = i + 1;
-    }
-    print(s);
-}
-
 * {
     int tam = 10;
     burbuja(tam);
-
-    muestra_vector();
 }
