@@ -45,6 +45,8 @@ donde los parametros deberán llevar su tipo de variable. No olvides poner el re
 
 No olvides que, en cada programa debes tener **siempre** tu función *estrella* siendo esta la principal.
 
+De igual manera, la declaración de cada variable se realiza por línea y estas deben estar siempre al inicio del programa, si quieres que sean variables globales, o bien, al inicio de cada función
+
 ```
 program hola;
 
