@@ -347,9 +347,7 @@ class MaquinaVirtual:
 
                 if not self.turtle_activa:
                     self.activa_tortuga()
-
                 speed = mem[op_izq]
-                print(type(speed))
                 if self.dame_tipo(op_izq) is not str:
                     if not 1 <= speed <= 10:
                         raise TypeError(f"Valor de la velocidad debe estar entre 0 y 10.")
@@ -409,7 +407,7 @@ class MaquinaVirtual:
                 mem1 = self.dame_mem(op_izq)
                 mem2 = self.dame_mem(op_der)
                 if not(0 <= mem1[op_izq] < mem2[op_der]):
-                    raise TypeError(f"Out of bouuunddsss")
+                    raise TypeError(f"OUT OF BOUNDS")
                 
                 sig += 1
             

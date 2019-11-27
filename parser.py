@@ -10,20 +10,13 @@ from ply import yacc
 import json
 import genera_comp
 
-from functools import reduce
 from lexer import tokens
 from vars_table import VarsTable
 from intermediate_code_generation import Intermediate_CodeGeneration
 
 vars_t = VarsTable()
 cg = Intermediate_CodeGeneration()
-#contador para la llamada de funcion
-# k = 0
 
-
-# IMPORTANTE: descomentar el vars_t de remove a las funciones para eliminarlas
-
-# PROGRAM
 def p_program(p):
     '''
     program : PROGRAM ID SEMICOLON declara_vars program_fun star
@@ -34,13 +27,14 @@ def p_program(p):
     
     f_quads = cg.format_quads()
     f_constantes = cg.format_constantes()
+
+    # genera archivo compilado
     genera_comp.genera_arch(p[2],vars_t.table, f_quads, f_constantes)
 
 def p_program_fun(p):
     '''
     program_fun : funs
     '''
-
 
 def p_funs(p):
     '''
@@ -61,7 +55,7 @@ def p_star(p):
 
     count_vars = len(s_table['vars'])
     vars_t.delete_vars('star')
-    del s_table['size']
+    
     s_table['vars'] = count_vars
     cg.generate_END()
 
@@ -88,7 +82,6 @@ def p_star1(p):
         | empty
     '''
 
-
 def p_declara_vars(p):
     '''
     declara_vars : vars declara_vars
@@ -103,6 +96,7 @@ def p_declara_vars(p):
         p[0] = p[1:]
         p[0] = flatten(p[0])
 
+# dentro del listado
 def p_vars(p):
     '''
     vars : type ID dimensionada equals exp SEMICOLON
@@ -130,6 +124,7 @@ def p_vars(p):
 
     else:
         dir = cg.direccion_mem('local',p[1],dim)
+    
     # 1.- guardar id y su tipo en tabla de variables
     # 2.- indicar que esa variable es dimensionada
 
@@ -137,9 +132,11 @@ def p_vars(p):
 
     if dimensionada:
         if cg.POper and cg.POper[-1] in ['=']:
+            
             # checar que las tuplas con tamaños sean iguales
             if var_dim == p[5]:
                 cg.POper.pop()
+                
                 # asignamos direcciones
                 for i in range(dim-1,-1,-1):
                     cg.POper.append('=')
@@ -149,7 +146,6 @@ def p_vars(p):
                     cg.generate_quad(vars_t.current_scope)
             else:
                 raise TypeError(f"Variable dimensionada {p[2]} debe ser de tamaño {var_dim}")
-
 
         else:
             # arreglo en blanco
@@ -163,6 +159,7 @@ def p_vars(p):
             blanco = cg.direccion_mem('constantes',p[1],val=blanco)
 
             for i in range(dim - 1,-1,-1):
+                
                 cg.PilaO.append(blanco)
                 cg.POper.append('=')
                 cg.PilaO.append(dir + i)
@@ -178,8 +175,6 @@ def p_vars(p):
             cg.PilaO.append(dir)
             cg.PTypes.append(p[1])
             result = cg.generate_quad(vars_t.current_scope)
-
-
 
 
 
@@ -267,15 +262,7 @@ def p_vcte(p):
          | vectormatriz
     '''
     p[0] = p[1]
-    # 1. PilaO.Push(id.name)
-    # if len(p) == 2:
-    #     cg.PilaO.append(p[1])
 
-
-
-# asignar valores a variable dimensionada
-# [1,2,3,4]
-# [[3,4,5],[5,6,7]]
 
 def p_vectormatriz(p):
     '''
@@ -319,8 +306,6 @@ def p_functionI(p):
     '''
     functionI : type ID
     '''
-    #vars_t.FunDirectory(p[2], p[1])
-    #cg.generate_ERA(p[2])
 
     p[0] = p[2]
 
@@ -359,7 +344,7 @@ def p_function_t(p):
     count_vars = len(table['vars'])
     vars_t.delete_vars(p[2])
 
-    del table['size']
+    
 
     table['vars'] = count_vars
 
@@ -380,7 +365,6 @@ def p_function_v(p):
     cg.generate_ENDPROC()
     count_vars = len(table['vars'])
     vars_t.delete_vars(p[2])
-    del table['size']
 
     table['vars'] = count_vars
 
@@ -408,8 +392,6 @@ def p_function3(p):
     if p[1] is not None:
         p[0] = [p[1]]
         p[0].append(p[2])
-
-
 
 
 def p_function4(p):
@@ -448,13 +430,8 @@ def p_funParam(p):
     dir = cg.direccion_mem('local', p[1])
 
     vars_t.insert_var(p[2], p[1], dir, False,None)
-    # cg.PTemp.append(p[1])
     vars_t.insert_param(p[2],p[1])
     cg.PTemp.append(p[1])
-
-
-# VARS
-
 
 # TYPE
 def p_type(p):
@@ -594,12 +571,6 @@ def p_funCall(p):
 
     p[0] = cg.Quads[-1].result
 
-# def p_funID(p):
-#     '''
-#     funID : ID
-#     '''
-#     cg.generate_ERA()
-
 
 def p_iniciaFunCall(p):
     '''
@@ -668,8 +639,6 @@ def p_funCallParam(p):
         elif type(temp) is str:
             t = 'string'
 
-    # print(list(my_dict.keys())[list(my_dict.values()).index(112)])
-    # cg.checa_Tipo_Params(p[1][0])
     p[0] = t
     cg.generate_paramQuad()
 
@@ -698,11 +667,10 @@ def p_cte_float(p):
     '''
     if p[1] is not None:
         num = float(f'-{p[2]}')
-        # p[0] = num
+    
         dir = cg.direccion_mem('constantes','float',1,num)
     else:
-        # p[0] = p[2]
-        
+    
         dir = cg.direccion_mem('constantes','float',1, p[2])
 
     p[0] = dir
@@ -785,24 +753,16 @@ def p_else(p):
     '''
     cg.generate_else()
 
-
-# HEAD
-# def p_head(p):
-#     '''
-#     head : OPENPAREN head1 CLOSEPAREN
-#     '''
 def p_head_cond(p):
     '''
     head_cond : OPENPAREN expression close_condition
     '''
-
 
 # BODY
 def p_body(p):
     '''
     body : OPENBRACES body1 CLOSEBRACES
     '''
-
 
 # termina la condición
 def p_close_condition(p):
@@ -819,21 +779,13 @@ def p_body1(p):
           | empty
     '''
 
-
-
-# FOR
-# def p_for(p):
-#     '''
-#     for : FOR OPENPAREN ID TWODOTS exp CLOSEPAREN body
-#     '''
-
+# en listado
 def p_for_v2(p):
     '''
     for_v2 : nuevo_for forBody
     '''
     
     var = vars_t.search_var(p[1][0])
-    # var = vars_t.current_scope['vars'][p[1]]
 
     if var is not None:
         dir = var['dir']
@@ -874,9 +826,6 @@ def p_nuevo_for(p):
     '''
     info = vars_t.search_var(p[3][0])
     
-    # dir = cg.direccion_mem('local','int')
-
-    # vars_t.insert_var(p[3],'int',dir, False,None)
     dir = info['dir']
 
     temp = cg.PilaO[-1]
@@ -888,8 +837,6 @@ def p_nuevo_for(p):
     cg.PilaO.append(dir)
     cg.PTypes.append('int')
     cg.POper.append('=')
-    # cg.generate_quad(vars_t.current_scope)
-
 
     cg.PilaO.append(dir)
     cg.PTypes.append('int')
@@ -905,82 +852,17 @@ def p_nuevo_for(p):
     cg.generate_GOTOF()
     p[0] = p[3]
 
-
-# FOR
-# TODO: cuádruplos para for
-def p_for(p):
-    '''
-    for : FOR for1 TWODOTS for2 forClose forBody
-    '''
-    info = vars_t.search_var(p[2][0])
-    # print("tipos", cg.PTypes)
-
-    #el id tiene que ser de tipo int o float...
-    #no se puede hacer un for que empiece con un bool o un string...
-    if info['type'] == 'bool' or info['type'] == 'string':
-        raise TypeError("ERROR: expected an int or a float")
-    else:
-
-        cg.PJumps.append(len(cg.Quads)+2)
-
-    salto = cg.PJumps.pop()
-    cg.fill_gotoV(salto)
-
-    # cg.quad_incrementaFor()
-    goto = cg.PJumps.pop()
-    cg.generate_GOTO()
-    cg.fill_goto(goto)
-
-
-def p_forInit(p):
-    '''
-    forInit : FOR
-    '''
-    # 1
-    # cg.PJumps.append(len(cg.Quads)+1)
-
-
-def p_for1(p):
-    '''
-    for1 : OPENPAREN ID
-    '''
-    p[0] = p[2]
-    # 2
-
-    info = vars_t.search_var(p[2])
-    cg.PilaO.append(info['dir'])
-    # cg.PTemp.append(info['dir'])
-    cg.PTypes.append(info['type'])
-
-    # info = vars_t.search_var(p[2])
-    # cg.PilaO.append(info['dir'])
-
-
 def p_for2(p):
     '''
     for2 : exp
     '''
     p[0] = p[1]
 
-
-def p_forClose(p):
-    '''
-    forClose : CLOSEPAREN
-    '''
-    # cg.generateFor_condition()
-    # cg.generate_GOTOV()
-    # cg.PJumps.append(len(cg.Quads)-1)
-
-
 def p_forBody(p):
     '''
     forBody : body
     '''
-    # cg.quad_incrementaFor()
-    # cg.generateFor_condition()
-    # cg.PJumps.append(len(cg.Quads)+1)
-
-
+    
 # WHILE
 def p_while(p):
     '''
@@ -1037,6 +919,7 @@ def p_graphfig(p):
     graphfig : graphfig1 SEMICOLON
              | graphfig2 SEMICOLON
     '''
+
 # Figures que llevan solo una exp
 def p_graphfig1(p):
     '''
@@ -1188,7 +1071,7 @@ def p_term(p):
     if cg.POper and cg.POper[-1] in ['+', '-']:
         t = cg.generate_quad(vars_t.current_scope)
 
-        vars_t.insert_temp(t, vars_t.current_scope)
+        # vars_t.insert_temp(t, vars_t.current_scope)
 
 
 def p_term_o(p):
@@ -1212,7 +1095,7 @@ def p_factor(p):
 
     if cg.POper and cg.POper[-1] in ['*', '/']:
         t = cg.generate_quad(vars_t.current_scope)
-        vars_t.insert_temp(t,vars_t.current_scope)
+        # vars_t.insert_temp(t,vars_t.current_scope)
 
 def p_negativo(p):
     '''
@@ -1220,21 +1103,6 @@ def p_negativo(p):
              | empty
     '''
     p[0] = p[1]
-
-# def p_factor1(p):
-#     '''
-#     factor1 : factor2 vcte
-#             | openP expression closeP
-#     '''
-
-# def p_factor2(p):
-#     '''
-#     factor2 : ADDITION
-#             | SUBSTRACTION
-#     '''
-#     # 2.POper.push(+ or -)
-#     p[0] = p[1]
-#     cg.POper.append(p[0])
 
 def p_empty(p):
     '''empty :'''

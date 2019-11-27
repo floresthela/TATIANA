@@ -52,6 +52,45 @@ program hola;
     <aquí escribes tu código>
 }
 ```
+
+Puedes hacer uso de condiciones
+```
+program condiciones;
+
+* {
+    int a = 666;
+    int b = 9000;
+    int c = 4 + a / 9 + (b - 1);
+
+    if(a > b){
+        print("a es mayor que b");
+    }
+    elseif(a == b){
+        print("a y b son iguales");
+    }
+    else{
+        print("pues entonces b es mayor que a");
+    }
+}
+```
+Además de ciclos como el while y el for
+```
+program ciclos;
+
+* {
+    int i = 0;
+    int a = 10;
+
+    while(a > 0){
+        print(a);
+        a = a - 1;
+    }
+
+    for(i:10){
+        print("hola");
+    }
+}
+```
 ### **Funciones**
 
 Las funciones para graficar que el lenguaje provee son las siguientes:

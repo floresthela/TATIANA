@@ -1,0 +1,12 @@
+program hola;
+
+int arr[5] = [6,7,3,2,1];
+int mat[2][5] = [[1,2,3,4,5],[6,7,6,2,3]];
+string colors[4] = ["blue","red","green","yellow"];
+* {
+    int i = 0;
+    print(colors[3]);
+    for(i:5){
+        print(arr[i]);
+    }
+}

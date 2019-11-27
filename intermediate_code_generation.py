@@ -200,8 +200,6 @@ class Intermediate_CodeGeneration:
                 quadruple = Quadruple(operator, result, None, right_op)
         self.Quads.append(quadruple)
 
-
-
         return result_type
 
     def generate_quad_print(self):
@@ -271,49 +269,6 @@ class Intermediate_CodeGeneration:
     def generate_ENDPROC(self):
         quadruple = Quadruple('ENDPROC',None,None,None)
         self.Quads.append(quadruple)
-
-    def quad_incrementaFor(self):
-        '''
-        Genera el cuadruplo para incrementar el iterador del for
-        '''
-        print("pila operandos", self.PilaO)
-        print("pila temporal", self.PTemp)
-        operador = '+'
-        self.POper.append(operador)
-        op_izq = self.PilaO.pop()
-        # op_izq = self.PTemp.pop()
-        op_der = 1
-        result = self.direccion_mem('local', 'float')
-        quadruple = Quadruple(operador, op_izq, op_der, result)
-        self.Quads.append(quadruple)
-        self.PilaO.append(result)
-        self.POper.pop()
-
-    def checa_iterador(self):
-        '''
-        Genera cuadruplo para checar el iterador del for
-        y ver si entra al for o no
-        '''
-
-    def generateFor_condition(self):
-        '''
-        Genera el cuádruplo de la condicion del for
-        '''
-        self.POper.append('>')
-        op_izq = self.PilaO.pop()
-        print("op izq", self.PilaO)
-        op_derecho = self.PilaO.pop()
-        result = self.direccion_mem('local', 'bool')
-        quadruple = Quadruple('>', op_derecho, op_izq, result)
-
-        # pop a '>'
-        self.POper.pop()
-        self.Quads.append(quadruple)
-        self.PilaO.append(result)
-
-        self.POper.pop()
-        self.PTypes.append('bool')
-
 
     def generate_END(self):
         '''
@@ -389,10 +344,6 @@ class Intermediate_CodeGeneration:
 
         if type == 'color_star' and exp_type != 'string':
             raise TypeError("ERROR: Type-mismatch")
-        # elif type != 'color_star' and exp_type != 'int' and exp_type != 'float':
-        #     raise TypeError("ERROR: Type-mismatch")
-        # elif type == 'speed' and (exp_type != 'string' or exp_type != 'int'):
-        #     raise TypeError("ERROR: Type-mismatch")
         else:
             result = self.PilaO.pop()
             quadruple = Quadruple(type, result, None, None)
@@ -420,8 +371,6 @@ class Intermediate_CodeGeneration:
         Genera cuadruplo de ERA (llamada a funcion)
         :param fun: el nombre de la funcion
         '''
-
-
 
         quadruple = Quadruple('ERA', None, None, None)
         self.Quads.append(quadruple)
@@ -471,8 +420,10 @@ class Intermediate_CodeGeneration:
 
     def checa_Tipo_Params(self, params_dec, params_fun):
         '''
-        para checar si los parametros de la llamada a la funcion
+        Para checar si los parametros de la llamada a la funcion
         son del mismo tipo que cuando se declara
+        :param params_dec: Arreglo de los los tipos de parametros mandados en orden al llamado de la función
+        :param params_fun: Arreglo de los tipos de parámetros que se definen en el encabezado de la función
         '''
 
         len1 = len(params_dec)
@@ -517,6 +468,7 @@ class Intermediate_CodeGeneration:
         sumabase = self.direccion_mem('local','int')
         q_sumabase = Quadruple('+',sumaux, base, sumabase)
         self.Quads.append(q_sumabase)
+        
         return sumabase
 
     def genera_arreglos(self,base,tam, var_dim):
@@ -535,7 +487,6 @@ class Intermediate_CodeGeneration:
         self.Quads.append(ver)
 
         # Sumar base
-
         sumabase = self.direccion_mem('local','int')
         q_sumabase = Quadruple('+',tam, base, sumabase)
         self.Quads.append(q_sumabase)

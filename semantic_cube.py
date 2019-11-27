@@ -187,7 +187,7 @@ class SemanticCube:
                 'string': {
                     'int': 'err',
                     'float': 'err',
-                    'string': 'err'
+                    'string': 'string'
                 }
             },
             Operators.NOT_EQUAL: {
