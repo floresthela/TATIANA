@@ -23,6 +23,7 @@ def p_program(p):
     '''
 
     p[0] = "PROGRAM COMPILED"
+    print(vars_t.table['global'])
     vars_t.delete_vars('global')
     
     f_quads = cg.format_quads()
@@ -54,6 +55,7 @@ def p_star(p):
     cg.fill_goto_star(star)
 
     count_vars = len(s_table['vars'])
+    print(vars_t.table['star'])
     vars_t.delete_vars('star')
     
     s_table['vars'] = count_vars
@@ -342,6 +344,7 @@ def p_function_t(p):
 
     cg.generate_ENDPROC()
     count_vars = len(table['vars'])
+    print(vars_t.table[p[2]])
     vars_t.delete_vars(p[2])
 
     
@@ -364,6 +367,7 @@ def p_function_v(p):
 
     cg.generate_ENDPROC()
     count_vars = len(table['vars'])
+    print(vars_t.table[p[2]])
     vars_t.delete_vars(p[2])
 
     table['vars'] = count_vars
@@ -628,7 +632,6 @@ def p_funCallParam(p):
         dir = vt['dir']
         t = vt['type']
     else:
-        # es constante el parametro alv
         dir = p[1]
         temp = cg.constantes[dir]
 
@@ -1071,7 +1074,6 @@ def p_term(p):
     if cg.POper and cg.POper[-1] in ['+', '-']:
         t = cg.generate_quad(vars_t.current_scope)
 
-        # vars_t.insert_temp(t, vars_t.current_scope)
 
 
 def p_term_o(p):
@@ -1095,7 +1097,7 @@ def p_factor(p):
 
     if cg.POper and cg.POper[-1] in ['*', '/']:
         t = cg.generate_quad(vars_t.current_scope)
-        # vars_t.insert_temp(t,vars_t.current_scope)
+        
 
 def p_negativo(p):
     '''

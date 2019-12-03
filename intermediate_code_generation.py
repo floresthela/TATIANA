@@ -48,9 +48,6 @@ class Intermediate_CodeGeneration:
         self.gen_star = False
         self.era = None
 
-        # contadores
-        # self.c_temps = [0,0,0] = [int,float,string]
-
         self.temps = 0
 
         # son 4 pero es solo para guardar booleanos, nunca los usamos
@@ -230,7 +227,6 @@ class Intermediate_CodeGeneration:
         '''
         Genera GOTOF para condicion y while
         '''
-        # Hay que checar si sí jala un elseif igual... aunque si deberia no?? lo checamos.
         exp_type = self.PTypes.pop()
         
         if exp_type != 'bool':
@@ -240,31 +236,6 @@ class Intermediate_CodeGeneration:
             quadruple = Quadruple('GotoF', result, None, None)
             self.Quads.append(quadruple)
             self.PJumps.append(len(self.Quads)-1)
-
-    def generate_GOTOV(self):
-        '''
-        Genera GOTOV para for
-        '''
-        cond = self.PilaO.pop()
-        self.PTypes.pop()
-
-
-        print("cond", cond)
-
-        quadruple = Quadruple('GotoV', cond, None, None)
-        self.Quads.append(quadruple)
-
-    def fill_gotoV(self, salto):
-        ''''
-        Llena el quad de GotoV para el for
-        '''
-        # position = len(self.Quads) - 3
-
-
-        position = self.PJumps.pop()
-        print('posicion',position)
-
-        self.Quads[position].cambia_res(salto)
 
     def generate_ENDPROC(self):
         quadruple = Quadruple('ENDPROC',None,None,None)
@@ -354,7 +325,6 @@ class Intermediate_CodeGeneration:
         Genera cuádruplo de gráfica que lleva un parámetro (dos expresiones)
         :param type: tipo de acción para graficar
         '''
-        # igual que un quad normal creo
         expT_1 = self.PTypes.pop()
         expT_2 = self.PTypes.pop()
 

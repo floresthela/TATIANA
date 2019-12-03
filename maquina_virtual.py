@@ -14,7 +14,6 @@ class MaquinaVirtual:
 
         self.programa = None
         self.memoria = Memoria()
-        # self.mem_local = MemLocal()
         
         self.estrella = None
         self.screen = None
@@ -429,7 +428,6 @@ class MaquinaVirtual:
                 
                 self.pila_contextos.append(res)
 
-                # mem = self.dame_mem(res)
                 self.memoria.activa.matcheo(parametros)
                 parametros.clear()
                 val = self.haz_quads(quads, fun_dir, int(res)-1)
@@ -445,7 +443,6 @@ class MaquinaVirtual:
             elif operador == 'RETURN':
                 mem = self.dame_mem(res)
                 
-                # jaja que pedo con el nombre k le puse ?¿
                 retornado = mem[res]
 
                 sig += 1
@@ -465,12 +462,6 @@ class MaquinaVirtual:
                     return retornado
                 else:
                     break
-
-            # TODO: 
-            # agregar clear
-            # agregar fill
-            
-    
 
 
     def haz_constantes(self, t):
@@ -499,7 +490,6 @@ class MaquinaVirtual:
 
         CONSTANTES
         c [41000 - 51999]
-
         '''
 
 
@@ -551,13 +541,10 @@ class MaquinaVirtual:
         self.screen = Screen()
         self.dibuja_estrella(s)
         
-        # self.star = Turtle(shape="estrella")
-
         self.screen.title(self.programa)
         self.screen.clear()
         self.estrella = Turtle(shape="estrella")
-        # self.screen.clear()
-        # self.screen.exitonclick()
+
         
 
     def dibuja_estrella(self,lapiz):
@@ -586,7 +573,7 @@ class MaquinaVirtual:
         lapiz.reset()
 
     def dame_contenido(self, dir):
-        # my_list = my_list[1:-1]
+        
         dir_aux = int(dir[1:-1])
         dir_mem = self.dame_mem(dir_aux)
         return dir_mem[dir_aux]

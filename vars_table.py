@@ -15,16 +15,12 @@ class VarsTable:
         self.table = {
             'global': {
                 'program': '',
-                'vars': {},
-                # [vars,temps]
-                # 'size': {'i':[0,0],'f':[0,0],'s':[0,0],'b':[0,0]},
+                'vars': {}
             },
             'star': {
                 'type': 'void',
                 'vars': {},
-                'begin': None,
-                # [vars,temps]
-                # 'size': {'i':[0,0],'f':[0,0],'s':[0,0],'b':[0,0]},
+                'begin': None
             }
         }
         self.current_type = ''
@@ -32,7 +28,6 @@ class VarsTable:
         self.initialized = False
 
     def FunDirectory(self, fun_id, type, start):
-        # print(self.table)
         '''
         Create main directory to store all functions created on a program, current scope is global
         : param fun_id: Nombre del programa, función creada por usuario o star (main)
@@ -123,8 +118,8 @@ class VarsTable:
 
     def delete_vars(self, table_id):
         '''
-        Remove a vars table after function is no longer needed
-        : param table_id: Name assigned to the function
+        Elimina tabla de variables dado el id de la tabla
+        :param table_id: Name assigned to the function
         '''
         if table_id in self.table:
             del self.table[table_id]['vars']

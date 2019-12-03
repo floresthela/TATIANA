@@ -24,7 +24,7 @@ class Memoria:
 
     def record_activacion(self, superior, tamaño):
         '''
-        Función para activar memoria de una función en su llamado
+        Función para activar nueva memoria local de una función en su llamado y se agrega a la memoria de ejecución
         :param superior: Función en la que se manda llamar
         :param tamaño: Cantidad de variables de la función llamada
         '''
@@ -83,4 +83,3 @@ class MemLocal:
                 self.mem_local[self.contador + self.c_str] = p
                 self.c_str += 1
 
-            # self.mem_local[self.contador] = p
