@@ -448,9 +448,3 @@ program cool;
 }
 ```
 ![cool.tati](/imgs/cool.png)
-
-## **Video DEMO**
-
-Realizamos un breve video explicando generalidades del lenguaje, desde programación de ejemplos y su ejecución.
-
-Para ver el video haz click [aquí](https://www.youtube.com/watch?v=VvgIpFEFC6k) o accede a la liga: *https://www.youtube.com/watch?v=VvgIpFEFC6k*
